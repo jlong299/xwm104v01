@@ -37,6 +37,7 @@ n(4) = 0;   % 0,1,...,Nf(4)-1
 n(5) = 0;   % 0,1,...,Nf(5)-1
 n(6) = 0;   % 0,1,...,Nf(6)-1
 
+k = zeros(1,NumOfFactors_max);
 %----------- I/O input data to RAM ---------------
 for k=0:N-1
 
@@ -56,8 +57,13 @@ for k=0:N-1
     end
 end
 
+%----------------------------------
+n=0;
+read_bank_index = zeros(NumOfBanks,1);
+read_data_index = zeros(NumOfBanks,1);
+fft_tw_out = zeros(NumOfBanks,1);
 %---------------------------------
-for k=1:NumOfFactors
+for m=1:NumOfFactors
 
     if (current_RAM==0)
         RAM_read = RAM_0;
@@ -65,9 +71,70 @@ for k=1:NumOfFactors
         RAM_read = RAM_1;
     end
 
-    for m = 
+    if m==1
+    for n(2)=0:Nf(2)-1
+        for n(3)=0:Nf(3)-1
+            % bank selection
+            read_bank_index(1) = mod(0+n(3)+n(2), NumOfBanks);
+            for t = 2:NumOfBanks
+                read_bank_index(t) = mod(read_bank_index(1) + t-1, NumOfBanks);
+            end
+            % read data from each bank
+            for t = 1:NumOfBanks
+                read_data_index(t) = RAM_read((t-1)*Nf(2)+n(2) +1 , read_bank_index(t) +1);
+            end
+            % radix-factor fft and twiddle
+            fft_tw_out = fft_tw(read_data_index, Nf(m));
+            % write data to each bank of another RAM
+            for t = 1:NumOfBanks
+                RAM_write((t-1)*Nf(2)+n(2) +1 , read_bank_index(t) +1) = fft_tw_out(t);
+            end
+        end
+    end
+    end
 
+    if m==2
+    for k(1)=0:Nf(1)-1
+        for n(3)=0:Nf(3)-1
+            % bank selection
+            read_bank_index(1) = mod(0+n(3)+k(1), NumOfBanks);
+            for t = 2:NumOfBanks
+                read_bank_index(t) = mod(read_bank_index(1) + t-1, NumOfBanks);
+            end
+            % read data from each bank
+            for t = 1:NumOfBanks
+                read_data_index(t) = RAM_read(k(1)*Nf(2)+n(2) +1, read_bank_index(t) +1);
+            end
+            % radix-factor fft and twiddle
+            fft_tw_out = fft_tw(read_data_index, Nf(m));
+            % write data to each bank of another RAM
+            for t = 1:NumOfBanks
+                RAM_write(k(1)*Nf(2)+n(2) +1, read_bank_index(t) +1) = fft_tw_out(t);
+            end
+        end
+    end
+    end
 
+    if m==3
+    for k(1)=0:Nf(1)-1
+        for k(2)=0:Nf(2)-1
+            % bank selection
+            read_bank_index(1) = mod(0+k(2)+k(1), NumOfBanks);
+            for t = 2:NumOfBanks
+                read_bank_index(t) = mod(read_bank_index(1) + t-1, NumOfBanks);
+            end
+            % read data from each bank
+            for t = 1:NumOfBanks
+                read_data_index(t) = RAM_read(k(1)*Nf(2)+(t-1) +1, read_bank_index(t) +1);
+            end
+            % radix-factor fft and twiddle
+            fft_tw_out = fft_tw(read_data_index, Nf(m));
+            % write data to each bank of another RAM
+            for t = 1:NumOfBanks
+                RAM_write(k(1)*Nf(2)+(t-1) +1, read_bank_index(t) +1) = fft_tw_out(t);
+            end
+        end
+    end
     end
 
 
@@ -79,8 +146,10 @@ for k=1:NumOfFactors
         current_RAM = 0;
     end
 
-
 end
+
+%--------- I/O output ---------------
+
 
 
 
