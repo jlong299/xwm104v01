@@ -2,10 +2,12 @@ clear
 N = 3*4*5;
 sum_debug=0;
 
-x_real=round((2*rand(1,N)-1)*8192);
-x_imag=round((2*rand(1,N)-1)*8192);
+% x_real=round((2*rand(1,N)-1)*8192);
+% x_imag=round((2*rand(1,N)-1)*8192);
 
-x = x_real + 1j*x_imag;
+% x = x_real + 1j*x_imag;
+
+x=[0:1:59];
 
 FX = fft(x);
 
