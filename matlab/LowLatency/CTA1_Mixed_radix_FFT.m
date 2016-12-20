@@ -1,26 +1,31 @@
 clear 
 %----------------------------------
-N_max = 1200;
-NumOfBanks = 5;
+N_max = 1200;  % for N_max = 1536, the RAM bank size should increase to 1536/4
+NumOfBanks = 5; % total 5 RAM banks
 
-% NumOfFactors = 6;   
-NumOfFactors_max = 6;
+NumOfFactors_max = 6; % 6 factors at most
+
 
 %-----------------------------------------
 %-------- Loop  from 12 to 1200 ----------
 %-----------------------------------------
 Nf_temp = zeros(1,NumOfFactors_max-2);
 NumOfLen = 0;
+
+%  Loop  from  12*1  to  12*100
 for m_len = 1:100   % The end of loop body is at the end of this file
     % factorize  N 
     [Nf_temp, err] = factor_2345(m_len);
-    if err==1
+    if err==1   % m_len can not be factorized to 2,3,4,5
         continue;
     end
 
-    NumOfLen = NumOfLen+1;
+    NumOfLen = NumOfLen+1;    % total 34 different lengths   12, 24, 36, ..., 1152, 1200
 %-------- parameters ------------
 Nf = ones(1,NumOfFactors_max);   % factorize N
+% e.g. If N=1200  = 4*4*5*5*3
+%      Nf(1)=4,  Nf(2)=4,  Nf(3)=5,  Nf(4)=5, Nf(5)=3, Nf(6)=1
+%      First must be 4,  the last must be 3  (for latency reduction)
 %------------------------------
 Nf(1) = 4;  % N1 : Fixed =4 !!!
 %------------------------------
@@ -38,18 +43,22 @@ while (t < NumOfFactors_max)
         break;
     end
 end
-Nf(t) = 3;
+%----------------------------------
+Nf(t) = 3;  % N_last : Fixed =3 !!!
+%----------------------------------
 t=0;
 
+%  obtain Num of Factors
 NumOfFactors = 0;
 for m = 1:NumOfFactors_max
     if (Nf(m)>1)
         NumOfFactors = NumOfFactors + 1;
     end
 end
-
+%  obtain  N
 N = Nf(1)*Nf(2)*Nf(3)*Nf(4)*Nf(5)*Nf(6);
 
+%  obtain ena
 ena = zeros(1,NumOfFactors_max);
 for m = 1:NumOfFactors_max
     if Nf(m)==1
@@ -58,6 +67,7 @@ for m = 1:NumOfFactors_max
         ena(m) = 1;
     end
 end
+% e.g. If N=1200  = 4*4*5*5*3,  NumOfFactors=5,  ena=[1,1,1,1,1,0]
 
 coeff_bank = zeros(1,NumOfFactors_max);
 switch NumOfFactors
@@ -280,8 +290,8 @@ for t=0:N-1
 end
 
 % result
-% N
-% max(abs(Fout-FX.'))
+N
+max(abs(Fout-FX.'))
 size(RAM_read)
 size(RAM_write)
 
