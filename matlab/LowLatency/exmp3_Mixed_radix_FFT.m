@@ -7,9 +7,9 @@ NumOfFactors = 3;
 NumOfFactors_max = 6;
 %-------- parameters ------------
 Nf = zeros(1,NumOfFactors_max);   % factorize N
-Nf(1) = 2;
-Nf(2) = 5;
-Nf(3) = 3;
+Nf(1) = 3;
+Nf(2) = 4;
+Nf(3) = 5;
 Nf(4) = 1;
 Nf(5) = 1;
 Nf(6) = 1;
@@ -131,6 +131,11 @@ n=zeros(1,NumOfFactors_max);
 read_bank_index = zeros(NumOfBanks,1);
 read_data_index = zeros(NumOfBanks,1);
 fft_tw_out = zeros(NumOfBanks,1);
+Nf_stage = zeros(1,NumOfFactors_max);
+Nf_stage = Nf;
+is_last_stage = 0;
+tw_N = exp(-j*2*pi/N);
+tw_N_exp = 0;
 %---------------------------------
 for m=1:NumOfFactors
 
