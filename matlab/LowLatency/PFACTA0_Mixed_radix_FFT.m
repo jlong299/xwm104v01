@@ -65,7 +65,7 @@ Nf_temp = zeros(1,NumOfFactors_max-2);
 NumOfLen = 0;
 
 %  Loop  from  12*1  to  12*100
-for m_len = 5:5   % The end of loop body is at the end of this file
+for m_len = 20:20   % The end of loop body is at the end of this file
     % factorize  N 
     [Nf_temp, err] = factor_2345(m_len);
     if err==1   % m_len can not be factorized to 2,3,4,5
@@ -151,16 +151,21 @@ RAM_read = zeros(N_max/4,NumOfBanks);  % 5 banks
 RAM_write = zeros(N_max/4,NumOfBanks);  % 5 banks
 
 %------------  PFA I/O input mapping ------------------------------
-p1 = 4;
-p2 = 5;
-p3 = 7;
-q1 = 1;
-q2 = 2;
-q3 = 1;
-for n1=0:Nf(1)-1
-    for n2=0:Nf(2)-1
-        for n3=0:Nf(3)-1
-            x_PFAmap(Nf(2)*Nf(3)*n1+Nf(3)*n2+n3 +1) = x(mod(Nf(2)*Nf(3)*n1+p1*Nf(1)*Nf(3)*n2+p1*p2*Nf(1)*Nf(2)*n3, N) +1);
+Nf_PFA = zeros(1,3);
+Nf_PFA(1) = 16;
+Nf_PFA(2) = 5;
+Nf_PFA(3) = 3;
+
+p(1) = 1;
+p(2) = 29;
+p(3) = 27;
+q(1) = 1;
+q(2) = 3;
+q(3) = 1;
+for n1=0:Nf_PFA(1)-1
+    for n2=0:Nf_PFA(2)-1
+        for n3=0:Nf_PFA(3)-1
+            x_PFAmap(Nf_PFA(2)*Nf_PFA(3)*n1+Nf_PFA(3)*n2+n3 +1) = x(mod(Nf_PFA(2)*Nf_PFA(3)*n1+p(1)*Nf_PFA(1)*Nf_PFA(3)*n2+p(1)*p(2)*Nf_PFA(1)*Nf_PFA(2)*n3, N) +1);
         end
     end
 end
@@ -284,10 +289,16 @@ for m=1:NumOfFactors
                             otherwise
                             tw_N_exp = 0;
                             end
+
+                        if (m==1)
+                            tw_N = exp(-1i*2*pi/16);
+                            tw_N_exp = mod(t_n2, Nf(2));
                             % CTA
-                            %fft_tw_out = fft_tw(read_data_index, Nf(m), tw_N, tw_N_exp, is_last_stage );
+                            fft_tw_out = fft_tw(read_data_index, Nf(m), tw_N, tw_N_exp, is_last_stage );
+                        else
                             % PFA
                             fft_tw_out = fft_tw(read_data_index, Nf(m), 1, 1, is_last_stage );
+                        end
                             % write data to each bank of another RAM
                             for t = 1:NumOfBanks
                                 if (t <= Nf(m))
@@ -364,17 +375,12 @@ end
 
 %------------  PFA I/O output mapping ------------------------------
 Fout_PFAmap = zeros(N,1);
-p1 = 4;
-p2 = 5;
-p3 = 7;
-q1 = 1;
-q2 = 2;
-q3 = 1;
-for k1=0:Nf(1)-1
-    for k2=0:Nf(2)-1
-        for k3=0:Nf(3)-1
-            % Fout_PFAmap(mod(p2*p3*Nf(2)*Nf(3)*k1 + p3*Nf(1)*Nf(3)*k2 + Nf(1)*Nf(2)*k3 , N) +1) = Fout(Nf(2)*Nf(3)*k1+Nf(3)*k2+k3 +1);
-            Fout_PFAmap(mod(p2*p3*Nf(2)*Nf(3)*k1 + p3*Nf(1)*Nf(3)*k2 + Nf(1)*Nf(2)*k3 , N) +1) = Fout(Nf(1)*Nf(2)*k3+Nf(1)*k2+k1 +1);
+
+for k1=0:Nf_PFA(1)-1
+    for k2=0:Nf_PFA(2)-1
+        for k3=0:Nf_PFA(3)-1
+            % Fout_PFAmap(mod(p2*p3*Nf_PFA(2)*Nf_PFA(3)*k1 + p3*Nf_PFA(1)*Nf_PFA(3)*k2 + Nf_PFA(1)*Nf_PFA(2)*k3 , N) +1) = Fout(Nf_PFA(2)*Nf_PFA(3)*k1+Nf_PFA(3)*k2+k3 +1);
+            Fout_PFAmap(mod(p(2)*p(3)*Nf_PFA(2)*Nf_PFA(3)*k1 + p(3)*Nf_PFA(1)*Nf_PFA(3)*k2 + Nf_PFA(1)*Nf_PFA(2)*k3 , N) +1) = Fout(Nf_PFA(1)*Nf_PFA(2)*k3+Nf_PFA(1)*k2+k1 +1);
         end
     end
 end
