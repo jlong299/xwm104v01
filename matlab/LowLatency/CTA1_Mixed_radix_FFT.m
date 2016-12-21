@@ -1,7 +1,34 @@
 clear 
 %-------------------------------------------------------------
-%                CTA ( )
-%   description:
+% Author : Jiang Long
+%                CTA (Cooley-Tukey algorithm )
+% Example:
+%  For DFT size N = N1*N2*N3  
+%
+%    n= (N2*N3*n1 + n2~) mod N ,  n1,k1 = 0,1,...,N1-1
+%    k= (k1 + N1*k2~) mod N,      n2~,k2~ = 0,1,...,N2*N3-1    (1)
+%
+%    n2~= (N3*n2 + n3) mod N2*N3,  n2,k2 = 0,1,...,N2-1
+%    k2~= (k2 + N2*k3) mod N2*N3,  n3,k3 = 0,1,...,N3-1        (2)
+%
+%  From (1) and (2) , we get (3)
+%     n= (N2*N3*n1 + N3*n2 + n3) mod N,
+%     k= (k1 + N1*k2 + N1*N2*k3) mod N,          (3)
+%
+%  There are 2 RAMs for ping-pong operation, each RAM is divided into 5 banks, each bank size : N_max/4
+%  Bank selection:
+%     (n1+n2+n3) mod 5
+%  Address in bank
+%     N3*n2 + n3
+%  
+%  Bufferfly Computation:
+%     Twiddle generation 
+%        (1) first stage :  (tw_N)^(n2~*k1) ,  tw_N = exp(-1i*2*pi/N);
+%        (2) second stage : (tw_N)^(n3*k2) ,   tw_N = exp(-1i*2*pi/(N2*N3));
+%        (3) last stage :   1
+%  
+%  Notice:
+%     N1 and N_last are fixed,  N1=4, N_last=3  (for latency reduction)
 %-------------------------------------------------------------
 N_max = 1200;  % for N_max = 1536, the RAM bank size should increase to 1536/4
 NumOfBanks = 5; % total 5 RAM banks
@@ -76,30 +103,12 @@ end
 %   addr_in_bank = coeff_bank(2)*n(2)+coeff_bank(3)*n(3)+coeff_bank(4)*n(4)+coeff_bank(5)*n(5)+coeff_bank(6)*n(6);
 % ------------ change them to one case , not checked yet --------------
 coeff_bank = zeros(1,NumOfFactors_max);
-% switch NumOfFactors
-%     case 2
-%         coeff_bank(2) = 1;
-%     case 3
-%         coeff_bank(2) = Nf(3);
-%         coeff_bank(3) = 1;
-%     case 4
-%         coeff_bank(2) = Nf(3)*Nf(4);
-%         coeff_bank(3) = Nf(4);
-%         coeff_bank(4) = 1;
-%     case 5
-%         coeff_bank(2) = Nf(3)*Nf(4)*Nf(5);
-%         coeff_bank(3) = Nf(4)*Nf(5);
-%         coeff_bank(4) = Nf(5);
-%         coeff_bank(5) = 1;
-%     case 6
-        coeff_bank(2) = Nf(3)*Nf(4)*Nf(5)*Nf(6);
-        coeff_bank(3) = Nf(4)*Nf(5)*Nf(6);
-        coeff_bank(4) = Nf(5)*Nf(6);
-        coeff_bank(5) = Nf(6);
-        coeff_bank(6) = 1;
-%     otherwise
-%         coeff_bank(2) = 1;
-% end
+
+coeff_bank(2) = Nf(3)*Nf(4)*Nf(5)*Nf(6);
+coeff_bank(3) = Nf(4)*Nf(5)*Nf(6);
+coeff_bank(4) = Nf(5)*Nf(6);
+coeff_bank(5) = Nf(6);
+coeff_bank(6) = 1;
 
 %------------- gen test source data -------------------
 x_real=round((2*rand(1,N)-1)*8192);
