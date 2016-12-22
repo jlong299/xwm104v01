@@ -1,4 +1,4 @@
-function [ Nf,Nf_PFA,p,q,tw_ROM_sel,tw_ROM_addr_step ] = param_PFA( N )
+function [ Nf,Nf_PFA,p,q,tw_ROM_sel,tw_ROM_addr_step,tw_ROM_exp_ceil,tw_ROM_exp_time ] = param_PFA( N )
 %PARAM_PFA Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -24,8 +24,38 @@ p = zeros(1,3);
 q = zeros(1,3);
 tw_ROM_sel = zeros(1,6);
 tw_ROM_addr_step = zeros(1,6);
+tw_ROM_exp_ceil = zeros(1,6);
+tw_ROM_exp_time = zeros(1,6);
 
 switch N
+	case 12
+		Nf = [4,3,1,1,1,1];
+		Nf_PFA = [4,3,1];
+		p = [1,3,1];
+		q = [1,2,1];
+		tw_ROM_sel = [1,3,0,0,0,0];
+		tw_ROM_addr_step = [0,0,0,0,0,0]; % 
+	case 24
+		Nf = [4,2,3,1,1,1];
+		Nf_PFA = [8,3,1];
+		p = [2,3,1];
+		q = [5,1,1];
+		tw_ROM_sel = [1,1,3,0,0,0];
+		tw_ROM_addr_step = [32,0,0,0,0,0]; % 256/8  
+	case 36
+		Nf = [4,3,3,1,1,1];
+		Nf_PFA = [4,9,1];
+		p = [7,1,1];
+		q = [3,2,1];
+		tw_ROM_sel = [1,3,3,0,0,0];
+		tw_ROM_addr_step = [0,27,0,0,0,0]; % 243/9
+	case 48
+		Nf = [4,4,3,1,1,1];
+		Nf_PFA = [16,3,1];
+		p = [1,11,1];
+		q = [5,2,1];
+		tw_ROM_sel = [1,1,3,0,0,0];
+		tw_ROM_addr_step = [16,0,0,0,0,0]; % 256/16  
 	case 60
 		Nf = [4,5,3,1,1,1];
 		Nf_PFA = [4,5,3];
@@ -33,6 +63,22 @@ switch N
 		q = [1,2,1];
 		tw_ROM_sel = [1,2,3,0,0,0];
 		tw_ROM_addr_step = [0,0,0,0,0,0]; 
+	case 72
+		Nf = [4,2,3,3,1,1];
+		Nf_PFA = [8,9,1];
+		p = [8,1,1];
+		q = [7,1,1];
+		tw_ROM_sel = [1,1,3,3,0,0];
+		tw_ROM_addr_step = [32,0,27,0,0,0]; % 256/8 243/9
+	case 96
+		Nf = [4,4,2,3,1,1];
+		Nf_PFA = [32,3,1];
+		p = [2,11,1];
+		q = [21,1,1];
+		tw_ROM_sel = [1,1,1,3,0,0];
+		tw_ROM_addr_step = [8,32,0,0,0,0]; % 256/32  256/8 
+		tw_ROM_exp_ceil = [8,2,1,1,1,1]; 
+		tw_ROM_exp_time = [3,3,1,1,1,1];  
 	case 240
 		Nf = [4,4,5,3,1,1];
 		Nf_PFA = [16,5,3];

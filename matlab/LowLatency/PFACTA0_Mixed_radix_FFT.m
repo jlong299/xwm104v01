@@ -67,7 +67,7 @@ Nf_temp = zeros(1,NumOfFactors_max-2);
 NumOfLen = 0;
 
 %  Loop  from  12*1  to  12*100
-for m_len = 100:100   % The end of loop body is at the end of this file
+for m_len = 8:8   % The end of loop body is at the end of this file
     % factorize  N 
     [Nf_temp, err] = factor_2345(m_len);
     if err==1   % m_len can not be factorized to 2,3,4,5
@@ -83,11 +83,6 @@ for m_len = 100:100   % The end of loop body is at the end of this file
 % %------------------------------
 % Nf(1) = 4;  % N1 : Fixed =4 !!!
 % %------------------------------
-% % Nf(2) = 4;
-% % Nf(3) = 2;
-% % Nf(4) = 5;
-% % Nf(5) = 3;
-% % Nf(6) = 2;
 % t = 2;
 % while (t < NumOfFactors_max)
 %     if Nf_temp(t-1) > 0
@@ -102,7 +97,7 @@ for m_len = 100:100   % The end of loop body is at the end of this file
 % %----------------------------------
 % t=0;
 
-[ Nf,Nf_PFA,p,q,tw_ROM_sel,tw_ROM_addr_step ] = param_PFA( 12*m_len );
+[ Nf,Nf_PFA,p,q,tw_ROM_sel,tw_ROM_addr_step,tw_ROM_exp_ceil,tw_ROM_exp_time ] = param_PFA( 12*m_len );
 
 %  obtain Num of Factors
 NumOfFactors = 0;
@@ -248,6 +243,7 @@ tw_N_exp = 0;
 tw_ROM = tw_ROM_1;
 tw_coeff = zeros(1,5);
 n_tw = 0;
+cnt_n_tw = 0;
 %---------------------------------
 for m=1:NumOfFactors
 
@@ -277,6 +273,9 @@ for m=1:NumOfFactors
         is_last_stage = 0;
     end
 
+    n_tw = 0;
+    cnt_n_tw = 0;
+
     for t_n1 = 0:Nf_stage(1) -1
         for t_n2 = 0:Nf_stage(2) -1
             for t_n3 = 0:Nf_stage(3) -1
@@ -298,39 +297,37 @@ for m=1:NumOfFactors
                                 end
                             end
 
-                            % radix-factor fft and twiddle
-
-                            % if (m==1)
-                            % tw_N = exp(-1i*2*pi/16);
-                            % tw_N_exp = mod(t_n2, Nf(2));
-                            % % CTA
-                            % %fft_tw_out = fft_tw(read_data_index, Nf(m), tw_N, tw_N_exp, is_last_stage );
-                            % fft_tw_out = fft_tw(read_data_index, Nf(m), tw_N, tw_N_exp, is_last_stage );
-                            % else
-                            % % PFA
-                            % fft_tw_out = fft_tw(read_data_index, Nf(m), 1, 1, is_last_stage );
+                            % switch m
+                            %     case 1
+                            %         n_tw = t_n2*2 + t_n3;
+                            %     case 2
+                            %         n_tw = t_n3;
+                            %     case 3
+                            %         n_tw = t_n4;
+                            %     case 4
+                            %         n_tw = t_n5;
+                            %     case 5
+                            %         n_tw = t_n6;
+                            %     otherwise
+                            %         n_tw = t_n2;
                             % end
 
-                            switch m
-                                case 1
-                                    n_tw = t_n2;
-                                case 2
-                                    n_tw = t_n3;
-                                case 3
-                                    n_tw = t_n4;
-                                case 4
-                                    n_tw = t_n5;
-                                case 5
-                                    n_tw = t_n6;
-                                otherwise
-                                    n_tw = t_n2;
-                            end
-
+                            %                              W_N        n2  k1 
                             tw_coeff(1) = tw_ROM(tw_ROM_addr_step(m)*n_tw*0 +1);
                             tw_coeff(2) = tw_ROM(tw_ROM_addr_step(m)*n_tw*1 +1);
                             tw_coeff(3) = tw_ROM(tw_ROM_addr_step(m)*n_tw*2 +1);
                             tw_coeff(4) = tw_ROM(tw_ROM_addr_step(m)*n_tw*3 +1);
                             tw_coeff(5) = tw_ROM(tw_ROM_addr_step(m)*n_tw*4 +1);
+
+                            if ( n_tw == ( tw_ROM_exp_ceil(m)-1 ) ) && (cnt_n_tw == (tw_ROM_exp_time(m)-1) )
+                                n_tw = 0;
+                                cnt_n_tw = 0;
+                            elseif (cnt_n_tw == (tw_ROM_exp_time(m)-1) )
+                                n_tw = n_tw + 1;
+                                cnt_n_tw = 0;
+                            else
+                                cnt_n_tw = cnt_n_tw + 1;
+                            end
                                 
                             fft_tw_out = fft_tw2(read_data_index, Nf(m), tw_coeff, is_last_stage );
                         
