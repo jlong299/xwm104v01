@@ -1,4 +1,5 @@
 clear 
+% Combined PFA & CTA algorithm
 %-------------------------------------------------------------
 % Author : Jiang Long
 %                CTA (Cooley-Tukey algorithm )
@@ -16,6 +17,7 @@ clear
 %     k= (k1 + N1*k2 + N1*N2*k3) mod N,          (3)
 %
 %  There are 2 RAMs for ping-pong operation, each RAM is divided into 5 banks, each bank size : N_max/4
+%  (why N_max/4 ?  because the first factor 4 is fixed)
 %  Bank selection:
 %     (n1+n2+n3) mod 5
 %  Address in bank
@@ -65,7 +67,7 @@ Nf_temp = zeros(1,NumOfFactors_max-2);
 NumOfLen = 0;
 
 %  Loop  from  12*1  to  12*100
-for m_len = 20:20   % The end of loop body is at the end of this file
+for m_len = 100:100   % The end of loop body is at the end of this file
     % factorize  N 
     [Nf_temp, err] = factor_2345(m_len);
     if err==1   % m_len can not be factorized to 2,3,4,5
@@ -73,32 +75,34 @@ for m_len = 20:20   % The end of loop body is at the end of this file
     end
 
     NumOfLen = NumOfLen+1;    % total 34 different lengths   12, 24, 36, ..., 1152, 1200
-%-------- parameters ------------
-Nf = ones(1,NumOfFactors_max);   % factorize N
-% e.g. If N=1200  = 4*4*5*5*3 = N1*N2*N3*N4*N5
-%      Nf(1)=4,  Nf(2)=4,  Nf(3)=5,  Nf(4)=5, Nf(5)=3, Nf(6)=1   ( Nf(1) represents N1 ...)
-%      First must be 4,  the last must be 3  (for latency reduction)
-%------------------------------
-Nf(1) = 4;  % N1 : Fixed =4 !!!
-%------------------------------
-% Nf(2) = 4;
-% Nf(3) = 2;
-% Nf(4) = 5;
-% Nf(5) = 3;
-% Nf(6) = 2;
-t = 2;
-while (t < NumOfFactors_max)
-    if Nf_temp(t-1) > 0
-        Nf(t) = Nf_temp(t-1);
-        t = t+1;
-    else
-        break;
-    end
-end
-%----------------------------------
-Nf(t) = 3;  % N_last : Fixed =3 !!!
-%----------------------------------
-t=0;
+% %-------- parameters ------------
+% Nf = ones(1,NumOfFactors_max);   % factorize N
+% % e.g. If N=1200  = 4*4*5*5*3 = N1*N2*N3*N4*N5
+% %      Nf(1)=4,  Nf(2)=4,  Nf(3)=5,  Nf(4)=5, Nf(5)=3, Nf(6)=1   ( Nf(1) represents N1 ...)
+% %      First must be 4,  the last must be 3  (for latency reduction)
+% %------------------------------
+% Nf(1) = 4;  % N1 : Fixed =4 !!!
+% %------------------------------
+% % Nf(2) = 4;
+% % Nf(3) = 2;
+% % Nf(4) = 5;
+% % Nf(5) = 3;
+% % Nf(6) = 2;
+% t = 2;
+% while (t < NumOfFactors_max)
+%     if Nf_temp(t-1) > 0
+%         Nf(t) = Nf_temp(t-1);
+%         t = t+1;
+%     else
+%         break;
+%     end
+% end
+% %----------------------------------
+% Nf(t) = 3;  % N_last : Fixed =3 !!!
+% %----------------------------------
+% t=0;
+
+[ Nf,Nf_PFA,p,q,tw_ROM_sel,tw_ROM_addr_step ] = param_PFA( 12*m_len );
 
 %  obtain Num of Factors
 NumOfFactors = 0;
@@ -150,18 +154,24 @@ current_RAM = 0;
 RAM_read = zeros(N_max/4,NumOfBanks);  % 5 banks
 RAM_write = zeros(N_max/4,NumOfBanks);  % 5 banks
 
-%------------  PFA I/O input mapping ------------------------------
-Nf_PFA = zeros(1,3);
-Nf_PFA(1) = 16;
-Nf_PFA(2) = 5;
-Nf_PFA(3) = 3;
+%----------- Twiddle coefficients ROMs ------------------------
+tw_coeff_base_256 = exp(-1i*2*pi/256);  % radix-4
+tw_ROM_1 = zeros(1,256);
+for t = 1:256
+    tw_ROM_1(t) = tw_coeff_base_256 ^ (t-1);
+end
+tw_coeff_base_25 = exp(-1i*2*pi/25);  % radix-4
+tw_ROM_2 = zeros(1,25);
+for t = 1:25
+    tw_ROM_2(t) = tw_coeff_base_25 ^ (t-1);
+end
+tw_coeff_base_243 = exp(-1i*2*pi/243);  % radix-4
+tw_ROM_3 = zeros(1,243);
+for t = 1:243
+    tw_ROM_3(t) = tw_coeff_base_243 ^ (t-1);
+end
 
-p(1) = 1;
-p(2) = 29;
-p(3) = 27;
-q(1) = 1;
-q(2) = 3;
-q(3) = 1;
+%------------  PFA I/O input mapping ------------------------------
 for n1=0:Nf_PFA(1)-1
     for n2=0:Nf_PFA(2)-1
         for n3=0:Nf_PFA(3)-1
@@ -193,6 +203,7 @@ for t=0:N-1
     % Accumulator  0 to N-1
     %-------------------------------------------------------
     % when t==0      n1=0, n2=0, ..., n6=0
+    %  ...
     % when t==N6-1   n1=0, n2=0, ..., n6=N6-1
     % when t==N6     n1=0, n2=0, ..., n5=1, n6=0
     %  ...
@@ -232,8 +243,11 @@ read_data_index = zeros(NumOfBanks,1);
 fft_tw_out = zeros(NumOfBanks,1);
 Nf_stage = Nf;
 is_last_stage = 0;
-tw_N = exp(-1i*2*pi/N);
+tw_N = 0;
 tw_N_exp = 0;
+tw_ROM = tw_ROM_1;
+tw_coeff = zeros(1,5);
+n_tw = 0;
 %---------------------------------
 for m=1:NumOfFactors
 
@@ -241,6 +255,17 @@ for m=1:NumOfFactors
         RAM_read = RAM_0;
     else
         RAM_read = RAM_1;
+    end
+
+    switch tw_ROM_sel(m)
+    case 1
+        tw_ROM = tw_ROM_1;
+    case 2
+        tw_ROM = tw_ROM_2;
+    case 3
+        tw_ROM = tw_ROM_3;
+    otherwise
+        tw_ROM = tw_ROM_1;
     end
 
     Nf_stage = Nf;
@@ -272,33 +297,43 @@ for m=1:NumOfFactors
                                 read_data_index(t) = 0;
                                 end
                             end
+
                             % radix-factor fft and twiddle
+
+                            % if (m==1)
+                            % tw_N = exp(-1i*2*pi/16);
+                            % tw_N_exp = mod(t_n2, Nf(2));
+                            % % CTA
+                            % %fft_tw_out = fft_tw(read_data_index, Nf(m), tw_N, tw_N_exp, is_last_stage );
+                            % fft_tw_out = fft_tw(read_data_index, Nf(m), tw_N, tw_N_exp, is_last_stage );
+                            % else
+                            % % PFA
+                            % fft_tw_out = fft_tw(read_data_index, Nf(m), 1, 1, is_last_stage );
+                            % end
+
                             switch m
-                            case 1
-                            tw_N_exp = Nf(6)*Nf(5)*Nf(4)*Nf(3)*t_n2+Nf(6)*Nf(5)*Nf(4)*t_n3+Nf(6)*Nf(5)*t_n4+Nf(6)*t_n5+t_n6;
-                            case 2
-                            tw_N_exp = Nf(6)*Nf(5)*Nf(4)*t_n3+Nf(6)*Nf(5)*t_n4+Nf(6)*t_n5+t_n6;
-                            case 3
-                            tw_N_exp = Nf(6)*Nf(5)*t_n4+Nf(6)*t_n5+t_n6;
-                            case 4
-                            tw_N_exp = Nf(6)*t_n5+t_n6;
-                            case 5
-                            tw_N_exp = t_n6;
-                            case 6
-                            tw_N_exp = 0;
-                            otherwise
-                            tw_N_exp = 0;
+                                case 1
+                                    n_tw = t_n2;
+                                case 2
+                                    n_tw = t_n3;
+                                case 3
+                                    n_tw = t_n4;
+                                case 4
+                                    n_tw = t_n5;
+                                case 5
+                                    n_tw = t_n6;
+                                otherwise
+                                    n_tw = t_n2;
                             end
 
-                        if (m==1)
-                            tw_N = exp(-1i*2*pi/16);
-                            tw_N_exp = mod(t_n2, Nf(2));
-                            % CTA
-                            fft_tw_out = fft_tw(read_data_index, Nf(m), tw_N, tw_N_exp, is_last_stage );
-                        else
-                            % PFA
-                            fft_tw_out = fft_tw(read_data_index, Nf(m), 1, 1, is_last_stage );
-                        end
+                            tw_coeff(1) = tw_ROM(tw_ROM_addr_step(m)*n_tw*0 +1);
+                            tw_coeff(2) = tw_ROM(tw_ROM_addr_step(m)*n_tw*1 +1);
+                            tw_coeff(3) = tw_ROM(tw_ROM_addr_step(m)*n_tw*2 +1);
+                            tw_coeff(4) = tw_ROM(tw_ROM_addr_step(m)*n_tw*3 +1);
+                            tw_coeff(5) = tw_ROM(tw_ROM_addr_step(m)*n_tw*4 +1);
+                                
+                            fft_tw_out = fft_tw2(read_data_index, Nf(m), tw_coeff, is_last_stage );
+                        
                             % write data to each bank of another RAM
                             for t = 1:NumOfBanks
                                 if (t <= Nf(m))
@@ -314,7 +349,7 @@ for m=1:NumOfFactors
     end 
 
     % update twiddle base
-    tw_N = (tw_N)^(Nf(m));
+    %tw_N = (tw_N)^(Nf(m));
 
     if (current_RAM==0)
         RAM_1 = RAM_write;
