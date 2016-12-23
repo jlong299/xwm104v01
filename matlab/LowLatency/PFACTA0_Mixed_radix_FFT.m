@@ -67,7 +67,7 @@ Nf_temp = zeros(1,NumOfFactors_max-2);
 NumOfLen = 0;
 
 %  Loop  from  12*1  to  12*100
-for m_len = 96:100   % The end of loop body is at the end of this file
+for m_len = 1:100   % The end of loop body is at the end of this file
     % factorize  N 
     [Nf_temp, err] = factor_2345(m_len);
     if err==1   % m_len can not be factorized to 2,3,4,5
@@ -312,7 +312,6 @@ for m=1:NumOfFactors
                             %         n_tw = t_n2;
                             % end
 
-                            %                              W_N        n2  k1 
                             for t=1:5
                                 if (t <= Nf(m))
                                     tw_coeff(t) = tw_ROM(tw_ROM_addr_step(m)*n_tw*(t-1) +1);
@@ -321,6 +320,7 @@ for m=1:NumOfFactors
                                 end
                             end
 
+                            %                              W_N        n2  k1 
                             % tw_coeff(1) = tw_ROM(tw_ROM_addr_step(m)*n_tw*0 +1);
                             % tw_coeff(2) = tw_ROM(tw_ROM_addr_step(m)*n_tw*1 +1);
                             % tw_coeff(3) = tw_ROM(tw_ROM_addr_step(m)*n_tw*2 +1);
@@ -429,7 +429,7 @@ end
 N
 % max(abs(Fout-FX.'))
 max(abs(Fout_PFAmap-FX.'))
-size(RAM_read)
-size(RAM_write)
+% size(RAM_read)
+% size(RAM_write)
 
 end
