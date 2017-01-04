@@ -79,7 +79,7 @@ acc_type1_n3 (
 	.ena_top 	(1'b1),
 	.in_carry 	(1'b1),
 	.max_acc 	(N3_sub_1),
-	.inc 	(1'b1),
+	.inc 	({{wDataInOut-1{1'b0}},1'b1}),
 
 	.out_acc 	(n3),
 	.out_carry 	(n3_carry_out)
@@ -97,7 +97,7 @@ acc_type1_n2p (
 	.ena_top 	(1'b1),
 	.in_carry 	(n3_carry_out),
 	.max_acc 	(N2_sub_1),
-	.inc 	(1'b1),
+	.inc 	({{wDataInOut-1{1'b0}},1'b1}),
 
 	.out_acc 	(n2p),
 	.out_carry 	(n2p_carry_out)
@@ -115,7 +115,7 @@ acc_type1_n1p (
 	.ena_top 	(1'b1),
 	.in_carry 	(n2p_carry_out),
 	.max_acc 	(N1_sub_1),
-	.inc 	(1'b1),
+	.inc 	({{wDataInOut-1{1'b0}},1'b1}),
 
 	.out_acc 	(n1p),
 	.out_carry 	()
@@ -129,7 +129,7 @@ acc_mod_type1_n3 (
 	.clk 	(clk),    // Clock
 	.rst_n 	(rst_n),  // Asynchronous reset active low
 
-	.clr 	(n3_carry_out),
+	.clr 	(clr | n3_carry_out),
 	.ena_top 	(1'b1),
 	.in_carry 	(1'b1),
 	.mod 	(Nf2),
@@ -146,7 +146,7 @@ acc_mod_type1_n2p (
 	.clk 	(clk),    // Clock
 	.rst_n 	(rst_n),  // Asynchronous reset active low
 
-	.clr 	(n2p_carry_out),
+	.clr 	(clr | n2p_carry_out),
 	.ena_top 	(1'b1),
 	.in_carry 	(1'b1),
 	.mod 	(Nf1),

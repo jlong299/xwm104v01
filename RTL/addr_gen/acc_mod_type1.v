@@ -20,7 +20,7 @@ module acc_mod_type1 #(parameter
 reg [wDataInOut-1:0] acc, acc_mod;
 reg 	ena_acc;
 
-assign out_acc = acc;
+assign out_acc = acc_mod;
 
 always@(posedge clk)
 begin

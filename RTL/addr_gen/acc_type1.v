@@ -15,7 +15,7 @@ module acc_type1 #(parameter
 	input [wDataInOut-1:0] 	inc,
 
 	output [wDataInOut-1:0] out_acc,
-	output out_carry
+	output reg out_carry
 );
 
 reg [wDataInOut-1:0] acc;
@@ -44,7 +44,7 @@ always@(*)
 	ena_acc = in_carry & ena_top;
 
 always@(*)
-	out_carry = (acc == max_acc) | (not(ena_top));
+	out_carry = (acc == max_acc) & in_carry;
 
 
 endmodule

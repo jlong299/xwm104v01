@@ -46,6 +46,9 @@ for k=0:N-1
     
 	addr_compute_2(N2*N3*n1+N3*n2+n3 +1) = k; % N2*N3*n1p+N3*n2p+n3
   
+    N2*N3*n1+N3*n2+n3
+%     [n1,n2,n3]
+    
 	if (n3 == N3-1) && (n2p == N2-1)
 		n3 = 0;
 		n2p = 0;
@@ -59,5 +62,5 @@ for k=0:N-1
 
 end
 
-max(addr_compute_2 - addr_compute_1)	
-min(addr_compute_2 - addr_compute_1)	
+% max(addr_compute_2 - addr_compute_1)	
+% min(addr_compute_2 - addr_compute_1)	

@@ -1,2 +1,6 @@
 matlab/LowLatency/*.asv
 matlab/HighLatency/*.asv
+modelsim/work/
+modelsim/transcript
+modelsim/modelsim.ini
+modelsim/vsim.wlf
