@@ -41,7 +41,7 @@ for k=0:N-1
 	% n2~   tilde
 	n2t = mod(N3*n2p + n3, N2*N3);
 
-	% n1 = (n1' + q'*n2~) mod N2   q' = N1 - q    q==q1?
+	% n1 = (n1' + q'*n2~) mod N1   q' = N1 - q    q==q1?
 	n1 = mod(n1p + q_p*n2t, N1);
     
 	addr_compute_2(N2*N3*n1+N3*n2+n3 +1) = k; % N2*N3*n1p+N3*n2p+n3
