@@ -69,4 +69,21 @@ always@(*)
 	N_out = n1*Nf2*Nf3 + n2*Nf3 + n3;
 
 
+reg [11:0] 	cnt_dividend;
+always@(posedge clk)
+begin
+	if (!rst_n)
+		cnt_dividend <= 0;
+	else
+		cnt_dividend <= (cnt_dividend==12'd2048) ? 12'd0 : cnt_dividend+1'b1;
+end
+
+divider_7 divider_7_inst (
+	.dividend 	(cnt_dividend),  
+
+	.quotient 	(),
+	.remainder 	()
+	
+);
+
 endmodule
