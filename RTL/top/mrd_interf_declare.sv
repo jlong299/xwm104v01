@@ -42,6 +42,13 @@ interface mrd_ctrl_if ();
 	logic [2:0][9:0] Nf_PFA;
 	logic [9:0] q_p;
 	logic [9:0] r_p;
-	
+endinterface
 
+interface mrd_stat_if ();
+	logic sink_sop;
+	logic [11:0]  dftpts;
+	logic sink_ongoing;
+	logic source_ongoing;
+	logic rd_ongoing;
+	logic wr_ongoing;
 endinterface

@@ -113,12 +113,12 @@ mem0 (
 
 	.in_data ( sink_st_0 ),
 	.in_rdx2345_data ( rdx2345_to_mem0 ),
-	.fsm (fsm_to_mem),
+	// .fsm (fsm_to_mem),
 	.ctrl (ctrl_to_mem0),
 
 	.out_data ( source_st_0 ),
 	.out_rdx2345_data ( mem0_to_rdx2345 ),
-	.goto_next_fsm (goto_next_fsm_0)
+	/.goto_next_fsm (goto_next_fsm_0)
 	);
 
 mrd_mem_top_1
@@ -128,12 +128,12 @@ mem1 (
 
 	.in_data ( sink_st_1 ),
 	.in_rdx2345_data ( rdx2345_to_mem1 ),
-	.fsm (fsm_to_mem),
+	// .fsm (fsm_to_mem),
 	.ctrl (ctrl_to_mem1),
 
 	.out_data ( source_st_1 ),
 	.out_rdx2345_data ( mem1_to_rdx2345 ),
-	.goto_next_fsm (goto_next_fsm_1)
+	/.goto_next_fsm (goto_next_fsm_1)
 	);
 
 
@@ -166,11 +166,12 @@ ctrl_fsm(
 	.clk (clk),
 	.rst_n (rst_n),
 
-	.goto_next_fsm (goto_next_fsm_0 | goto_next_fsm_1),
+	.stat_from_mem0 (stat_from_mem0),
+	.stat_from_mem1 (stat_from_mem1),
 
-	.fsm (fsm_to_mem),
-	.ctrl (ctrl_to_mem0),
-	.ctrl (ctrl_to_mem1),
+	//.fsm (fsm_to_mem),
+	.ctrl_to_mem0 (ctrl_to_mem0),
+	.ctrl_to_mem1 (ctrl_to_mem1),
 
 	.sw_in (sw_in),
 	.sw_out (sw_out),
