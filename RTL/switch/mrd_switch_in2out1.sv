@@ -1,6 +1,6 @@
-module switch_in2out1 (
-	dft_st_if.ST_IN  in_data_0, in_data_1,
+module mrd_switch_in2out1 (
 	input sw,
+	dft_st_if.ST_IN  in_data_0, in_data_1,
 	dft_st_if.ST_OUT  out_data
 );
 
