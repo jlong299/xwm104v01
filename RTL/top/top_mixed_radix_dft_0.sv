@@ -79,6 +79,10 @@ mrd_rdx2345_if mem1_to_rdx2345();
 mrd_rdx2345_if rdx2345_to_mem();
 mrd_rdx2345_if mem_to_rdx2345();
 
+mrd_ctrl_if ctrl_to_mem0();
+mrd_ctrl_if ctrl_to_mem1();
+
+
 logic goto_next_fsm_0, goto_next_fsm_1;
 logic sw_in, sw_out, sw_0to1;
 
@@ -132,6 +136,7 @@ mem1 (
 	.goto_next_fsm (goto_next_fsm_1)
 	);
 
+
 mrd_switch_rdx2345
 switch_rdx2345(
 	.sw (sw_0to1),
@@ -154,6 +159,7 @@ rdx2345_twdl(
 	.from_mem (mem_to_rdx2345),
 	.to_mem (rdx2345_to_mem)
 	);
+
 // Control & FSM
 mrd_ctrl_fsm 
 ctrl_fsm(

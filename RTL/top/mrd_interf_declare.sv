@@ -26,6 +26,8 @@ interface mrd_rdx2345_if ();
 	logic valid;
 	logic [4:0][17:0] d_real;
 	logic [4:0][17:0] d_imag;
+	logic [4:0][2:0]  bank_index;
+	logic [4:0][9:0]  bank_addr;
 	mrd_tw_if tw();
 endinterface
 
@@ -35,6 +37,11 @@ interface mrd_ctrl_if ();
 	logic is_source_stat;
 	logic is_rd_stat;
 	logic is_wr_stat;
+
+	logic [5:0][2:0] Nf;
+	logic [2:0][9:0] Nf_PFA;
+	logic [9:0] q_p;
+	logic [9:0] r_p;
 	
 
 endinterface
