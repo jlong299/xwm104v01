@@ -67,7 +67,7 @@ Nf_temp = zeros(1,NumOfFactors_max-2);
 NumOfLen = 0;
 
 %  Loop  from  12*1  to  12*100
-for m_len = 12:12   % The end of loop body is at the end of this file
+for m_len = 100:100   % The end of loop body is at the end of this file
     % factorize  N 
     [Nf_temp, err] = factor_2345(m_len);
     if err==1   % m_len can not be factorized to 2,3,4,5

@@ -33,17 +33,28 @@ endinterface
 
 
 interface mrd_ctrl_if ();
-	logic is_sink_stat;
-	logic is_source_stat;
-	logic is_rd_stat;
-	logic is_wr_stat;
+	//state: set state of mrd_mem_top 
+	//00 sink; 
+	//11 source; 
+	//01 rd;  
+	//10 wr
+	logic [1:0] state;
+	// CTA stage
+	logic [2:0] current_stage;
 
-	logic [5:0][2:0] Nf;
-	logic [2:0][9:0] Nf_PFA;
+	logic [0:5][2:0] Nf;
+	logic [0:2][9:0] Nf_PFA;
 	logic [9:0] q_p;
 	logic [9:0] r_p;
 endinterface
 
+//mrd_stat_if :  State signals from mrd_mem_top to mrd_ctrl_fsm.
+//    1) sink_sop
+//    2) dftpts : valid when sink_sop==1
+//    3) sink_ongoing :  =1 when sink process is ongoing
+//    4) source_ongoing :  =1 when source process is ongoing
+//    5) rd_ongoing :  =1 when rd process is ongoing
+//    6) wr_ongoing :  =1 when wr process is ongoing
 interface mrd_stat_if ();
 	logic sink_sop;
 	logic [11:0]  dftpts;

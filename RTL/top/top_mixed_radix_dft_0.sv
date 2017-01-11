@@ -84,7 +84,7 @@ mrd_ctrl_if ctrl_to_mem1();
 
 
 logic goto_next_fsm_0, goto_next_fsm_1;
-logic sw_in, sw_out, sw_0to1;
+logic sw_in, sw_out, sw_1to0;
 
 
 mrd_switch_in1out2
@@ -106,7 +106,7 @@ switch_out (
 	);
 
 
-mrd_mem_top_0
+mrd_mem_top
 mem0 (
 	.clk (clk),
 	.rst_n (rst_n_sync),
@@ -121,7 +121,7 @@ mem0 (
 	/.goto_next_fsm (goto_next_fsm_0)
 	);
 
-mrd_mem_top_1
+mrd_mem_top
 mem1 (
 	.clk (clk),
 	.rst_n (rst_n_sync),
@@ -139,7 +139,7 @@ mem1 (
 
 mrd_switch_rdx2345
 switch_rdx2345(
-	.sw (sw_0to1),
+	.sw (sw_1to0),
 	.from_mem0  (mem0_to_rdx2345),
 	.to_mem0  (rdx2345_to_mem0),
 
@@ -175,7 +175,7 @@ ctrl_fsm(
 
 	.sw_in (sw_in),
 	.sw_out (sw_out),
-	.sw_0to1 (sw_0to1)
+	.sw_1to0 (sw_1to0)
 
 	)
 
