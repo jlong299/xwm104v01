@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------
-// Module Name:        	mrd_ctrl_fsm.v
+// Module Name:        	mrd_ctrl_fsm.sv
 // Project:             Mixed Radix DFT
 // Description:         Top control & FSM 
 // Author:				Long Jiang
@@ -19,15 +19,27 @@
 //  OUTPUT
 //    ctrl_to_mem0 :  Ctrl signals to mrd_mem_top 0.
 //        1) state :  set state of mrd_mem_top
+//               00 sink; 
+//               11 source; 
+//               01 rd;  
+//               10 wr
 //        2) current_stage :  tell mrd_mem_top current stage number
 //        3) parameters :   Nf, Nf_PFA, q_p, ....  (See matlab codes)
 //------------------------------------------------------------------
 //  FSM :
 //    s0:  wait, meanwhile source process may perform
 //     |
+//     | sink_sop
 //     |
 //    s1:  sink new DFT frame, meanwhile source process may perform
-//    s2:  
+//     |
+//     | sink finished & source finished
+//     |
+//    s2:  calculate DFT stages, PFA & CTA combined algorithm
+//     |
+//     | all stages complemented
+//     |
+//    s3:  start source process, then go to s0 at once
 
 module mrd_ctrl_fsm (
 	input clk,    
@@ -122,7 +134,6 @@ begin
 		end
 		2'd3:
 		begin
-			// sw_in <= (NumOfFactors[0])? sw_in : ~sw_in;
 			sw_in <= ^sw_out;
 			sw_out <= sw_out;
 			sw_1to0 <= 0;

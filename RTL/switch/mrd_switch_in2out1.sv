@@ -1,7 +1,7 @@
 module mrd_switch_in2out1 (
 	input sw,
-	dft_st_if.ST_IN  in_data_0, in_data_1,
-	dft_st_if.ST_OUT  out_data
+	mrd_st_if.ST_IN  in_data_0, in_data_1,
+	mrd_st_if.ST_OUT  out_data
 );
 
 assign in_data_0.ready = (sw)? 1'b0 : out_data.ready;

@@ -37,7 +37,7 @@ module PFA_addr_trans #(parameter
 	input clk,    // Clock
 	input rst_n,  // Asynchronous reset active low
 
-	input clr,
+	input clr_n,
 
 	//param
 	input [wDataInOut-1:0] 	Nf1,  //N1
@@ -75,7 +75,7 @@ acc_type1_n3 (
 	.clk 	(clk),    // Clock
 	.rst_n 	(rst_n),  // Asynchronous reset active low
 
-	.clr 	(clr),
+	.clr_n 	(clr_n),
 	.ena_top 	(1'b1),
 	.in_carry 	(1'b1),
 	.max_acc 	(N3_sub_1),
@@ -93,7 +93,7 @@ acc_type1_n2p (
 	.clk 	(clk),    // Clock
 	.rst_n 	(rst_n),  // Asynchronous reset active low
 
-	.clr 	(clr),
+	.clr_n 	(clr_n),
 	.ena_top 	(1'b1),
 	.in_carry 	(n3_carry_out),
 	.max_acc 	(N2_sub_1),
@@ -111,7 +111,7 @@ acc_type1_n1p (
 	.clk 	(clk),    // Clock
 	.rst_n 	(rst_n),  // Asynchronous reset active low
 
-	.clr 	(clr),
+	.clr_n 	(clr_n),
 	.ena_top 	(1'b1),
 	.in_carry 	(n2p_carry_out),
 	.max_acc 	(N1_sub_1),
@@ -129,7 +129,7 @@ acc_mod_type1_n3 (
 	.clk 	(clk),    // Clock
 	.rst_n 	(rst_n),  // Asynchronous reset active low
 
-	.clr 	(clr | n3_carry_out),
+	.clr_n 	(clr_n | n3_carry_out),
 	.ena_top 	(1'b1),
 	.in_carry 	(1'b1),
 	.mod 	(Nf2),
@@ -146,7 +146,7 @@ acc_mod_type1_n2p (
 	.clk 	(clk),    // Clock
 	.rst_n 	(rst_n),  // Asynchronous reset active low
 
-	.clr 	(clr | n2p_carry_out),
+	.clr_n 	(clr_n | n2p_carry_out),
 	.ena_top 	(1'b1),
 	.in_carry 	(1'b1),
 	.mod 	(Nf1),

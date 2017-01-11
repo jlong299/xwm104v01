@@ -1,4 +1,4 @@
-// "mrd" refer to "mixed radix dft"
+// "mrd" refers to "mixed radix dft"
 
 // interface dft_st_if (input bit clk);
 interface mrd_st_if ();

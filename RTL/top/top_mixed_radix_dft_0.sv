@@ -48,12 +48,12 @@ begin
 	rst_n_r0 <= rst_n;
 end
 
-mrd_dft_st_if sink_st();
-mrd_dft_st_if sink_st_0();
-mrd_dft_st_if sink_st_1();
-mrd_dft_st_if source_st();
-mrd_dft_st_if source_st_0();
-mrd_dft_st_if source_st_1();
+mrd_st_if sink_st();
+mrd_st_if sink_st_0();
+mrd_st_if sink_st_1();
+mrd_st_if source_st();
+mrd_st_if source_st_0();
+mrd_st_if source_st_1();
 
 assign sink_st.valid = sink_valid;
 assign sink_st.sop = sink_sop;
@@ -118,7 +118,7 @@ mem0 (
 
 	.out_data ( source_st_0 ),
 	.out_rdx2345_data ( mem0_to_rdx2345 ),
-	/.goto_next_fsm (goto_next_fsm_0)
+	.stat_to_ctrl (stat_from_mem0)
 	);
 
 mrd_mem_top
@@ -133,7 +133,7 @@ mem1 (
 
 	.out_data ( source_st_1 ),
 	.out_rdx2345_data ( mem1_to_rdx2345 ),
-	/.goto_next_fsm (goto_next_fsm_1)
+	.stat_to_ctrl (stat_from_mem1)
 	);
 
 

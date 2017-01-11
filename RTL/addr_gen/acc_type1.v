@@ -8,7 +8,7 @@ module acc_type1 #(parameter
 	input clk,    // Clock
 	input rst_n,  // Asynchronous reset active low
 
-	input clr,
+	input clr_n,
 	input ena_top,
 	input in_carry,
 	input [wDataInOut-1:0] 	max_acc,
@@ -31,7 +31,7 @@ begin
 	end
 	else
 	begin
-		if (clr)
+		if (!clr_n)
 			acc <= 0;
 		else if (ena_acc)
 			acc <= (acc == max_acc)? 0 : acc + inc;
