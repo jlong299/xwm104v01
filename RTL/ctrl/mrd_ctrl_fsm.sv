@@ -134,7 +134,7 @@ begin
 		end
 		2'd3:
 		begin
-			sw_in <= ^sw_out;
+			sw_in <= ~sw_out;
 			sw_out <= sw_out;
 			sw_1to0 <= 0;
 		end
@@ -162,8 +162,8 @@ begin
 		wr_ongoing_mem1_r <= stat_from_mem1.wr_ongoing;
 		if (fsm==2'd2)
 		begin
-			if ((sw_1to0 & ^(stat_from_mem0.wr_ongoing) & wr_ongoing_mem0_r)
-			  | (^sw_1to0 & ^(stat_from_mem1.wr_ongoing) & wr_ongoing_mem1_r))
+			if ((sw_1to0 & ~(stat_from_mem0.wr_ongoing) & wr_ongoing_mem0_r)
+			  | (~sw_1to0 & ~(stat_from_mem1.wr_ongoing) & wr_ongoing_mem1_r))
 			    cnt_stage <= cnt_stage+3'd1 ;
 			else
 				cnt_stage <= cnt_stage;

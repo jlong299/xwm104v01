@@ -1,18 +1,18 @@
 clear
 
 %% PFA  prime factor algorithm
-N = 60;
-N1 = 3;
-N2 = 4;
-N3 = 5;
+N = 1200;
+N1 = 16;
+N2 = 25;
+N3 = 3;
 addr_compute_1 = zeros(N,1);
 addr_IOdata = zeros(N,1);
 
-p1 = 7;
-p2 = 4;
-p3 = 5;
-q1 = 1;
-q2 = 1;
+p1 = 61;
+p2 = 25;
+p3 = 267;
+q1 = 13;
+q2 = 13;
 q3 = 2;
 
 for n1=0:N1-1
@@ -30,9 +30,13 @@ n2 = 0;
 n3 = 0;
 n1p = 0;   % n1'   n1 prime
 n2p = 0;
-r_p = N2 - q2*N1; % r'  r prime
-q_p = N1 - q1; % q'  q prime
+% r_p = N2 - q2*N1; % r'  r prime
+% q_p = N1 - q1; % q'  q prime
+q_p = 3;
+r_p = 17;
 n2t = 0;  		% n2~  n2 tilde
+ttt = zeros(N,1);
+ttt2 = zeros(N,3);
 for k=0:N-1
 	
 	% n2 = (n2' + r'*n3) mod N2   r' = N2 - r    r==q2*N1?
@@ -45,10 +49,11 @@ for k=0:N-1
 	n1 = mod(n1p + q_p*n2t, N1);
     
 	addr_compute_2(N2*N3*n1+N3*n2+n3 +1) = k; % N2*N3*n1p+N3*n2p+n3
+        
+    ttt(k+1)=   N2*N3*n1+N3*n2+n3 ;
+    ttt2(k+1,:) = [n1,n2,n3];
   
-    N2*N3*n1+N3*n2+n3
-%     [n1,n2,n3]
-    
+    %[n1,n2,n3]
 	if (n3 == N3-1) && (n2p == N2-1)
 		n3 = 0;
 		n2p = 0;
@@ -58,9 +63,8 @@ for k=0:N-1
 		n2p = n2p + 1;
 	else
 		n3 = n3 + 1;
-	end
-
+    end
 end
 
-% max(addr_compute_2 - addr_compute_1)	
-% min(addr_compute_2 - addr_compute_1)	
+max(addr_compute_2 - addr_compute_1)	
+min(addr_compute_2 - addr_compute_1)	

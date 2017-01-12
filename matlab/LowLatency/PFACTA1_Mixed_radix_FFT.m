@@ -105,7 +105,7 @@ x_real=round((2*rand(1,N)-1)*8192);
 x_imag=round((2*rand(1,N)-1)*8192);
 
 x = x_real + 1j*x_imag;
-% x = [0:1:59];
+x = [0:1:1199];
 % x = x;
 
 FX = fft(x);

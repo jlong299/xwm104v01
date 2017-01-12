@@ -23,9 +23,9 @@ module mrd_mem_top (
 
 logic [11:0]  dftpts, N_PFA_in;
 logic  clr_n_PFA_addr;
-logic  n1_PFA_in, n2_PFA_in, n3_PFA_in;
+logic  [9:0]  n1_PFA_in, n2_PFA_in, n3_PFA_in;
 
-localparam  input_dly = 4;
+localparam  input_dly = 1;
 logic [input_dly:0]  input_valid_r;
 logic [input_dly:0][17:0]  input_real_r;
 logic [input_dly:0][17:0]  input_imag_r;
@@ -42,7 +42,7 @@ begin
 	end
 	else
 	begin
-		dftpts <= (ctrl.state==2'b00 & in_data.sop)? in_data.dftpts : dftpts;
+		dftpts <= (ctrl.state==2'b00 && in_data.sop)? in_data.dftpts : dftpts;
 
 		if (in_data.sop)
 			clr_n_PFA_addr <= 1'b1;
@@ -94,7 +94,7 @@ divider_7 divider_7_inst (
 	.remainder 	(bank_index_sink)
 );
 
-logic [0:6]  wren_sink;
+logic [6:0]  wren_sink;
 
 always@(*)
 begin
@@ -112,14 +112,14 @@ end
 
 genvar i;
 generate
-	for (i=0; i<6; i++) begin : RAM_banks
+	for (i=0; i<7; i++) begin : RAM_banks
 		mrd_RAM_fake
 		RAM_fake(
 			.clk (clk),
 			.wren (wren_sink[i]),
-			.wraddr (bank_addr_sink),
-			.din_real (input_real_r[input_dly]),
-			.din_imag (input_imag_r[input_dly]),
+			.wraddr (bank_addr_sink[7:0]),
+			.din_real ({ {12{1'b0}}, input_real_r[input_dly] }),
+			.din_imag ({ {12{1'b0}}, input_imag_r[input_dly] }),
 
 			.rden (1'b0),
 			.rdaddr (8'd0),

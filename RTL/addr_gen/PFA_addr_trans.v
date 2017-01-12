@@ -69,7 +69,7 @@ always@(*)
 
 // Acc n3
 acc_type1 #(
-		.wDataInOut (16)
+		.wDataInOut (wDataInOut)
 	)
 acc_type1_n3 (
 	.clk 	(clk),    // Clock
@@ -87,7 +87,7 @@ acc_type1_n3 (
 
 // Acc n2'
 acc_type1 #(
-		.wDataInOut (16)
+		.wDataInOut (wDataInOut)
 	)
 acc_type1_n2p (
 	.clk 	(clk),    // Clock
@@ -105,7 +105,7 @@ acc_type1_n2p (
 
 // Acc n1'
 acc_type1 #(
-		.wDataInOut (16)
+		.wDataInOut (wDataInOut)
 	)
 acc_type1_n1p (
 	.clk 	(clk),    // Clock
@@ -123,13 +123,13 @@ acc_type1_n1p (
 
 // Acc r'*n3
 acc_mod_type1 #(
-		.wDataInOut (16)
+		.wDataInOut (wDataInOut)
 	)
 acc_mod_type1_n3 (
 	.clk 	(clk),    // Clock
 	.rst_n 	(rst_n),  // Asynchronous reset active low
 
-	.clr_n 	(clr_n | n3_carry_out),
+	.clr_n 	(clr_n & (~n3_carry_out)),
 	.ena_top 	(1'b1),
 	.in_carry 	(1'b1),
 	.mod 	(Nf2),
@@ -140,13 +140,13 @@ acc_mod_type1_n3 (
 
 // Acc q'*n2~
 acc_mod_type1 #(
-		.wDataInOut (16)
+		.wDataInOut (wDataInOut)
 	)
 acc_mod_type1_n2p (
 	.clk 	(clk),    // Clock
 	.rst_n 	(rst_n),  // Asynchronous reset active low
 
-	.clr_n 	(clr_n | n2p_carry_out),
+	.clr_n 	(clr_n & (~n2p_carry_out)),
 	.ena_top 	(1'b1),
 	.in_carry 	(1'b1),
 	.mod 	(Nf1),

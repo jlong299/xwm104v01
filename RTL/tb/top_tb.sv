@@ -44,13 +44,13 @@ begin
 	begin
 		dftpts_in <= 12'd1200;
 		cnt0 <= (cnt0 == dftpts_in + gap)? 16'd0 : cnt0+1'b1;
-		sink_sop <= (cnt0==16'd1);
-		sink_eop <= (cnt0==16'd1200);
-		sink_valid <= (cnt0>=16'd1 && cnt0<=16'd1200);
-		if (cnt0 <= 16'd1201)
+		sink_sop <= (cnt0==16'd10);
+		sink_eop <= (cnt0==16'd10+dftpts_in);
+		sink_valid <= (cnt0>=16'd10 && cnt0<16'd10+dftpts_in);
+		if (cnt0 <= 16'd11+dftpts_in)
 		begin
-			sink_real <= cnt0[11:0];
-			sink_imag <= {cnt0[5:0], cnt0[11:6]};
+			sink_real <= {2'b00, cnt0} - 18'd10;
+			sink_imag <= {2'b00, cnt0} - 18'd10;
 		end
 		else
 		begin
@@ -62,7 +62,7 @@ end
 
 
 top_mixed_radix_dft_0 
-top_mixed_radix_dft_0_inst(
+top_inst(
 	.clk  (clk),    // Clock
 	.rst_n  (rst_n),  // Asynchronous reset active low
 	

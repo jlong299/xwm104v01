@@ -82,6 +82,9 @@ mrd_rdx2345_if mem_to_rdx2345();
 mrd_ctrl_if ctrl_to_mem0();
 mrd_ctrl_if ctrl_to_mem1();
 
+mrd_stat_if stat_from_mem0();
+mrd_stat_if stat_from_mem1();
+
 
 logic goto_next_fsm_0, goto_next_fsm_1;
 logic sw_in, sw_out, sw_1to0;
@@ -151,14 +154,15 @@ switch_rdx2345(
 	);
 
 // Radix 2/3/4/5 core  &  twiddle ROMs
-mrd_rdx2345_twdl 
-rdx2345_twdl(
-	.clk (clk),
-	.rst_n (rst_n_sync), 
+// mrd_rdx2345_twdl 
+// rdx2345_twdl(
+// 	.clk (clk),
+// 	.rst_n (rst_n_sync), 
 
-	.from_mem (mem_to_rdx2345),
-	.to_mem (rdx2345_to_mem)
-	);
+// 	.from_mem (mem_to_rdx2345),
+// 	.to_mem (rdx2345_to_mem)
+// 	);
+//assign rdx2345_to_mem = mem_to_rdx2345;
 
 // Control & FSM
 mrd_ctrl_fsm 
@@ -177,7 +181,7 @@ ctrl_fsm(
 	.sw_out (sw_out),
 	.sw_1to0 (sw_1to0)
 
-	)
+	);
 
 
 
