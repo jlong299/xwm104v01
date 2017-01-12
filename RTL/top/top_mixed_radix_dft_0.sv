@@ -153,16 +153,15 @@ switch_rdx2345(
 	.to_rdx2345 (mem_to_rdx2345)
 	);
 
-// Radix 2/3/4/5 core  &  twiddle ROMs
-// mrd_rdx2345_twdl 
-// rdx2345_twdl(
-// 	.clk (clk),
-// 	.rst_n (rst_n_sync), 
+//Radix 2/3/4/5 core  &  twiddle ROMs
+mrd_rdx2345_twdl 
+rdx2345_twdl(
+	.clk (clk),
+	.rst_n (rst_n_sync), 
 
-// 	.from_mem (mem_to_rdx2345),
-// 	.to_mem (rdx2345_to_mem)
-// 	);
-//assign rdx2345_to_mem = mem_to_rdx2345;
+	.from_mem (mem_to_rdx2345),
+	.to_mem (rdx2345_to_mem)
+	);
 
 // Control & FSM
 mrd_ctrl_fsm 
