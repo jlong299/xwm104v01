@@ -25,10 +25,10 @@ logic [11:0]  dftpts, N_PFA_in;
 logic  clr_n_PFA_addr;
 logic  [9:0]  n1_PFA_in, n2_PFA_in, n3_PFA_in;
 
-localparam  input_dly = 1;
-logic [input_dly:0]  input_valid_r;
-logic [input_dly:0][17:0]  input_real_r;
-logic [input_dly:0][17:0]  input_imag_r;
+localparam  in_dly = 1;
+logic [in_dly:0]  input_valid_r;
+logic [in_dly:0][17:0]  input_real_r;
+logic [in_dly:0][17:0]  input_imag_r;
 
 assign stat_to_ctrl.sink_sop = in_data.sop;
 assign stat_to_ctrl.dftpts = in_data.dftpts;
@@ -79,10 +79,10 @@ always@(posedge clk)
 begin
 	N_PFA_in <= n1_PFA_in*ctrl.Nf_PFA[1]*ctrl.Nf_PFA[2]
 	        + n2_PFA_in*ctrl.Nf_PFA[2] + n3_PFA_in;
-	input_valid_r[input_dly:0] <= {input_valid_r[input_dly-1:0],
+	input_valid_r[in_dly:0] <= {input_valid_r[in_dly-1:0],
 	                              in_data.valid} ;
-	input_real_r[input_dly:0] <= {input_real_r[input_dly-1:0],in_data.d_real};
-	input_imag_r[input_dly:0] <= {input_imag_r[input_dly-1:0],in_data.d_imag};
+	input_real_r[in_dly:0] <= {input_real_r[in_dly-1:0],in_data.d_real};
+	input_imag_r[in_dly:0] <= {input_imag_r[in_dly-1:0],in_data.d_imag};
 end
 
 logic [11:0]  bank_addr_sink;
@@ -113,21 +113,44 @@ end
 genvar i;
 generate
 	for (i=0; i<7; i++) begin : RAM_banks
-		mrd_RAM_fake
-		RAM_fake(
-			.clk (clk),
-			.wren (wren_sink[i]),
-			.wraddr (bank_addr_sink[7:0]),
-			.din_real ({ {12{1'b0}}, input_real_r[input_dly] }),
-			.din_imag ({ {12{1'b0}}, input_imag_r[input_dly] }),
+	mrd_RAM_fake
+	RAM_fake(
+		.clk (clk),
+		.wren (wren_sink[i] & input_valid_r[in_dly] & (ctrl.state==2'b00)),
+		.wraddr (bank_addr_sink[7:0]),
+		.din_real ({ {12{input_real_r[in_dly][17]}}, 
+			          input_real_r[in_dly] }),
+		.din_imag ({ {12{input_imag_r[in_dly][17]}}, 
+			          input_imag_r[in_dly] }),
 
-			.rden (1'b0),
-			.rdaddr (8'd0),
-			.dout_real (),
-			.dout_imag ()
-			);
+		.rden (1'b0),
+		.rdaddr (8'd0),
+		.dout_real (),
+		.dout_imag ()
+		);
 	end
 endgenerate
+
+always@(posedge clk)
+begin
+	if (!rst_n)
+	begin
+		stat_to_ctrl.sink_ongoing <= 0;
+	end
+	else
+	begin
+		if (in_data.sop)  stat_to_ctrl.sink_ongoing <= 1'b1;
+		else if (input_valid_r[in_dly:in_dly-1]==2'b10)
+			stat_to_ctrl.sink_ongoing <= 1'b0;
+		else
+			stat_to_ctrl.sink_ongoing <= stat_to_ctrl.sink_ongoing;
+	end
+end
+assign stat_to_ctrl.source_ongoing = 1'b0;
+
+
+
+
 
 
 endmodule

@@ -94,9 +94,10 @@ begin
 		// s1, sink data
 		2'd1:
 		begin
-			if ( !stat_from_mem0.sink_ongoing & !stat_from_mem1.sink_ongoing
-			     & !stat_from_mem0.source_ongoing 
-			     & !stat_from_mem1.source_ongoing )				
+			if ( (!stat_from_mem0.sink_ongoing) 
+				 & (!stat_from_mem1.sink_ongoing)
+			     & (!stat_from_mem0.source_ongoing) 
+			     & (!stat_from_mem1.source_ongoing) )				
 				fsm <= 2'd2;
 			else 
 				fsm <= 2'd1;

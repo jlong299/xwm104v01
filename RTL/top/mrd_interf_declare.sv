@@ -12,15 +12,12 @@ interface mrd_st_if ();
 	modport ST_OUT (input ready,
 		            output valid, sop, eop, d_real, d_imag, dftpts, inverse);
 endinterface
-
-
-interface mrd_tw_if (); // Twiddle parameters
-	logic [1:0]  tw_ROM_sel;
-	logic [7:0]  tw_ROM_addr_step;
-	logic [7:0]  tw_ROM_exp_ceil;
-	logic [7:0]  tw_ROM_exp_time;
-endinterface
-
+// interface mrd_tw_if (); // Twiddle parameters
+// 	logic [1:0]  tw_ROM_sel;
+// 	logic [7:0]  tw_ROM_addr_step;
+// 	logic [7:0]  tw_ROM_exp_ceil;
+// 	logic [7:0]  tw_ROM_exp_time;
+// endinterface
 interface mrd_rdx2345_if ();
 	logic [1:0]  fsm;
 	logic valid;
@@ -28,7 +25,11 @@ interface mrd_rdx2345_if ();
 	logic [4:0][17:0] d_imag;
 	logic [4:0][2:0]  bank_index;
 	logic [4:0][9:0]  bank_addr;
-	mrd_tw_if tw();
+	// Twiddle parameters
+	logic [1:0]  tw_ROM_sel;
+	logic [7:0]  tw_ROM_addr_step;
+	logic [7:0]  tw_ROM_exp_ceil;
+	logic [7:0]  tw_ROM_exp_time;
 endinterface
 
 
