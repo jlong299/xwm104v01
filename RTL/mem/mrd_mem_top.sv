@@ -26,9 +26,9 @@ logic  clr_n_PFA_addr;
 logic  n1_PFA_in, n2_PFA_in, n3_PFA_in;
 
 localparam  input_dly = 4;
-logic [0:input_dly]  input_valid_r;
-logic [0:input_dly][17:0]  input_real_r;
-logic [0:input_dly][17:0]  input_imag_r;
+logic [input_dly:0]  input_valid_r;
+logic [input_dly:0][17:0]  input_real_r;
+logic [input_dly:0][17:0]  input_imag_r;
 
 assign stat_to_ctrl.sink_sop = in_data.sop;
 assign stat_to_ctrl.dftpts = in_data.dftpts;
@@ -79,8 +79,55 @@ always@(posedge clk)
 begin
 	N_PFA_in <= n1_PFA_in*ctrl.Nf_PFA[1]*ctrl.Nf_PFA[2]
 	        + n2_PFA_in*ctrl.Nf_PFA[2] + n3_PFA_in;
-	input_valid_r[0] <= in_data.valid;
-	input_real_r[0] <= in_data.d_real;
-	input_imag_r[0] <= in_data.d_imag;
+	input_valid_r[input_dly:0] <= {input_valid_r[input_dly-1:0],
+	                              in_data.valid} ;
+	input_real_r[input_dly:0] <= {input_real_r[input_dly-1:0],in_data.d_real};
+	input_imag_r[input_dly:0] <= {input_imag_r[input_dly-1:0],in_data.d_imag};
+end
+
+logic [11:0]  bank_addr_sink;
+logic [2:0] bank_index_sink;
+divider_7 divider_7_inst (
+	.dividend 	(N_PFA_in),  
+
+	.quotient 	(bank_addr_sink),
+	.remainder 	(bank_index_sink)
+);
+
+logic [0:6]  wren_sink;
+
+always@(*)
+begin
+	case (bank_index_sink)
+	3'd0:  wren_sink = 7'b0000001;
+	3'd1:  wren_sink = 7'b0000010;
+	3'd2:  wren_sink = 7'b0000100;
+	3'd3:  wren_sink = 7'b0001000;
+	3'd4:  wren_sink = 7'b0010000;
+	3'd5:  wren_sink = 7'b0100000;
+	3'd6:  wren_sink = 7'b1000000;
+	default: wren_sink = 7'd0;
+	endcase
+end
+
+genvar i;
+generate
+	for (i=0; i<6; i++) begin : RAM_banks
+		mrd_RAM_fake
+		RAM_fake(
+			.clk (clk),
+			.wren (wren_sink[i]),
+			.wraddr (bank_addr_sink),
+			.din_real (input_real_r[input_dly]),
+			.din_imag (input_imag_r[input_dly]),
+
+			.rden (1'b0),
+			.rdaddr (8'd0),
+			.dout_real (),
+			.dout_imag ()
+			);
+	end
+endgenerate
+
 
 endmodule
