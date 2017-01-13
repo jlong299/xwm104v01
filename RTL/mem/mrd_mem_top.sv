@@ -131,24 +131,68 @@ generate
 	end
 endgenerate
 
+logic [1:0] ctrl_state_r;
+logic [11:0] cnt_rd_ongoing, cnt_rd_stop;
+always@(*)
+begin
+	case (ctrl.current_stage)
+	3'd0 :  cnt_rd_stop = dftpts/(ctrl.Nf[0]);
+	3'd1 :  cnt_rd_stop = dftpts/(ctrl.Nf[1]);
+	3'd2 :  cnt_rd_stop = dftpts/(ctrl.Nf[2]);
+	3'd3 :  cnt_rd_stop = dftpts/(ctrl.Nf[3]);
+	3'd4 :  cnt_rd_stop = dftpts/(ctrl.Nf[4]);
+	3'd5 :  cnt_rd_stop = dftpts/(ctrl.Nf[5]);
+	endcase
+end
+
 always@(posedge clk)
 begin
 	if (!rst_n)
 	begin
+		ctrl_state_r <= 0;
 		stat_to_ctrl.sink_ongoing <= 0;
+		stat_to_ctrl.rd_ongoing <= 0;
+		stat_to_ctrl.wr_ongoing <= 0;
+
+		cnt_rd_ongoing <= 0;
 	end
 	else
 	begin
+		ctrl_state_r <= ctrl.state;
+
 		if (in_data.sop)  stat_to_ctrl.sink_ongoing <= 1'b1;
 		else if (input_valid_r[in_dly:in_dly-1]==2'b10)
 			stat_to_ctrl.sink_ongoing <= 1'b0;
 		else
 			stat_to_ctrl.sink_ongoing <= stat_to_ctrl.sink_ongoing;
+
+		if (ctrl.state==2'b01 && ctrl_state_r!=2'b01)
+			cnt_rd_ongoing <= 12'd1;
+		else if (cnt_rd_ongoing != 12'd0)
+			cnt_rd_ongoing <= (cnt_rd_ongoing==cnt_rd_stop) ? 
+		                       12'd0 : cnt_rd_ongoing + 12'd1;
+		else
+			cnt_rd_ongoing <= 0;
+
+		stat_to_ctrl.rd_ongoing <= (cnt_rd_ongoing != 12'd0);
 	end
 end
 assign stat_to_ctrl.source_ongoing = 1'b0;
 
+CTA_addr_trans #(
+		.wDataInOut (12)
+	)
+CTA_addr_trans_inst	(
+	.clk  (clk),    
+	.rst_n  (rst_n),  
+	.clr_n  (stat_to_ctrl.rd_ongoing),
+	.Nf  (ctrl.Nf),
+	.current_stage  (ctrl.current_stage),
 
+	.addrs_butterfly  ()
+	);
+
+rden <= stat_to_ctrl.rd_ongoing;
 
 
 

@@ -9,6 +9,7 @@ vlog -sv ../RTL/top/*
 vlog -sv ../RTL/ctrl/*
 vlog -sv ../RTL/mem/*
 vlog -sv ../RTL/switch/*
+vlog -sv ../RTL/radix/*
 
 # elab
 # vmap       work     ./libraries/work/
@@ -21,6 +22,9 @@ add wave -radix unsigned sim:/top_tb/top_inst/ctrl_fsm/*
 add wave -radix unsigned sim:/top_tb/top_inst/mem0/*
 add wave -radix unsigned sim:/top_tb/top_inst/mem0/in_data/*
 add wave -radix unsigned sim:/top_tb/top_inst/mem0/ctrl/*
+add wave -radix unsigned sim:/top_tb/top_inst/mem0/CTA_addr_trans_inst/*
+add wave -radix unsigned sim:/top_tb/top_inst/mem0/CTA_addr_trans_inst/acc_n5/*
+add wave -radix unsigned sim:/top_tb/top_inst/mem0/CTA_addr_trans_inst/acc_n4/*
 
 
 view structure
