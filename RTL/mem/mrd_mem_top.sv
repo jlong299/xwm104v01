@@ -120,8 +120,7 @@ logic [0:4][11:0]  addrs_butterfly;
 logic [0:4][7:0]  bank_addr_rd, bank_addr_rd_r, bank_addr_rd_rr;
 logic [0:4][2:0]  bank_index_rd, bank_index_rd_r, bank_index_rd_rr;
 logic [0:6][17:0] d_real_rd, d_imag_rd;
-// assign wren = ( wren_sink[i] & input_valid_r[in_dly] 
-// 	               & (ctrl.state==2'b00) ) ;
+
 
 always@(posedge clk)
 begin
