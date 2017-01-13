@@ -187,12 +187,15 @@ begin
 end
 assign addrs_butterfly[0] = addrs_all; 
 assign addrs_butterfly[1] = addrs_all + coeff_stage; 
-assign addrs_butterfly[2] = (num_radix < 3'd3)? 'd0 : 
-                              addrs_all + 3'd2*coeff_stage; 
-assign addrs_butterfly[3] = (num_radix < 3'd4)? 'd0 : 
-                              addrs_all + 3'd3*coeff_stage; 
-assign addrs_butterfly[4] = (num_radix < 3'd5)? 'd0 : 
-                              addrs_all + 3'd3*coeff_stage; 
+// assign addrs_butterfly[2] = (num_radix < 3'd3)? 'd0 : 
+//                               addrs_all + 3'd2*coeff_stage; 
+// assign addrs_butterfly[3] = (num_radix < 3'd4)? 'd0 : 
+//                               addrs_all + 3'd3*coeff_stage; 
+// assign addrs_butterfly[4] = (num_radix < 3'd5)? 'd0 : 
+//                               addrs_all + 3'd4*coeff_stage; 
 
+assign addrs_butterfly[2] = addrs_all + 3'd2*coeff_stage; 
+assign addrs_butterfly[3] = addrs_all + 3'd3*coeff_stage; 
+assign addrs_butterfly[4] = addrs_all + 3'd4*coeff_stage; 
 
 endmodule

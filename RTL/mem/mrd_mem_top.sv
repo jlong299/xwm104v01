@@ -30,6 +30,8 @@ logic [in_dly:0]  input_valid_r;
 logic [in_dly:0][17:0]  input_real_r;
 logic [in_dly:0][17:0]  input_imag_r;
 
+logic [3:0] rd_ongoing_r;
+
 assign stat_to_ctrl.sink_sop = in_data.sop;
 assign stat_to_ctrl.dftpts = in_data.dftpts;
 
@@ -94,27 +96,200 @@ divider_7 divider_7_inst (
 	.remainder 	(bank_index_sink)
 );
 
-logic [6:0]  wren_sink;
+logic [0:6]  wren_sink;
 
 always@(*)
 begin
 	case (bank_index_sink)
-	3'd0:  wren_sink = 7'b0000001;
-	3'd1:  wren_sink = 7'b0000010;
-	3'd2:  wren_sink = 7'b0000100;
+	3'd0:  wren_sink = 7'b1000000;
+	3'd1:  wren_sink = 7'b0100000;
+	3'd2:  wren_sink = 7'b0010000;
 	3'd3:  wren_sink = 7'b0001000;
-	3'd4:  wren_sink = 7'b0010000;
-	3'd5:  wren_sink = 7'b0100000;
-	3'd6:  wren_sink = 7'b1000000;
+	3'd4:  wren_sink = 7'b0000100;
+	3'd5:  wren_sink = 7'b0000010;
+	3'd6:  wren_sink = 7'b0000001;
 	default: wren_sink = 7'd0;
 	endcase
 end
 
+logic [0:6] wren, rden;
+logic [0:6] rden_rd;
+logic [0:6][7:0]  rdaddr, wraddr;
+logic [0:6][7:0]  rdaddr_rd;
+logic [0:4][11:0]  addrs_butterfly;
+logic [0:4][7:0]  bank_addr_rd, bank_addr_rd_r, bank_addr_rd_rr;
+logic [0:4][2:0]  bank_index_rd, bank_index_rd_r, bank_index_rd_rr;
+logic [0:6][17:0] d_real_rd, d_imag_rd;
+// assign wren = ( wren_sink[i] & input_valid_r[in_dly] 
+// 	               & (ctrl.state==2'b00) ) ;
+
+always@(posedge clk)
+begin
+	if (!rst_n) 
+	begin
+		rden_rd <= 0;
+		rdaddr_rd <= 0;
+		bank_index_rd_r <= 0;
+		bank_index_rd_rr <= 0;
+		bank_addr_rd_r <= 0;
+		bank_addr_rd_rr <= 0;
+	end
+	else 
+	begin
+		bank_index_rd_r <= bank_index_rd;
+		bank_index_rd_rr <= bank_index_rd_r;
+		bank_addr_rd_r <= bank_addr_rd;
+		bank_addr_rd_rr <= bank_addr_rd_r;
+
+		if (bank_index_rd[0]==3'd0 || bank_index_rd[1]==3'd0 ||
+			bank_index_rd[2]==3'd0 || bank_index_rd[3]==3'd0 ||
+			bank_index_rd[4]==3'd0 )
+				rden_rd[0] <= 1'b1;
+		else rden_rd[0] <= 1'b0;
+
+		if (bank_index_rd[0]==3'd1 || bank_index_rd[1]==3'd1 ||
+			bank_index_rd[2]==3'd1 || bank_index_rd[3]==3'd1 ||
+			bank_index_rd[4]==3'd1 )
+				rden_rd[1] <= 1'b1;
+		else rden_rd[1] <= 1'b0;
+
+		if (bank_index_rd[0]==3'd2 || bank_index_rd[1]==3'd2 ||
+			bank_index_rd[2]==3'd2 || bank_index_rd[3]==3'd2 ||
+			bank_index_rd[4]==3'd2 )
+				rden_rd[2] <= 1'b1;
+		else rden_rd[2] <= 1'b0;
+
+		if (bank_index_rd[0]==3'd3 || bank_index_rd[1]==3'd3 ||
+			bank_index_rd[2]==3'd3 || bank_index_rd[3]==3'd3 ||
+			bank_index_rd[4]==3'd3 )
+				rden_rd[3] <= 1'b1;
+		else rden_rd[3] <= 1'b0;
+
+		if (bank_index_rd[0]==3'd4 || bank_index_rd[1]==3'd4 ||
+			bank_index_rd[2]==3'd4 || bank_index_rd[3]==3'd4 ||
+			bank_index_rd[4]==3'd4 )
+				rden_rd[4] <= 1'b1;
+		else rden_rd[4] <= 1'b0;
+
+		if (bank_index_rd[0]==3'd5 || bank_index_rd[1]==3'd5 ||
+			bank_index_rd[2]==3'd5 || bank_index_rd[3]==3'd5 ||
+			bank_index_rd[4]==3'd5 )
+				rden_rd[5] <= 1'b1;
+		else rden_rd[5] <= 1'b0;
+
+		if (bank_index_rd[0]==3'd6 || bank_index_rd[1]==3'd6 ||
+			bank_index_rd[2]==3'd6 || bank_index_rd[3]==3'd6 ||
+			bank_index_rd[4]==3'd6 )
+				rden_rd[6] <= 1'b1;
+		else rden_rd[6] <= 1'b0;
+
+		if (bank_index_rd[0]==3'd0) rdaddr_rd[0] <= bank_addr_rd[0]; 
+		else if (bank_index_rd[1]==3'd0) rdaddr_rd[0] <= bank_addr_rd[1]; 
+		else if (bank_index_rd[2]==3'd0) rdaddr_rd[0] <= bank_addr_rd[2]; 
+		else if (bank_index_rd[3]==3'd0) rdaddr_rd[0] <= bank_addr_rd[3]; 
+		else if (bank_index_rd[4]==3'd0) rdaddr_rd[0] <= bank_addr_rd[4]; 
+
+		if (bank_index_rd[0]==3'd1) rdaddr_rd[1] <= bank_addr_rd[0]; 
+		else if (bank_index_rd[1]==3'd1) rdaddr_rd[1] <= bank_addr_rd[1]; 
+		else if (bank_index_rd[2]==3'd1) rdaddr_rd[1] <= bank_addr_rd[2]; 
+		else if (bank_index_rd[3]==3'd1) rdaddr_rd[1] <= bank_addr_rd[3]; 
+		else if (bank_index_rd[4]==3'd1) rdaddr_rd[1] <= bank_addr_rd[4]; 
+		
+		if (bank_index_rd[0]==3'd2) rdaddr_rd[2] <= bank_addr_rd[0]; 
+		else if (bank_index_rd[1]==3'd2) rdaddr_rd[2] <= bank_addr_rd[1]; 
+		else if (bank_index_rd[2]==3'd2) rdaddr_rd[2] <= bank_addr_rd[2]; 
+		else if (bank_index_rd[3]==3'd2) rdaddr_rd[2] <= bank_addr_rd[3]; 
+		else if (bank_index_rd[4]==3'd2) rdaddr_rd[2] <= bank_addr_rd[4]; 
+		
+		if (bank_index_rd[0]==3'd3) rdaddr_rd[3] <= bank_addr_rd[0]; 
+		else if (bank_index_rd[1]==3'd3) rdaddr_rd[3] <= bank_addr_rd[1]; 
+		else if (bank_index_rd[2]==3'd3) rdaddr_rd[3] <= bank_addr_rd[2]; 
+		else if (bank_index_rd[3]==3'd3) rdaddr_rd[3] <= bank_addr_rd[3]; 
+		else if (bank_index_rd[4]==3'd3) rdaddr_rd[3] <= bank_addr_rd[4]; 
+		
+		if (bank_index_rd[0]==3'd4) rdaddr_rd[4] <= bank_addr_rd[0]; 
+		else if (bank_index_rd[1]==3'd4) rdaddr_rd[4] <= bank_addr_rd[1]; 
+		else if (bank_index_rd[2]==3'd4) rdaddr_rd[4] <= bank_addr_rd[2]; 
+		else if (bank_index_rd[3]==3'd4) rdaddr_rd[4] <= bank_addr_rd[3]; 
+		else if (bank_index_rd[4]==3'd4) rdaddr_rd[4] <= bank_addr_rd[4]; 
+		
+		if (bank_index_rd[0]==3'd5) rdaddr_rd[5] <= bank_addr_rd[0]; 
+		else if (bank_index_rd[1]==3'd5) rdaddr_rd[5] <= bank_addr_rd[1]; 
+		else if (bank_index_rd[2]==3'd5) rdaddr_rd[5] <= bank_addr_rd[2]; 
+		else if (bank_index_rd[3]==3'd5) rdaddr_rd[5] <= bank_addr_rd[3]; 
+		else if (bank_index_rd[4]==3'd5) rdaddr_rd[5] <= bank_addr_rd[4]; 
+		
+		if (bank_index_rd[0]==3'd6) rdaddr_rd[6] <= bank_addr_rd[0]; 
+		else if (bank_index_rd[1]==3'd6) rdaddr_rd[6] <= bank_addr_rd[1]; 
+		else if (bank_index_rd[2]==3'd6) rdaddr_rd[6] <= bank_addr_rd[2]; 
+		else if (bank_index_rd[3]==3'd6) rdaddr_rd[6] <= bank_addr_rd[3]; 
+		else if (bank_index_rd[4]==3'd6) rdaddr_rd[6] <= bank_addr_rd[4];
+
+		
+
+	end
+end
+
+
+	//rden <= stat_to_ctrl.rd_ongoing;
+
 genvar i;
 generate
+	for (i=0; i<5; i++) begin : addr_banks
+	divider_7 divider_7_inst (
+		.dividend 	(addrs_butterfly[i]),  
+
+		.quotient 	(bank_addr_rd[i]),
+		.remainder 	(bank_index_rd[i])
+	);
+	end
+endgenerate
+
+generate
+	for (i=0; i<5; i++) begin : rd_out
+	always@(*)
+	begin
+		case (bank_index_rd_rr[i])
+	    3'd0: begin
+			out_rdx2345_data.d_real[i] = d_real_rd[0]; 
+			out_rdx2345_data.d_imag[i] = d_imag_rd[0]; 
+		end
+		3'd1: begin
+			out_rdx2345_data.d_real[i] = d_real_rd[1]; 
+			out_rdx2345_data.d_imag[i] = d_imag_rd[1]; 
+		end
+		3'd2: begin
+			out_rdx2345_data.d_real[i] = d_real_rd[2]; 
+			out_rdx2345_data.d_imag[i] = d_imag_rd[2]; 
+		end
+		3'd3: begin
+			out_rdx2345_data.d_real[i] = d_real_rd[3]; 
+			out_rdx2345_data.d_imag[i] = d_imag_rd[3]; 
+		end
+		3'd4: begin
+			out_rdx2345_data.d_real[i] = d_real_rd[4]; 
+			out_rdx2345_data.d_imag[i] = d_imag_rd[4]; 
+		end
+		3'd5: begin
+			out_rdx2345_data.d_real[i] = d_real_rd[5]; 
+			out_rdx2345_data.d_imag[i] = d_imag_rd[5]; 
+		end
+		3'd6: begin
+			out_rdx2345_data.d_real[i] = d_real_rd[6]; 
+			out_rdx2345_data.d_imag[i] = d_imag_rd[6]; 
+		end
+		endcase
+	end
+	end
+endgenerate
+
+assign out_rdx2345_data.valid = rd_ongoing_r[2];
+assign out_rdx2345_data.bank_index = bank_index_rd_rr;
+assign out_rdx2345_data.bank_addr = bank_addr_rd_rr;
+
+generate
 	for (i=0; i<7; i++) begin : RAM_banks
-	mrd_RAM_fake
-	RAM_fake(
+	mrd_RAM_fake RAM_fake(
 		.clk (clk),
 		.wren (wren_sink[i] & input_valid_r[in_dly] & (ctrl.state==2'b00)),
 		.wraddr (bank_addr_sink[7:0]),
@@ -123,10 +298,10 @@ generate
 		.din_imag ({ {12{input_imag_r[in_dly][17]}}, 
 			          input_imag_r[in_dly] }),
 
-		.rden (1'b0),
-		.rdaddr (8'd0),
-		.dout_real (),
-		.dout_imag ()
+		.rden (rden_rd[i] & rd_ongoing_r[1]),
+		.rdaddr (rdaddr_rd[i]),
+		.dout_real (d_real_rd[i]),
+		.dout_imag (d_imag_rd[i])
 		);
 	end
 endgenerate
@@ -155,6 +330,7 @@ begin
 		stat_to_ctrl.wr_ongoing <= 0;
 
 		cnt_rd_ongoing <= 0;
+		rd_ongoing_r <= 0;
 	end
 	else
 	begin
@@ -175,6 +351,9 @@ begin
 			cnt_rd_ongoing <= 0;
 
 		stat_to_ctrl.rd_ongoing <= (cnt_rd_ongoing != 12'd0);
+
+		rd_ongoing_r[0] <= stat_to_ctrl.rd_ongoing;
+		rd_ongoing_r[3:1] <= rd_ongoing_r[2:0];
 	end
 end
 assign stat_to_ctrl.source_ongoing = 1'b0;
@@ -189,10 +368,10 @@ CTA_addr_trans_inst	(
 	.Nf  (ctrl.Nf),
 	.current_stage  (ctrl.current_stage),
 
-	.addrs_butterfly  ()
+	.addrs_butterfly  (addrs_butterfly)
 	);
 
-rden <= stat_to_ctrl.rd_ongoing;
+
 
 
 

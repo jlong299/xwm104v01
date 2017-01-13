@@ -214,6 +214,7 @@ for m=1:NumOfFactors
 
     n_tw = 0;
     cnt_n_tw = 0;
+    cnt_debug = 0;
 
     for t_n1 = 0:Nf_stage(1) -1
         for t_n2 = 0:Nf_stage(2) -1
@@ -271,6 +272,11 @@ for m=1:NumOfFactors
                                 
                             fft_tw_out = fft_tw2(read_data_index(1:5), Nf(m), tw_coeff, is_last_stage );
                         
+                            cnt_debug = cnt_debug+1;
+                            if (cnt_debug>=298)
+                                cnt_debug = cnt_debug;
+                            end
+                            
                             % write data to each bank of another RAM
                             for t = 1:NumOfBanks
                                 if (t <= Nf(m))
