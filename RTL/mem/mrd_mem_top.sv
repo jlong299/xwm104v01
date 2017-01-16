@@ -35,7 +35,7 @@ logic [3:0] rd_ongoing_r;
 assign stat_to_ctrl.sink_sop = in_data.sop;
 assign stat_to_ctrl.dftpts = in_data.dftpts;
 
-logic rden, wren;
+logic [0:6] rden, wren;
 logic [0:6] rden_rd;
 logic [0:6][7:0]  rdaddr, wraddr;
 logic [0:6][7:0]  rdaddr_rd;
@@ -234,7 +234,7 @@ generate
 	for (i=0; i<7; i++) begin : RAM_banks
 	mrd_RAM_fake RAM_fake(
 		.clk (clk),
-		.wren (wren_sink[i] & input_valid_r[in_dly] & (ctrl.state==2'b00)),
+		.wren (wren[i]),
 		.wraddr (wraddr_RAM[7:0]),
 		.din_real (din_real_RAM[i]),
 		.din_imag (din_imag_RAM[i]),
@@ -316,6 +316,8 @@ CTA_addr_trans_inst	(
 generate
 for (i=0; i<7; i++) begin : wraddr_RAM_gen
 assign wraddr_RAM[i]= (ctrl.stage==2'b00)? bank_addr_sink[7:0] : wraddr_wr[i];
+assign wren[i] = (ctrl.stage==2'b00)? (wren_sink[i] & input_valid_r[in_dly])
+                  : wren_wr[i] ;
 end
 endgenerate
 
@@ -352,6 +354,11 @@ begin
 end
 end
 endgenerate
+
+//------------------------------------------------
+//------------------ 4th stage: Source ------------
+//------------------------------------------------
+
 
 
 endmodule
