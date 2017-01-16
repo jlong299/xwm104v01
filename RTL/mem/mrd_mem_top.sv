@@ -121,13 +121,10 @@ logic [0:4][7:0]  bank_addr_rd, bank_addr_rd_r, bank_addr_rd_rr;
 logic [0:4][2:0]  bank_index_rd, bank_index_rd_r, bank_index_rd_rr;
 logic [0:6][17:0] d_real_rd, d_imag_rd;
 
-
 always@(posedge clk)
 begin
 	if (!rst_n) 
 	begin
-		rden_rd <= 0;
-		rdaddr_rd <= 0;
 		bank_index_rd_r <= 0;
 		bank_index_rd_rr <= 0;
 		bank_addr_rd_r <= 0;
@@ -139,98 +136,37 @@ begin
 		bank_index_rd_rr <= bank_index_rd_r;
 		bank_addr_rd_r <= bank_addr_rd;
 		bank_addr_rd_rr <= bank_addr_rd_r;
-
-		if (bank_index_rd[0]==3'd0 || bank_index_rd[1]==3'd0 ||
-			bank_index_rd[2]==3'd0 || bank_index_rd[3]==3'd0 ||
-			bank_index_rd[4]==3'd0 )
-				rden_rd[0] <= 1'b1;
-		else rden_rd[0] <= 1'b0;
-
-		if (bank_index_rd[0]==3'd1 || bank_index_rd[1]==3'd1 ||
-			bank_index_rd[2]==3'd1 || bank_index_rd[3]==3'd1 ||
-			bank_index_rd[4]==3'd1 )
-				rden_rd[1] <= 1'b1;
-		else rden_rd[1] <= 1'b0;
-
-		if (bank_index_rd[0]==3'd2 || bank_index_rd[1]==3'd2 ||
-			bank_index_rd[2]==3'd2 || bank_index_rd[3]==3'd2 ||
-			bank_index_rd[4]==3'd2 )
-				rden_rd[2] <= 1'b1;
-		else rden_rd[2] <= 1'b0;
-
-		if (bank_index_rd[0]==3'd3 || bank_index_rd[1]==3'd3 ||
-			bank_index_rd[2]==3'd3 || bank_index_rd[3]==3'd3 ||
-			bank_index_rd[4]==3'd3 )
-				rden_rd[3] <= 1'b1;
-		else rden_rd[3] <= 1'b0;
-
-		if (bank_index_rd[0]==3'd4 || bank_index_rd[1]==3'd4 ||
-			bank_index_rd[2]==3'd4 || bank_index_rd[3]==3'd4 ||
-			bank_index_rd[4]==3'd4 )
-				rden_rd[4] <= 1'b1;
-		else rden_rd[4] <= 1'b0;
-
-		if (bank_index_rd[0]==3'd5 || bank_index_rd[1]==3'd5 ||
-			bank_index_rd[2]==3'd5 || bank_index_rd[3]==3'd5 ||
-			bank_index_rd[4]==3'd5 )
-				rden_rd[5] <= 1'b1;
-		else rden_rd[5] <= 1'b0;
-
-		if (bank_index_rd[0]==3'd6 || bank_index_rd[1]==3'd6 ||
-			bank_index_rd[2]==3'd6 || bank_index_rd[3]==3'd6 ||
-			bank_index_rd[4]==3'd6 )
-				rden_rd[6] <= 1'b1;
-		else rden_rd[6] <= 1'b0;
-
-		if (bank_index_rd[0]==3'd0) rdaddr_rd[0] <= bank_addr_rd[0]; 
-		else if (bank_index_rd[1]==3'd0) rdaddr_rd[0] <= bank_addr_rd[1]; 
-		else if (bank_index_rd[2]==3'd0) rdaddr_rd[0] <= bank_addr_rd[2]; 
-		else if (bank_index_rd[3]==3'd0) rdaddr_rd[0] <= bank_addr_rd[3]; 
-		else if (bank_index_rd[4]==3'd0) rdaddr_rd[0] <= bank_addr_rd[4]; 
-
-		if (bank_index_rd[0]==3'd1) rdaddr_rd[1] <= bank_addr_rd[0]; 
-		else if (bank_index_rd[1]==3'd1) rdaddr_rd[1] <= bank_addr_rd[1]; 
-		else if (bank_index_rd[2]==3'd1) rdaddr_rd[1] <= bank_addr_rd[2]; 
-		else if (bank_index_rd[3]==3'd1) rdaddr_rd[1] <= bank_addr_rd[3]; 
-		else if (bank_index_rd[4]==3'd1) rdaddr_rd[1] <= bank_addr_rd[4]; 
-		
-		if (bank_index_rd[0]==3'd2) rdaddr_rd[2] <= bank_addr_rd[0]; 
-		else if (bank_index_rd[1]==3'd2) rdaddr_rd[2] <= bank_addr_rd[1]; 
-		else if (bank_index_rd[2]==3'd2) rdaddr_rd[2] <= bank_addr_rd[2]; 
-		else if (bank_index_rd[3]==3'd2) rdaddr_rd[2] <= bank_addr_rd[3]; 
-		else if (bank_index_rd[4]==3'd2) rdaddr_rd[2] <= bank_addr_rd[4]; 
-		
-		if (bank_index_rd[0]==3'd3) rdaddr_rd[3] <= bank_addr_rd[0]; 
-		else if (bank_index_rd[1]==3'd3) rdaddr_rd[3] <= bank_addr_rd[1]; 
-		else if (bank_index_rd[2]==3'd3) rdaddr_rd[3] <= bank_addr_rd[2]; 
-		else if (bank_index_rd[3]==3'd3) rdaddr_rd[3] <= bank_addr_rd[3]; 
-		else if (bank_index_rd[4]==3'd3) rdaddr_rd[3] <= bank_addr_rd[4]; 
-		
-		if (bank_index_rd[0]==3'd4) rdaddr_rd[4] <= bank_addr_rd[0]; 
-		else if (bank_index_rd[1]==3'd4) rdaddr_rd[4] <= bank_addr_rd[1]; 
-		else if (bank_index_rd[2]==3'd4) rdaddr_rd[4] <= bank_addr_rd[2]; 
-		else if (bank_index_rd[3]==3'd4) rdaddr_rd[4] <= bank_addr_rd[3]; 
-		else if (bank_index_rd[4]==3'd4) rdaddr_rd[4] <= bank_addr_rd[4]; 
-		
-		if (bank_index_rd[0]==3'd5) rdaddr_rd[5] <= bank_addr_rd[0]; 
-		else if (bank_index_rd[1]==3'd5) rdaddr_rd[5] <= bank_addr_rd[1]; 
-		else if (bank_index_rd[2]==3'd5) rdaddr_rd[5] <= bank_addr_rd[2]; 
-		else if (bank_index_rd[3]==3'd5) rdaddr_rd[5] <= bank_addr_rd[3]; 
-		else if (bank_index_rd[4]==3'd5) rdaddr_rd[5] <= bank_addr_rd[4]; 
-		
-		if (bank_index_rd[0]==3'd6) rdaddr_rd[6] <= bank_addr_rd[0]; 
-		else if (bank_index_rd[1]==3'd6) rdaddr_rd[6] <= bank_addr_rd[1]; 
-		else if (bank_index_rd[2]==3'd6) rdaddr_rd[6] <= bank_addr_rd[2]; 
-		else if (bank_index_rd[3]==3'd6) rdaddr_rd[6] <= bank_addr_rd[3]; 
-		else if (bank_index_rd[4]==3'd6) rdaddr_rd[6] <= bank_addr_rd[4];
-
-		
-
 	end
 end
 
+genvar  k;
+generate
+for (k=3'd0; k <= 3'd6; k=k+3'd1) begin : rden_addr_index
+always@(posedge clk)
+begin
+	if (!rst_n) 
+	begin
+		rden_rd[k] <= 0;
+		rdaddr_rd[k] <= 0;
+	end
+	else 
+	begin
+		if (bank_index_rd[0]== k || bank_index_rd[1]== k ||
+			bank_index_rd[2]== k || bank_index_rd[3]== k ||
+			bank_index_rd[4]== k )
+				rden_rd[k] <= 1'b1;
+		else rden_rd[k] <= 1'b0;
 
-	//rden <= stat_to_ctrl.rd_ongoing;
+		if (bank_index_rd[0]==k) rdaddr_rd[k] <= bank_addr_rd[0]; 
+		else if (bank_index_rd[1]==k) rdaddr_rd[k] <= bank_addr_rd[1]; 
+		else if (bank_index_rd[2]==k) rdaddr_rd[k] <= bank_addr_rd[2]; 
+		else if (bank_index_rd[3]==k) rdaddr_rd[k] <= bank_addr_rd[3]; 
+		else if (bank_index_rd[4]==k) rdaddr_rd[k] <= bank_addr_rd[4];
+	end
+end
+end
+endgenerate
+
 
 genvar i;
 generate
@@ -248,36 +184,8 @@ generate
 	for (i=0; i<5; i++) begin : rd_out
 	always@(*)
 	begin
-		case (bank_index_rd_rr[i])
-	    3'd0: begin
-			out_rdx2345_data.d_real[i] = d_real_rd[0]; 
-			out_rdx2345_data.d_imag[i] = d_imag_rd[0]; 
-		end
-		3'd1: begin
-			out_rdx2345_data.d_real[i] = d_real_rd[1]; 
-			out_rdx2345_data.d_imag[i] = d_imag_rd[1]; 
-		end
-		3'd2: begin
-			out_rdx2345_data.d_real[i] = d_real_rd[2]; 
-			out_rdx2345_data.d_imag[i] = d_imag_rd[2]; 
-		end
-		3'd3: begin
-			out_rdx2345_data.d_real[i] = d_real_rd[3]; 
-			out_rdx2345_data.d_imag[i] = d_imag_rd[3]; 
-		end
-		3'd4: begin
-			out_rdx2345_data.d_real[i] = d_real_rd[4]; 
-			out_rdx2345_data.d_imag[i] = d_imag_rd[4]; 
-		end
-		3'd5: begin
-			out_rdx2345_data.d_real[i] = d_real_rd[5]; 
-			out_rdx2345_data.d_imag[i] = d_imag_rd[5]; 
-		end
-		3'd6: begin
-			out_rdx2345_data.d_real[i] = d_real_rd[6]; 
-			out_rdx2345_data.d_imag[i] = d_imag_rd[6]; 
-		end
-		endcase
+		out_rdx2345_data.d_real[i] = d_real_rd[(bank_index_rd_rr[i])]; 
+		out_rdx2345_data.d_imag[i] = d_imag_rd[(bank_index_rd_rr[i])]; 
 	end
 	end
 endgenerate
@@ -309,14 +217,7 @@ logic [1:0] ctrl_state_r;
 logic [11:0] cnt_rd_ongoing, cnt_rd_stop;
 always@(*)
 begin
-	case (ctrl.current_stage)
-	3'd0 :  cnt_rd_stop = dftpts/(ctrl.Nf[0]);
-	3'd1 :  cnt_rd_stop = dftpts/(ctrl.Nf[1]);
-	3'd2 :  cnt_rd_stop = dftpts/(ctrl.Nf[2]);
-	3'd3 :  cnt_rd_stop = dftpts/(ctrl.Nf[3]);
-	3'd4 :  cnt_rd_stop = dftpts/(ctrl.Nf[4]);
-	3'd5 :  cnt_rd_stop = dftpts/(ctrl.Nf[5]);
-	endcase
+	cnt_rd_stop = dftpts/(ctrl.Nf[ctrl.current_stage]);
 end
 
 always@(posedge clk)
