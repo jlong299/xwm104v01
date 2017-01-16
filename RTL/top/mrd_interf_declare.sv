@@ -21,8 +21,8 @@ endinterface
 interface mrd_rdx2345_if ();
 	logic [1:0]  fsm;
 	logic valid;
-	logic [4:0][17:0] d_real;
-	logic [4:0][17:0] d_imag;
+	logic [4:0][29:0] d_real;
+	logic [4:0][29:0] d_imag;
 	logic [4:0][2:0]  bank_index;
 	logic [4:0][9:0]  bank_addr;
 	// Twiddle parameters

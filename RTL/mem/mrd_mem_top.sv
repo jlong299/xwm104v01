@@ -35,6 +35,24 @@ logic [3:0] rd_ongoing_r;
 assign stat_to_ctrl.sink_sop = in_data.sop;
 assign stat_to_ctrl.dftpts = in_data.dftpts;
 
+logic rden, wren;
+logic [0:6] rden_rd;
+logic [0:6][7:0]  rdaddr, wraddr;
+logic [0:6][7:0]  rdaddr_rd;
+logic [0:4][11:0]  addrs_butterfly;
+logic [0:4][7:0]  bank_addr_rd, bank_addr_rd_r, bank_addr_rd_rr;
+logic [0:4][2:0]  bank_index_rd, bank_index_rd_r, bank_index_rd_rr, 
+                  div7_rmdr_rd;
+logic [0:6][29:0] d_real_rd, d_imag_rd;
+logic [0:6][29:0] din_real_RAM, din_imag_RAM;
+
+logic [0:6][29:0] wrdin_real, wrdin_imag;
+logic [0:6][7:0]  wraddr_RAM, wraddr_wr;
+logic [0:6]  wren_wr;
+
+//------------------------------------------------
+//------------------ 1st stage: Sink -------------
+//------------------------------------------------
 always@(posedge clk)
 begin
 	if (!rst_n)
@@ -112,14 +130,10 @@ begin
 	endcase
 end
 
-logic [0:6] wren, rden;
-logic [0:6] rden_rd;
-logic [0:6][7:0]  rdaddr, wraddr;
-logic [0:6][7:0]  rdaddr_rd;
-logic [0:4][11:0]  addrs_butterfly;
-logic [0:4][7:0]  bank_addr_rd, bank_addr_rd_r, bank_addr_rd_rr;
-logic [0:4][2:0]  bank_index_rd, bank_index_rd_r, bank_index_rd_rr;
-logic [0:6][17:0] d_real_rd, d_imag_rd;
+//------------------------------------------------
+//------------------ 2nd stage: Read -------------
+//------------------------------------------------
+
 
 always@(posedge clk)
 begin
@@ -154,7 +168,7 @@ begin
 		if (bank_index_rd[0]== k || bank_index_rd[1]== k ||
 			bank_index_rd[2]== k || bank_index_rd[3]== k ||
 			bank_index_rd[4]== k )
-				rden_rd[k] <= 1'b1;
+				rden_rd[k] <= 1'b1 & rd_ongoing_r[0];
 		else rden_rd[k] <= 1'b0;
 
 		if (bank_index_rd[0]==k) rdaddr_rd[k] <= bank_addr_rd[0]; 
@@ -167,16 +181,37 @@ end
 end
 endgenerate
 
-
 genvar i;
 generate
-	for (i=0; i<5; i++) begin : addr_banks
-	divider_7 divider_7_inst (
-		.dividend 	(addrs_butterfly[i]),  
+for (i=0; i<=6; i++)  begin : din_switch
+always@(*)
+begin
+if (ctrl.state==2'b00) 
+begin
+	din_real_RAM[i] = { {12{input_real_r[in_dly][17]}},input_real_r[in_dly] };
+	din_imag_RAM[i] = { {12{input_imag_r[in_dly][17]}},input_imag_r[in_dly] };
+end
+else 
+begin
+	din_real_RAM[i] = wrdin_real[i];
+	din_imag_RAM[i] = wrdin_imag[i];
+end		
+end	 
+end
+endgenerate 
 
-		.quotient 	(bank_addr_rd[i]),
-		.remainder 	(bank_index_rd[i])
+
+generate
+	for (k=3'd0; k < 3'd5; k=k+3'd1) begin : addr_banks
+	divider_7 divider_7_inst (
+		.dividend 	(addrs_butterfly[k]),  
+
+		.quotient 	(bank_addr_rd[k]),
+		.remainder 	(div7_rmdr_rd[k])
 	);
+	// index 3'd7 means the index is not valid
+	assign bank_index_rd[k] = (k >= ctrl.Nf[ctrl.current_stage]) ?
+	                          3'd7 : div7_rmdr_rd[k];
 	end
 endgenerate
 
@@ -194,18 +229,17 @@ assign out_rdx2345_data.valid = rd_ongoing_r[2];
 assign out_rdx2345_data.bank_index = bank_index_rd_rr;
 assign out_rdx2345_data.bank_addr = bank_addr_rd_rr;
 
+
 generate
 	for (i=0; i<7; i++) begin : RAM_banks
 	mrd_RAM_fake RAM_fake(
 		.clk (clk),
 		.wren (wren_sink[i] & input_valid_r[in_dly] & (ctrl.state==2'b00)),
-		.wraddr (bank_addr_sink[7:0]),
-		.din_real ({ {12{input_real_r[in_dly][17]}}, 
-			          input_real_r[in_dly] }),
-		.din_imag ({ {12{input_imag_r[in_dly][17]}}, 
-			          input_imag_r[in_dly] }),
+		.wraddr (wraddr_RAM[7:0]),
+		.din_real (din_real_RAM[i]),
+		.din_imag (din_imag_RAM[i]),
 
-		.rden (rden_rd[i] & rd_ongoing_r[1]),
+		.rden (rden_rd[i]),
 		.rdaddr (rdaddr_rd[i]),
 		.dout_real (d_real_rd[i]),
 		.dout_imag (d_imag_rd[i])
@@ -254,6 +288,9 @@ begin
 
 		rd_ongoing_r[0] <= stat_to_ctrl.rd_ongoing;
 		rd_ongoing_r[3:1] <= rd_ongoing_r[2:0];
+
+		stat_to_ctrl.wr_ongoing <= (ctrl.state==2'b10) ? 
+		                           in_rdx2345_data.valid : 1'b0;
 	end
 end
 assign stat_to_ctrl.source_ongoing = 1'b0;
@@ -272,8 +309,49 @@ CTA_addr_trans_inst	(
 	);
 
 
+//------------------------------------------------
+//------------------ 3rd stage: Write ------------
+//------------------------------------------------
 
+generate
+for (i=0; i<7; i++) begin : wraddr_RAM_gen
+assign wraddr_RAM[i]= (ctrl.stage==2'b00)? bank_addr_sink[7:0] : wraddr_wr[i];
+end
+endgenerate
 
+generate
+for (k=3'd0; k <= 3'd6; k=k+3'd1) begin : wren_wr_gen
+always@(posedge clk)
+begin
+	if (!rst_n)
+	begin
+		wren_wr[k] <= 0;
+		wraddr_wr[k] <= 0;
+	end
+	else
+	begin
+		if (in_rdx2345_data.bank_index[0]== k || 
+			in_rdx2345_data.bank_index[1]== k ||
+			in_rdx2345_data.bank_index[2]== k || 
+			in_rdx2345_data.bank_index[3]== k ||
+			in_rdx2345_data.bank_index[4]== k )
+				wren_wr[k] <= 1'b1 & in_rdx2345_data.valid;
+		else wren_wr[k] <= 1'b0;
+
+		if (in_rdx2345_data.bank_index[0]==k) 
+			wraddr_wr[k] <= in_rdx2345_data.bank_addr[0]; 
+		else if (in_rdx2345_data.bank_index[1]==k) 
+			wraddr_wr[k] <= in_rdx2345_data.bank_addr[1]; 
+		else if (in_rdx2345_data.bank_index[2]==k) 
+			wraddr_wr[k] <= in_rdx2345_data.bank_addr[2]; 
+		else if (in_rdx2345_data.bank_index[3]==k) 
+			wraddr_wr[k] <= in_rdx2345_data.bank_addr[3]; 
+		else if (in_rdx2345_data.bank_index[4]==k) 
+			wraddr_wr[k] <= in_rdx2345_data.bank_addr[4];
+	end
+end
+end
+endgenerate
 
 
 endmodule
