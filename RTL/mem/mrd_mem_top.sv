@@ -35,6 +35,11 @@ logic [3:0] rd_ongoing_r;
 assign stat_to_ctrl.sink_sop = in_data.sop;
 assign stat_to_ctrl.dftpts = in_data.dftpts;
 
+logic [11:0]  bank_addr_sink;
+logic [2:0] bank_index_sink;
+logic [0:6]  wren_sink;
+
+
 logic [0:6] rden, wren;
 logic [0:6] rden_rd;
 logic [0:6][7:0]  rdaddr, wraddr;
@@ -51,7 +56,16 @@ logic [0:6][7:0]  wraddr_RAM, wraddr_wr;
 logic [0:6]  wren_wr;
 
 logic [1:0] ctrl_state_r;
-logic [11:0] cnt_rd_ongoing, cnt_rd_stop;
+logic [11:0] cnt_rd_ongoing, cnt_rd_stop, cnt_source_ongoing;
+
+logic [11:0] N_PFA_out;
+logic [0:6]  rden_source;
+logic [11:0]  bank_addr_source;
+logic [2:0] bank_index_source;
+logic [0:6][29:0] dout_real_RAM, dout_imag_RAM;
+logic [0:6][7:0]  rdaddr_RAM;
+logic bank_index_source_r;
+
 
 //------------------------------------------------
 //------------------ 1st stage: Sink -------------
@@ -113,16 +127,13 @@ begin
 	input_imag_r[in_dly:0] <= {input_imag_r[in_dly-1:0],in_data.d_imag};
 end
 
-logic [11:0]  bank_addr_sink;
-logic [2:0] bank_index_sink;
-divider_7 divider_7_inst (
+
+divider_7 divider_7_inst0 (
 	.dividend 	(N_PFA_in),  
 
 	.quotient 	(bank_addr_sink),
 	.remainder 	(bank_index_sink)
 );
-
-logic [0:6]  wren_sink;
 
 always@(*)
 begin
@@ -212,7 +223,7 @@ endgenerate
 
 generate
 	for (k=3'd0; k < 3'd5; k=k+3'd1) begin : addr_banks
-	divider_7 divider_7_inst (
+	divider_7 divider_7_inst1 (
 		.dividend 	(addrs_butterfly[k]),  
 
 		.quotient 	(bank_addr_rd[k]),
@@ -229,7 +240,7 @@ generate
 	always@(*)
 	begin
 		out_rdx2345_data.d_real[i] = d_real_rd[(bank_index_rd_rr[i])]; 
-		out_rdx2345_data.d_imag[i] = d_imag_rd[(bank_index_rd_rr[i])]; 
+		out_rdx2345_data.d_imag[i] = d_imag_rd[(bank_index_rd_rr[i])];
 	end
 	end
 endgenerate
@@ -248,10 +259,10 @@ generate
 		.din_real (din_real_RAM[i]),
 		.din_imag (din_imag_RAM[i]),
 
-		.rden (rden_rd[i]),
-		.rdaddr (rdaddr_rd[i]),
-		.dout_real (d_real_rd[i]),
-		.dout_imag (d_imag_rd[i])
+		.rden (rden[i]),
+		.rdaddr (rdaddr_RAM[i]),
+		.dout_real (dout_real_RAM[i]),
+		.dout_imag (dout_imag_RAM[i])
 		);
 	end
 endgenerate
@@ -269,9 +280,13 @@ begin
 		stat_to_ctrl.sink_ongoing <= 0;
 		stat_to_ctrl.rd_ongoing <= 0;
 		stat_to_ctrl.wr_ongoing <= 0;
+		stat_to_ctrl.source_ongoing <= 0;
+
+		//source_ongoing_r <= 0;
 
 		cnt_rd_ongoing <= 0;
 		rd_ongoing_r <= 0;
+		cnt_source_ongoing <= 0;
 	end
 	else
 	begin
@@ -298,9 +313,18 @@ begin
 
 		stat_to_ctrl.wr_ongoing <= (ctrl.state==2'b10) ? 
 		                           in_rdx2345_data.valid : 1'b0;
+
+		if (ctrl.state==2'b11)                          
+			cnt_source_ongoing <= 12'd1;
+		else if (cnt_source_ongoing != 12'd0)
+			cnt_source_ongoing <= (cnt_source_ongoing==dftpts) ?
+		                           12'd0 : cnt_source_ongoing + 12'd1;
+		else
+			cnt_source_ongoing <= 0;
+
+		stat_to_ctrl.source_ongoing <= (cnt_source_ongoing != 12'd0);
 	end
 end
-assign stat_to_ctrl.source_ongoing = 1'b0;
 
 CTA_addr_trans #(
 		.wDataInOut (12)
@@ -394,7 +418,53 @@ endgenerate
 //------------------------------------------------
 //------------------ 4th stage: Source ------------
 //------------------------------------------------
+always@(posedge clk)
+begin 
+	if (!rst_n)
+	begin
+		N_PFA_out <= 0;
+		bank_index_source_r <= 0;
+	end
+	else
+	begin
+		N_PFA_out <= (stat_to_ctrl.source_ongoing)? N_PFA_out+12'd1 
+		                 : 12'd0;
+		bank_index_source_r <= bank_index_source;
+	end
+end
 
+divider_7 divider_7_inst2 (
+	.dividend 	(N_PFA_out),  
 
+	.quotient 	(bank_addr_source),
+	.remainder 	(bank_index_source)
+);
+
+always@(*)
+begin
+	case (bank_index_source)
+	3'd0:  rden_source = 7'b1000000;
+	3'd1:  rden_source = 7'b0100000;
+	3'd2:  rden_source = 7'b0010000;
+	3'd3:  rden_source = 7'b0001000;
+	3'd4:  rden_source = 7'b0000100;
+	3'd5:  rden_source = 7'b0000010;
+	3'd6:  rden_source = 7'b0000001;
+	default: rden_source = 7'd0;
+	endcase
+end
+
+generate
+for (i=0; i<7; i++) begin : rdaddr_RAM_gen
+assign rdaddr_RAM[i]= (ctrl.state==2'b01)? rdaddr_rd : bank_addr_source;
+assign rden[i] = (ctrl.state==2'b01)? rden_rd[i] : 
+                 (rden_source[i] & stat_to_ctrl.source_ongoing);
+assign d_real_rd[i] = (ctrl.state==2'b01)? dout_real_RAM[i] : 30'd0;
+assign d_imag_rd[i] = (ctrl.state==2'b01)? dout_imag_RAM[i] : 30'd0;
+end
+endgenerate
+
+assign out_data.d_real = dout_real_RAM[bank_index_source_r];
+assign out_data.d_imag = dout_imag_RAM[bank_index_source_r];
 
 endmodule

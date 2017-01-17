@@ -155,11 +155,13 @@ begin
 	if (!rst_n)
 	begin
 		cnt_stage <= 0;
+		//cnt_stage <= 0;
 		wr_ongoing_mem0_r <= 0;
 		wr_ongoing_mem1_r <= 0;
 	end
 	else
 	begin
+		//cnt_stage_r <= cnt_stage;
 		wr_ongoing_mem0_r <= stat_from_mem0.wr_ongoing;
 		wr_ongoing_mem1_r <= stat_from_mem1.wr_ongoing;
 		if (fsm==2'd2)

@@ -274,7 +274,7 @@ for m=1:NumOfFactors
                             fft_tw_out = read_data_index(1:5);
                         
                             cnt_debug = cnt_debug+1;
-                            if (cnt_debug>=397 && m==5)
+                            if (cnt_debug>=1 && m==1)
                                 cnt_debug = cnt_debug;
                             end
 %                             
