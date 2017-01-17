@@ -63,6 +63,7 @@ logic [2:0]  cnt_stage;
 logic wr_ongoing_mem0_r, wr_ongoing_mem1_r;
 
 logic [2:0]  NumOfFactors;
+logic [11:0]  dftpts;
 
 //-----------  1200 case ----------------
 assign  NumOfFactors = 3'd5;
@@ -179,13 +180,23 @@ always@(posedge clk)
 begin
 	if (!rst_n)
 	begin
+		dftpts <= 0;
 		ctrl_to_mem0.state <= 0;
 		ctrl_to_mem1.state <= 0;
 		ctrl_to_mem0.current_stage <= 0;
 		ctrl_to_mem1.current_stage <= 0;
+		ctrl_to_mem0.dftpts <= 0;
+		ctrl_to_mem1.dftpts <= 0;
 	end
 	else
 	begin
+		if (fsm==2'd0 && stat_from_mem0.sink_sop==1'b1)
+			dftpts <= stat_from_mem0.dftpts;
+		else if (fsm==2'd0 && stat_from_mem1.sink_sop==1'b1)
+			dftpts <= stat_from_mem1.dftpts;
+		else
+			dftpts <= dftpts;
+
 		case (fsm)
 		2'd0, 2'd1:
 		begin
@@ -193,6 +204,8 @@ begin
 			ctrl_to_mem1.state <= (!sw_in) ? ctrl_to_mem1.state : 2'b00;
 			ctrl_to_mem0.current_stage <= 0;
 			ctrl_to_mem1.current_stage <= 0;
+			ctrl_to_mem0.dftpts <= 0;
+			ctrl_to_mem1.dftpts <= 0;
 		end
 		2'd2:
 		begin
@@ -200,6 +213,8 @@ begin
 			ctrl_to_mem1.state <= (sw_in ^ cnt_stage[0]) ? 2'b01 : 2'b10;
 			ctrl_to_mem0.current_stage <= cnt_stage;
 			ctrl_to_mem1.current_stage <= cnt_stage;
+			ctrl_to_mem0.dftpts <= dftpts;
+			ctrl_to_mem1.dftpts <= dftpts;
 		end
 		2'd3:
 		begin
@@ -207,6 +222,8 @@ begin
 			ctrl_to_mem1.state <= (sw_out) ? 2'b11 : 2'b00;
 			ctrl_to_mem0.current_stage <= 0;
 			ctrl_to_mem1.current_stage <= 0;
+			ctrl_to_mem0.dftpts <= 0;
+			ctrl_to_mem1.dftpts <= 0;
 		end
 		endcase
 	end

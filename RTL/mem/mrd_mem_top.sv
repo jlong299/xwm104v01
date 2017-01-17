@@ -50,6 +50,9 @@ logic [0:6][29:0] wrdin_real, wrdin_imag;
 logic [0:6][7:0]  wraddr_RAM, wraddr_wr;
 logic [0:6]  wren_wr;
 
+logic [1:0] ctrl_state_r;
+logic [11:0] cnt_rd_ongoing, cnt_rd_stop;
+
 //------------------------------------------------
 //------------------ 1st stage: Sink -------------
 //------------------------------------------------
@@ -62,7 +65,12 @@ begin
 	end
 	else
 	begin
-		dftpts <= (ctrl.state==2'b00 && in_data.sop)? in_data.dftpts : dftpts;
+		if (ctrl.state==2'b00 && in_data.sop)
+			dftpts <= in_data.dftpts;
+		else if (ctrl.state==2'b10 && ctrl_state_r==2'b00)
+			dftpts <= ctrl.dftpts;
+		else
+			dftpts <= dftpts;
 
 		if (in_data.sop)
 			clr_n_PFA_addr <= 1'b1;
@@ -176,6 +184,7 @@ begin
 		else if (bank_index_rd[2]==k) rdaddr_rd[k] <= bank_addr_rd[2]; 
 		else if (bank_index_rd[3]==k) rdaddr_rd[k] <= bank_addr_rd[3]; 
 		else if (bank_index_rd[4]==k) rdaddr_rd[k] <= bank_addr_rd[4];
+		else  rdaddr_rd[k] <= 0;
 	end
 end
 end
@@ -235,7 +244,7 @@ generate
 	mrd_RAM_fake RAM_fake(
 		.clk (clk),
 		.wren (wren[i]),
-		.wraddr (wraddr_RAM[7:0]),
+		.wraddr (wraddr_RAM[i]),
 		.din_real (din_real_RAM[i]),
 		.din_imag (din_imag_RAM[i]),
 
@@ -247,8 +256,6 @@ generate
 	end
 endgenerate
 
-logic [1:0] ctrl_state_r;
-logic [11:0] cnt_rd_ongoing, cnt_rd_stop;
 always@(*)
 begin
 	cnt_rd_stop = dftpts/(ctrl.Nf[ctrl.current_stage]);
@@ -315,8 +322,9 @@ CTA_addr_trans_inst	(
 
 generate
 for (i=0; i<7; i++) begin : wraddr_RAM_gen
-assign wraddr_RAM[i]= (ctrl.stage==2'b00)? bank_addr_sink[7:0] : wraddr_wr[i];
-assign wren[i] = (ctrl.stage==2'b00)? (wren_sink[i] & input_valid_r[in_dly])
+assign wraddr_RAM[i]= (ctrl.state==2'b00)? bank_addr_sink[7:0] 
+                      : wraddr_wr[i];
+assign wren[i] = (ctrl.state==2'b00)? (wren_sink[i] & input_valid_r[in_dly])
                   : wren_wr[i] ;
 end
 endgenerate
@@ -329,6 +337,8 @@ begin
 	begin
 		wren_wr[k] <= 0;
 		wraddr_wr[k] <= 0;
+		wrdin_real[k] <= 0;
+		wrdin_imag[k] <= 0;
 	end
 	else
 	begin
@@ -341,15 +351,41 @@ begin
 		else wren_wr[k] <= 1'b0;
 
 		if (in_rdx2345_data.bank_index[0]==k) 
-			wraddr_wr[k] <= in_rdx2345_data.bank_addr[0]; 
+		begin
+			wraddr_wr[k] <= in_rdx2345_data.bank_addr[0];
+			wrdin_real[k] <= in_rdx2345_data.d_real[0]; 
+			wrdin_imag[k] <= in_rdx2345_data.d_imag[0]; 
+		end
 		else if (in_rdx2345_data.bank_index[1]==k) 
-			wraddr_wr[k] <= in_rdx2345_data.bank_addr[1]; 
+		begin
+			wraddr_wr[k] <= in_rdx2345_data.bank_addr[1];
+			wrdin_real[k] <= in_rdx2345_data.d_real[1]; 
+			wrdin_imag[k] <= in_rdx2345_data.d_imag[1]; 
+		end 
 		else if (in_rdx2345_data.bank_index[2]==k) 
+		begin
 			wraddr_wr[k] <= in_rdx2345_data.bank_addr[2]; 
+			wrdin_real[k] <= in_rdx2345_data.d_real[2]; 
+			wrdin_imag[k] <= in_rdx2345_data.d_imag[2]; 
+		end
 		else if (in_rdx2345_data.bank_index[3]==k) 
-			wraddr_wr[k] <= in_rdx2345_data.bank_addr[3]; 
+		begin
+			wraddr_wr[k] <= in_rdx2345_data.bank_addr[3];
+			wrdin_real[k] <= in_rdx2345_data.d_real[3]; 
+			wrdin_imag[k] <= in_rdx2345_data.d_imag[3]; 
+		end 
 		else if (in_rdx2345_data.bank_index[4]==k) 
+		begin
 			wraddr_wr[k] <= in_rdx2345_data.bank_addr[4];
+			wrdin_real[k] <= in_rdx2345_data.d_real[4]; 
+			wrdin_imag[k] <= in_rdx2345_data.d_imag[4]; 
+		end
+		else
+		begin
+			wraddr_wr[k] <= 0;
+			wrdin_real[k] <= 0; 
+			wrdin_imag[k] <= 0;
+		end 
 	end
 end
 end

@@ -21,10 +21,10 @@ endinterface
 interface mrd_rdx2345_if ();
 	logic [1:0]  fsm;
 	logic valid;
-	logic [4:0][29:0] d_real;
-	logic [4:0][29:0] d_imag;
-	logic [4:0][2:0]  bank_index;
-	logic [4:0][9:0]  bank_addr;
+	logic [0:4][29:0] d_real;
+	logic [0:4][29:0] d_imag;
+	logic [0:4][2:0]  bank_index;
+	logic [0:4][7:0]  bank_addr;
 	// Twiddle parameters
 	logic [1:0]  tw_ROM_sel;
 	logic [7:0]  tw_ROM_addr_step;
@@ -42,6 +42,7 @@ interface mrd_ctrl_if ();
 	logic [1:0] state;
 	// CTA stage
 	logic [2:0] current_stage;
+	logic [11:0] dftpts;
 
 	logic [0:5][2:0] Nf;
 	logic [0:2][9:0] Nf_PFA;

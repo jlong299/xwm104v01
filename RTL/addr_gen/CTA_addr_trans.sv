@@ -70,7 +70,7 @@ acc_n4 (
 
 	.clr_n 	(clr_n & (!(current_stage==3'd3))),
 	.ena_top 	(1'b1),
-	.in_carry 	(carry_out[4]),
+	.in_carry 	(carry_in[3]),
 	.max_acc 	({{wDataInOut-3{1'b0}}, Nf[3]-3'd1}),
 	.inc 	({{wDataInOut-1{1'b0}},1'b1}),
 
@@ -89,7 +89,7 @@ acc_n3 (
 
 	.clr_n 	(clr_n & (!(current_stage==3'd2))),
 	.ena_top 	(1'b1),
-	.in_carry 	(carry_out[3]),
+	.in_carry 	(carry_in[2]),
 	.max_acc 	({{wDataInOut-3{1'b0}}, Nf[2]-3'd1}),
 	.inc 	({{wDataInOut-1{1'b0}},1'b1}),
 
@@ -108,7 +108,7 @@ acc_n2 (
 
 	.clr_n 	(clr_n & (!(current_stage==3'd1))),
 	.ena_top 	(1'b1),
-	.in_carry 	(carry_out[2]),
+	.in_carry 	(carry_in[1]),
 	.max_acc 	({{wDataInOut-3{1'b0}}, Nf[1]-3'd1}),
 	.inc 	({{wDataInOut-1{1'b0}},1'b1}),
 
@@ -127,7 +127,7 @@ acc_n1 (
 
 	.clr_n 	(clr_n & (!(current_stage==3'd0))),
 	.ena_top 	(1'b1),
-	.in_carry 	(carry_out[1]),
+	.in_carry 	(carry_in[0]),
 	.max_acc 	({{wDataInOut-3{1'b0}}, Nf[0]-3'd1}),
 	.inc 	({{wDataInOut-1{1'b0}},1'b1}),
 
