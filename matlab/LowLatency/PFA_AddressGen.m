@@ -68,3 +68,61 @@ end
 
 max(addr_compute_2 - addr_compute_1)	
 min(addr_compute_2 - addr_compute_1)	
+
+
+
+
+
+%% Output PfA seq gen
+addr_compute_1 = zeros(N,1);
+addr_IOdata = zeros(N,1);
+
+for k1=0:N1-1
+	for k2=0:N2-1
+		for k3=0:N3-1
+			addr_compute_1(N2*N3*k1+N3*k2+k3 +1) = mod(p2*p3*N2*N3*k1+p3*N1*N3*k2+N1*N2*k3, N);
+		end
+	end
+end
+
+addr_compute_2 = zeros(N,1);
+
+k1 = 0;
+k2 = 0;
+k3 = 0;
+k2p = 0;   % k2'   k2 prime
+k3p = 0;
+k2s = 0;   % k2*
+
+ttt = zeros(N,1);
+ttt2 = zeros(N,3);
+for m=0:N-1
+	% k2 = (k2' - q2*N3*k1) mod N2
+	k2 = mod(k2p + (N2*N3-q2*N3)*k1 , N2 );
+
+	% k2* = (N1*k2' + k1) mod N3
+	k2s = mod(N1*k2p + k1, N3);
+
+	% k3 = (k3' - q3*(k2*)) mod N3
+	k3 = mod(k3p + (N3-q3)*k2s, N3);
+    
+	addr_compute_2(N2*N3*k1+N3*k2+k3 +1) = m;
+        
+    ttt(m+1)=   N2*N3*k1+N3*k2+k3 ;
+    ttt2(m+1,:) = [k1,k2,k3];
+  
+    %[k1,k2,k3]
+	if (k1 == N1-1) && (k2p == N2-1)
+		k1 = 0;
+		k2p = 0;
+		k3p = k3p + 1;
+	elseif (k1 == N1-1)
+		k1 = 0;
+		k2p = k2p + 1;
+	else
+		k1 = k1 + 1;
+    end
+end
+
+max(addr_compute_2 - addr_compute_1)	
+min(addr_compute_2 - addr_compute_1)	
