@@ -59,7 +59,7 @@ module mrd_ctrl_fsm (
 );
 
 logic [1:0]  fsm;
-logic [2:0]  cnt_stage;
+logic [2:0]  cnt_stage, cnt_stage_r;
 logic wr_ongoing_mem0_r, wr_ongoing_mem1_r;
 
 logic [2:0]  NumOfFactors;
@@ -132,7 +132,7 @@ begin
 		begin
 			sw_in <= sw_in;
 			sw_out <= (NumOfFactors[0])? ~sw_in : sw_in;
-			sw_1to0 <= sw_in ^ cnt_stage[0];
+			sw_1to0 <= sw_in ^ cnt_stage_r[0];
 		end
 		2'd3:
 		begin
@@ -155,13 +155,13 @@ begin
 	if (!rst_n)
 	begin
 		cnt_stage <= 0;
-		//cnt_stage <= 0;
+		cnt_stage <= 0;
 		wr_ongoing_mem0_r <= 0;
 		wr_ongoing_mem1_r <= 0;
 	end
 	else
 	begin
-		//cnt_stage_r <= cnt_stage;
+		cnt_stage_r <= cnt_stage;
 		wr_ongoing_mem0_r <= stat_from_mem0.wr_ongoing;
 		wr_ongoing_mem1_r <= stat_from_mem1.wr_ongoing;
 		if (fsm==2'd2)
@@ -211,10 +211,10 @@ begin
 		end
 		2'd2:
 		begin
-			ctrl_to_mem0.state <= (sw_in ^ cnt_stage[0]) ? 2'b10 : 2'b01;
-			ctrl_to_mem1.state <= (sw_in ^ cnt_stage[0]) ? 2'b01 : 2'b10;
-			ctrl_to_mem0.current_stage <= cnt_stage;
-			ctrl_to_mem1.current_stage <= cnt_stage;
+			ctrl_to_mem0.state <= (sw_in ^ cnt_stage_r[0]) ? 2'b10 : 2'b01;
+			ctrl_to_mem1.state <= (sw_in ^ cnt_stage_r[0]) ? 2'b01 : 2'b10;
+			ctrl_to_mem0.current_stage <= cnt_stage_r;
+			ctrl_to_mem1.current_stage <= cnt_stage_r;
 			ctrl_to_mem0.dftpts <= dftpts;
 			ctrl_to_mem1.dftpts <= dftpts;
 		end

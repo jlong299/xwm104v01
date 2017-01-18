@@ -42,7 +42,6 @@ logic [0:6]  wren_sink;
 
 logic [0:6] rden, wren;
 logic [0:6] rden_rd;
-logic [0:6][7:0]  rdaddr, wraddr;
 logic [0:6][7:0]  rdaddr_rd;
 logic [0:4][11:0]  addrs_butterfly;
 logic [0:4][7:0]  bank_addr_rd, bank_addr_rd_r, bank_addr_rd_rr;
@@ -61,10 +60,9 @@ logic [11:0] cnt_rd_ongoing, cnt_rd_stop, cnt_source_ongoing;
 logic [11:0] N_PFA_out;
 logic [0:6]  rden_source;
 logic [11:0]  bank_addr_source;
-logic [2:0] bank_index_source;
+logic [2:0] bank_index_source, bank_index_source_r;
 logic [0:6][29:0] dout_real_RAM, dout_imag_RAM;
 logic [0:6][7:0]  rdaddr_RAM;
-logic bank_index_source_r;
 
 
 //------------------------------------------------
@@ -456,7 +454,7 @@ end
 
 generate
 for (i=0; i<7; i++) begin : rdaddr_RAM_gen
-assign rdaddr_RAM[i]= (ctrl.state==2'b01)? rdaddr_rd : bank_addr_source;
+assign rdaddr_RAM[i]= (ctrl.state==2'b01)? rdaddr_rd[i] : bank_addr_source;
 assign rden[i] = (ctrl.state==2'b01)? rden_rd[i] : 
                  (rden_source[i] & stat_to_ctrl.source_ongoing);
 assign d_real_rd[i] = (ctrl.state==2'b01)? dout_real_RAM[i] : 30'd0;

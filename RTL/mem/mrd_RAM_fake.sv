@@ -12,18 +12,20 @@ module mrd_RAM_fake (
 	output logic [29:0] dout_imag
 );
 
-logic [59:0]  mem[0:255];
+// logic [59:0]  mem[0:255];
+logic [29:0]  mem_r[0:255];
+logic [29:0]  mem_i[0:255];
 always@(posedge clk)
 begin
 	if (wren)
 	begin
-		mem[wraddr][59:30] <= din_real;
-		mem[wraddr][29:0] <= din_imag;
+		mem_r[wraddr] <= din_real;
+		mem_i[wraddr] <= din_imag;
 	end
 	else if (rden)
 	begin
-		dout_real <= mem[rdaddr][59:30];
-		dout_imag <= mem[rdaddr][29:0];
+		dout_real <= mem_r[rdaddr];
+		dout_imag <= mem_i[rdaddr];
 	end
 end
 
