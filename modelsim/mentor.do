@@ -34,4 +34,4 @@ add wave -radix unsigned sim:/top_tb/top_inst/mem1/stat_to_ctrl/*
 
 view structure
 view signals
-run 45us
+run 60us

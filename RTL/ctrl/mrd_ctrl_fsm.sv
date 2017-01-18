@@ -76,6 +76,10 @@ assign ctrl_to_mem0.q_p = 10'd3;
 assign ctrl_to_mem1.q_p = 10'd3;
 assign ctrl_to_mem0.r_p = 10'd17;
 assign ctrl_to_mem1.r_p = 10'd17;
+assign ctrl_to_mem0.q_p_o = 10'd1;
+assign ctrl_to_mem1.q_p_o = 10'd1;
+assign ctrl_to_mem0.r_p_o = 10'd11;
+assign ctrl_to_mem1.r_p_o = 10'd11;
 
 always@(posedge clk)
 begin

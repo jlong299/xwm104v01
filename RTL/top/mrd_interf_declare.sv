@@ -48,6 +48,8 @@ interface mrd_ctrl_if ();
 	logic [0:2][9:0] Nf_PFA;
 	logic [9:0] q_p;
 	logic [9:0] r_p;
+	logic [9:0] q_p_o;
+	logic [9:0] r_p_o;
 endinterface
 
 //mrd_stat_if :  State signals from mrd_mem_top to mrd_ctrl_fsm.

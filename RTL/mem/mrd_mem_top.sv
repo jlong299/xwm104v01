@@ -22,8 +22,9 @@ module mrd_mem_top (
 );
 
 logic [11:0]  dftpts, N_PFA_in;
-logic  clr_n_PFA_addr;
+logic  clr_n_PFA_addr, clr_n_PFA_addr_o;
 logic  [9:0]  n1_PFA_in, n2_PFA_in, n3_PFA_in;
+logic  [9:0]  k1_PFA_in, k2_PFA_in, k3_PFA_in;
 
 localparam  in_dly = 1;
 logic [in_dly:0]  input_valid_r;
@@ -312,7 +313,7 @@ begin
 		stat_to_ctrl.wr_ongoing <= (ctrl.state==2'b10) ? 
 		                           in_rdx2345_data.valid : 1'b0;
 
-		if (ctrl.state==2'b11)                          
+		if (ctrl.state==2'b11 && ctrl_state_r!=2'b11)                          
 			cnt_source_ongoing <= 12'd1;
 		else if (cnt_source_ongoing != 12'd0)
 			cnt_source_ongoing <= (cnt_source_ongoing==dftpts) ?
@@ -416,6 +417,45 @@ endgenerate
 //------------------------------------------------
 //------------------ 4th stage: Source ------------
 //------------------------------------------------
+always@(posedge clk)
+begin
+	if (!rst_n)
+	begin
+		clr_n_PFA_addr_o <= 0;
+	end
+	else
+	begin
+		if (cnt_source_ongoing == 12'd1)
+			clr_n_PFA_addr_o <= 1'b1;
+		else if (cnt_source_ongoing == dftpts)
+			clr_n_PFA_addr_o <= 1'b0;
+		else
+			clr_n_PFA_addr_o <= clr_n_PFA_addr_o;
+	end
+end
+
+
+PFA_addr_trans_out #(
+		.wDataInOut (10)
+	)
+PFA_addr_trans_o_inst
+	(
+	.clk  (clk),    
+	.rst_n  (rst_n), 
+
+	.clr_n (clr_n_PFA_addr_o),
+
+	.Nf1 (ctrl.Nf_PFA[0]),  //N1
+	.Nf2 (ctrl.Nf_PFA[1]),  //N2
+	.Nf3 (ctrl.Nf_PFA[2]),  //N3
+	.q_p (ctrl.q_p_o),  //q'
+	.r_p (ctrl.r_p_o),  //r'
+
+	.k1 (k1_PFA_in),
+	.k2 (k2_PFA_in),
+	.k3 (k3_PFA_in)
+);
+
 always@(posedge clk)
 begin 
 	if (!rst_n)
