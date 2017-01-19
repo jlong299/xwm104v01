@@ -19,14 +19,13 @@ endinterface
 // 	logic [7:0]  tw_ROM_exp_time;
 // endinterface
 interface mrd_rdx2345_if ();
-	logic [1:0]  fsm;
+	logic [2:0]  factor;
 	logic valid;
 	logic [0:4][29:0] d_real;
 	logic [0:4][29:0] d_imag;
 	logic [0:4][2:0]  bank_index;
 	logic [0:4][7:0]  bank_addr;
 	// Twiddle parameters
-	logic [1:0]  tw_ROM_sel;
 	logic [7:0]  tw_ROM_addr_step;
 	logic [7:0]  tw_ROM_exp_ceil;
 	logic [7:0]  tw_ROM_exp_time;
