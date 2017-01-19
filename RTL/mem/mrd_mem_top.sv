@@ -24,7 +24,7 @@ module mrd_mem_top (
 logic [11:0]  dftpts, N_PFA_in;
 logic  clr_n_PFA_addr, clr_n_PFA_addr_o;
 logic  [9:0]  n1_PFA_in, n2_PFA_in, n3_PFA_in;
-logic  [9:0]  k1_PFA_in, k2_PFA_in, k3_PFA_in;
+logic  [9:0]  k1_PFA_out, k2_PFA_out, k3_PFA_out;
 
 localparam  in_dly = 1;
 logic [in_dly:0]  input_valid_r;
@@ -316,7 +316,7 @@ begin
 		if (ctrl.state==2'b11 && ctrl_state_r!=2'b11)                          
 			cnt_source_ongoing <= 12'd1;
 		else if (cnt_source_ongoing != 12'd0)
-			cnt_source_ongoing <= (cnt_source_ongoing==dftpts) ?
+			cnt_source_ongoing <= (cnt_source_ongoing==dftpts+'d2) ?
 		                           12'd0 : cnt_source_ongoing + 12'd1;
 		else
 			cnt_source_ongoing <= 0;
@@ -427,13 +427,14 @@ begin
 	begin
 		if (cnt_source_ongoing == 12'd1)
 			clr_n_PFA_addr_o <= 1'b1;
-		else if (cnt_source_ongoing == dftpts)
+		else if (cnt_source_ongoing == dftpts+'d1)
 			clr_n_PFA_addr_o <= 1'b0;
 		else
 			clr_n_PFA_addr_o <= clr_n_PFA_addr_o;
 	end
 end
 
+logic [2:0]  k1,k2,k3,k4,k5,k6; 
 
 PFA_addr_trans_out #(
 		.wDataInOut (10)
@@ -451,22 +452,44 @@ PFA_addr_trans_o_inst
 	.q_p (ctrl.q_p_o),  //q'
 	.r_p (ctrl.r_p_o),  //r'
 
-	.k1 (k1_PFA_in),
-	.k2 (k2_PFA_in),
-	.k3 (k3_PFA_in)
+	.k1 (k1_PFA_out),
+	.k2 (k2_PFA_out),
+	.k3 (k3_PFA_out)
 );
 
+//-------- Below is only 1200 case -----------
+assign k1 = k1_PFA_out % 3'd4;
+assign k2 = k1_PFA_out / 3'd4;
+assign k3 = k2_PFA_out % 3'd5;
+assign k4 = k2_PFA_out / 3'd5;
+assign k5 = k3_PFA_out;
+assign k6 = 0;
 always@(posedge clk)
 begin 
 	if (!rst_n)
 	begin
 		N_PFA_out <= 0;
+	end
+	else
+	begin
+		N_PFA_out <= k1*10'd300 + k2*10'd75 + k3*10'd15 + k4*10'd3 + k5 + k6;
+	end
+end
+
+
+//-------------------------------------------- 
+
+
+always@(posedge clk)
+begin 
+	if (!rst_n)
+	begin
 		bank_index_source_r <= 0;
 	end
 	else
 	begin
-		N_PFA_out <= (stat_to_ctrl.source_ongoing)? N_PFA_out+12'd1 
-		                 : 12'd0;
+		// N_PFA_out <= (stat_to_ctrl.source_ongoing)? N_PFA_out+12'd1 
+		//                  : 12'd0 ;
 		bank_index_source_r <= bank_index_source;
 	end
 end
@@ -504,5 +527,26 @@ endgenerate
 
 assign out_data.d_real = dout_real_RAM[bank_index_source_r];
 assign out_data.d_imag = dout_imag_RAM[bank_index_source_r];
+
+always@(posedge clk)
+begin
+	if (!rst_n)
+	begin
+		out_data.sop <= 0;
+		out_data.eop <= 0;
+		out_data.valid <= 0;
+	end
+	else
+	begin
+		out_data.sop <= (cnt_source_ongoing==12'd3)? 1'b1 : 1'b0;
+		out_data.eop <= (cnt_source_ongoing==dftpts+12'd2)? 1'b1 : 1'b0;
+		if (cnt_source_ongoing==12'd3)
+			out_data.valid <= 1'b1;
+		else if (out_data.eop)
+			out_data.valid <= 1'b0;
+		else
+			out_data.valid <= out_data.valid;
+	end
+end
 
 endmodule
