@@ -184,6 +184,7 @@ n_tw = 0;
 cnt_n_tw = 0;
 sum_addr_coeff = zeros(1,NumOfFactors_max);
 x_debug = zeros(5,2000);
+cnt_debug = 0;
 %---------------------------------
 for m=1:NumOfFactors
 
@@ -215,7 +216,6 @@ for m=1:NumOfFactors
 
     n_tw = 0;
     cnt_n_tw = 0;
-    cnt_debug = 0;
 
     for t_n1 = 0:Nf_stage(1) -1
         for t_n2 = 0:Nf_stage(2) -1
@@ -279,8 +279,10 @@ for m=1:NumOfFactors
                             if (cnt_debug<=600 )
                                 x_debug(:,cnt_debug) = fft_tw_out;
                             end
-                            if (cnt_debug >= 75)
+                            if (cnt_debug >= 300)
                                 cnt_debug = cnt_debug;
+                                fft(read_data_index(1:4))
+                                int16(fft_tw_out)
                             end
                            
                             % write data to each bank of another RAM

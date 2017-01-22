@@ -19,13 +19,14 @@ module twdl_PFA #(parameter
 	output signed [wDataInOut-1:0]  dout_imag [0:4]
 );
 
+parameter  wDataTemp = 49;
 logic [7:0]  n_tw, cnt_n_tw;
 logic [1:0]  valid_r;
 logic [0:4][7:0] rdaddr;
 logic signed [17:0] tw_real [0:4]; 
 logic signed [17:0] tw_imag [0:4]; 
-logic signed [wDataInOut-1:0] dout_real_t [0:4];
-logic signed [wDataInOut-1:0] dout_imag_t [0:4];
+logic signed [wDataTemp-1:0] dout_real_t [0:4];
+logic signed [wDataTemp-1:0] dout_imag_t [0:4];
 
 always@(posedge clk)
 begin
@@ -114,9 +115,9 @@ begin
 	end
 end
 
-assign dout_real[i] ={ {16{dout_real_t[i][wDataInOut-1]}}, 
+assign dout_real[i] ={ {16{dout_real_t[i][wDataTemp-1]}}, 
                        dout_real_t[i][wDataInOut-1:16] };
-assign dout_imag[i] ={ {16{dout_imag_t[i][wDataInOut-1]}}, 
+assign dout_imag[i] ={ {16{dout_imag_t[i][wDataTemp-1]}}, 
                        dout_imag_t[i][wDataInOut-1:16] };                      
 end
 endgenerate

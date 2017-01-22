@@ -9,6 +9,8 @@ module mrd_rdx2345_twdl (
 localparam  wDFTout = 30;
 localparam  wDFTin = 30;
 
+logic [0:4][2:0]  bank_index_r [0:1];
+logic [0:4][7:0]  bank_addr_r [0:1];
 logic dft_val;
 logic signed [wDFTout-1:0] dft_real [0:4];
 logic signed [wDFTout-1:0] dft_imag [0:4];
@@ -27,8 +29,12 @@ logic signed [wDFTout-1:0] imag_rdx4 [0:4];
 
 always@(posedge clk)
 begin
-	to_mem.bank_index <= from_mem.bank_index;
-	to_mem.bank_addr <= from_mem.bank_addr;
+	bank_index_r[0] <= from_mem.bank_index;
+	bank_addr_r[0] <= from_mem.bank_addr;
+	bank_index_r[1] <= bank_index_r[0];
+	bank_addr_r[1] <= bank_addr_r[0];
+	to_mem.bank_index <= bank_index_r[1];
+	to_mem.bank_addr <= bank_addr_r[1];
 end
 
 
