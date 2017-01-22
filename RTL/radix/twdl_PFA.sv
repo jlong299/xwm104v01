@@ -5,21 +5,25 @@ module twdl_PFA #(parameter
 	input clk,    
 	input rst_n,  
 
-	input [2:0]  factor;
-	input [7:0]  tw_ROM_addr_step;
-	input [7:0]  tw_ROM_exp_ceil;
-	input [7:0]  tw_ROM_exp_time;
+	input [2:0]  factor,
+	input [7:0]  tw_ROM_addr_step,
+	input [7:0]  tw_ROM_exp_ceil,
+	input [7:0]  tw_ROM_exp_time,
 
-	input  in_val;
-	input  [0:4][wDataInOut-1:0]  din_real;
-	input  [0:4][wDataInOut-1:0]  din_imag;
+	input  in_val,
+	input  signed [0:4][wDataInOut-1:0]  din_real,
+	input  signed [0:4][wDataInOut-1:0]  din_imag,
 
-	output  out_val;
-	output [0:4][wDataInOut-1:0]  dout_real;
-	output [0:4][wDataInOut-1:0]  dout_imag
+	output out_val,
+	output signed [0:4][wDataInOut-1:0]  dout_real,
+	output signed [0:4][wDataInOut-1:0]  dout_imag
 );
 
 logic [7:0]  n_tw, cnt_n_tw;
+logic [1:0]  valid_r;
+logic [0:4][7:0] rdaddr;
+logic signed [0:4][17:0] tw_real, tw_imag;
+logic signed [0:4][wDataInOut-1:0] dout_real_t, dout_imag_t;
 
 always@(posedge clk)
 begin
@@ -58,10 +62,10 @@ end
 
 genvar i;
 
-assign wraddr[0] = 0;
+assign rdaddr[0] = 0;
 generate
-for (i=3'd0; i<3'd5; i=i+3'd1)
-	assign wraddr[i] = tw_ROM_addr_step*n_tw*(i-3'd1);
+for (i=3'd1; i<3'd5; i=i+3'd1)
+	assign rdaddr[i] = tw_ROM_addr_step * n_tw * i;
 endgenerate
 
 generate
@@ -71,11 +75,45 @@ mrd_ROM_fake_0(
 	.clk  (clk),
 
 	.factor  (factor),
-	.wraddr  (wraddr[i]),
+	.rdaddr  (rdaddr[i]),
 
 	.dout_real  (tw_real[i]),
 	.dout_imag  (tw_imag[i])
 );
+end
+endgenerate
+
+assign out_val = valid_r[1];
+always@(posedge clk)
+begin
+	if (!rst_n)  valid_r <= 0;
+	else	valid_r <= {valid_r[0], in_val};
+end
+
+generate
+for (i=0; i<5; i++) begin
+always@(posedge clk)
+begin
+	if (!rst_n)  
+	begin
+		dout_real_t[i] <= 0;
+		dout_imag_t[i] <= 0;
+	end
+	else
+	begin
+		if (valid_r[0]) begin
+			dout_real_t[i] <= din_real[i] * tw_real[i];
+			dout_imag_t[i] <= din_imag[i] * tw_imag[i];
+		end
+		else begin
+			dout_real_t[i] <= 0;
+			dout_imag_t[i] <= 0;
+		end
+	end
+end
+
+assign dout_real[i] = dout_real_t[i][wDataInOut-1:17];
+assign dout_imag[i] = dout_imag_t[i][wDataInOut-1:17];
 end
 endgenerate
 

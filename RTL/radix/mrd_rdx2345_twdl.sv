@@ -10,7 +10,9 @@ localparam  wDFTout = 30;
 localparam  wDFTin = 30;
 
 logic dft_val;
-logic [0:4][wDFTout-1:0] dft_real, dft_imag;
+logic signed [0:4][wDFTout-1:0] dft_real, dft_imag;
+logic val_rdx4;
+logic signed [0:4][wDFTout-1:0] real_rdx4, imag_rdx4;
 
 always@(posedge clk)
 begin
@@ -37,7 +39,7 @@ dft_rdx4 (
 
 always@(posedge clk)
 begin
-	dft_val <= val_rdx;
+	dft_val <= val_rdx4;
 	dft_real <= real_rdx4;
 	dft_imag <= imag_rdx4;
 end
@@ -49,10 +51,10 @@ twdl (
 	.clk  (clk),
 	.rst_n  (rst_n),
 
-	.factor  (factor),
-	.tw_ROM_addr_step  (tw_ROM_addr_step),
-	.tw_ROM_exp_ceil  (tw_ROM_exp_ceil),
-	.tw_ROM_exp_time  (tw_ROM_exp_time),
+	.factor  (from_mem.factor),
+	.tw_ROM_addr_step  (from_mem.tw_ROM_addr_step),
+	.tw_ROM_exp_ceil  (from_mem.tw_ROM_exp_ceil),
+	.tw_ROM_exp_time  (from_mem.tw_ROM_exp_time),
 
 	.in_val  (dft_val),
 	.din_real  (dft_real),

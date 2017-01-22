@@ -19,17 +19,21 @@ vsim -t ns  -L work $TOP_LEVEL_NAME
 add wave -radix unsigned sim:/top_tb/*
 add wave -radix unsigned sim:/top_tb/top_inst/*
 add wave -radix unsigned sim:/top_tb/top_inst/ctrl_fsm/*
-add wave -radix unsigned sim:/top_tb/top_inst/mem0/*
-add wave -radix unsigned sim:/top_tb/top_inst/mem0/in_data/*
-add wave -radix unsigned sim:/top_tb/top_inst/mem0/ctrl/*
-add wave -radix unsigned sim:/top_tb/top_inst/mem0/stat_to_ctrl/*
-add wave -radix unsigned sim:/top_tb/top_inst/mem0/out_rdx2345_data/*
-add wave -radix unsigned sim:/top_tb/top_inst/mem1/out_rdx2345_data/*
-add wave -radix unsigned sim:/top_tb/top_inst/mem1/in_rdx2345_data/*
-add wave -radix unsigned sim:/top_tb/top_inst/mem1/out_data/*
-add wave -radix unsigned sim:/top_tb/top_inst/mem1/*
-add wave -radix unsigned sim:/top_tb/top_inst/mem1/ctrl/*
-add wave -radix unsigned sim:/top_tb/top_inst/mem1/stat_to_ctrl/*
+# add wave -radix unsigned sim:/top_tb/top_inst/mem0/*
+# add wave -radix unsigned sim:/top_tb/top_inst/mem0/in_data/*
+# add wave -radix unsigned sim:/top_tb/top_inst/mem0/ctrl/*
+# add wave -radix unsigned sim:/top_tb/top_inst/mem0/stat_to_ctrl/*
+# add wave -radix unsigned sim:/top_tb/top_inst/mem0/out_rdx2345_data/*
+# add wave -radix unsigned sim:/top_tb/top_inst/mem1/out_rdx2345_data/*
+# add wave -radix unsigned sim:/top_tb/top_inst/mem1/in_rdx2345_data/*
+# add wave -radix unsigned sim:/top_tb/top_inst/mem1/out_data/*
+# add wave -radix unsigned sim:/top_tb/top_inst/mem1/*
+# add wave -radix unsigned sim:/top_tb/top_inst/mem1/ctrl/*
+# add wave -radix unsigned sim:/top_tb/top_inst/mem1/stat_to_ctrl/*
+
+add wave -radix unsigned sim:/top_tb/top_inst/rdx2345_twdl/*
+add wave -radix unsigned sim:/top_tb/top_inst/rdx2345_twdl/dft_rdx4/*
+add wave -radix unsigned sim:/top_tb/top_inst/rdx2345_twdl/twdl/*
 
 
 view structure
