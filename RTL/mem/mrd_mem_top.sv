@@ -255,36 +255,42 @@ begin
 		case (ctrl.current_stage)
 		3'd0 :
 		begin
+			out_rdx2345_data.factor <= 3'd4;
 			out_rdx2345_data.tw_ROM_addr_step <= 8'd16;
 			out_rdx2345_data.tw_ROM_exp_ceil <= 8'd4;
 			out_rdx2345_data.tw_ROM_exp_time <= 8'd75;
 		end
 		3'd1 :
 		begin
+			out_rdx2345_data.factor <= 3'd4;
 			out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
 			out_rdx2345_data.tw_ROM_exp_ceil <= 8'd1;
 			out_rdx2345_data.tw_ROM_exp_time <= 8'd1;
 		end
 		3'd2 :
 		begin
+			out_rdx2345_data.factor <= 3'd5;
 			out_rdx2345_data.tw_ROM_addr_step <= 8'd1;
 			out_rdx2345_data.tw_ROM_exp_ceil <= 8'd5;
 			out_rdx2345_data.tw_ROM_exp_time <= 8'd3;
 		end
 		3'd3 :
 		begin
+			out_rdx2345_data.factor <= 3'd5;
 			out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
 			out_rdx2345_data.tw_ROM_exp_ceil <= 8'd1;
 			out_rdx2345_data.tw_ROM_exp_time <= 8'd1;
 		end
 		3'd4 :
 		begin
+			out_rdx2345_data.factor <= 3'd3;
 			out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
 			out_rdx2345_data.tw_ROM_exp_ceil <= 8'd1;
 			out_rdx2345_data.tw_ROM_exp_time <= 8'd1;
 		end
 		3'd5 :
 		begin
+			out_rdx2345_data.factor <= 3'd1;
 			out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
 			out_rdx2345_data.tw_ROM_exp_ceil <= 8'd1;
 			out_rdx2345_data.tw_ROM_exp_time <= 8'd1;
@@ -293,6 +299,7 @@ begin
 	end
 	else
 	begin
+		out_rdx2345_data.factor <= 3'd1;
 		out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
 		out_rdx2345_data.tw_ROM_exp_ceil <= 8'd0;
 		out_rdx2345_data.tw_ROM_exp_time <= 8'd0;

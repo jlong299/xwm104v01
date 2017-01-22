@@ -36,11 +36,7 @@ add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/*
 add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/dft_rdx4/*
 add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/twdl/*
 add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/twdl/dout_imag_t
-# add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/twdl/twdl_ROM[0]
-# add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/twdl/twdl_ROM[1]
-# add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/twdl/twdl_ROM[2]
-# add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/twdl/twdl_ROM[3]
-# add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/twdl/twdl_ROM[4]
+add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/from_mem/*
 
 
 view structure

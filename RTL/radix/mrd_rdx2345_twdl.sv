@@ -9,14 +9,22 @@ module mrd_rdx2345_twdl (
 localparam  wDFTout = 30;
 localparam  wDFTin = 30;
 
-logic [0:4][2:0]  bank_index_r [0:1];
-logic [0:4][7:0]  bank_addr_r [0:1];
+logic [0:4][2:0]  bank_index_r [0:3];
+logic [0:4][7:0]  bank_addr_r [0:3];
 logic dft_val;
 logic signed [wDFTout-1:0] dft_real [0:4];
 logic signed [wDFTout-1:0] dft_imag [0:4];
 logic val_rdx4;
 logic signed [wDFTout-1:0] real_rdx4 [0:4];
 logic signed [wDFTout-1:0] imag_rdx4 [0:4];
+
+logic val_rdx5;
+logic signed [wDFTout-1:0] real_rdx5 [0:4];
+logic signed [wDFTout-1:0] imag_rdx5 [0:4];
+
+logic val_rdx3;
+logic signed [wDFTout-1:0] real_rdx3 [0:4];
+logic signed [wDFTout-1:0] imag_rdx3 [0:4];
 	
 	integer wr_file;
 	initial begin
@@ -33,8 +41,25 @@ begin
 	bank_addr_r[0] <= from_mem.bank_addr;
 	bank_index_r[1] <= bank_index_r[0];
 	bank_addr_r[1] <= bank_addr_r[0];
-	to_mem.bank_index <= bank_index_r[1];
-	to_mem.bank_addr <= bank_addr_r[1];
+	bank_index_r[2] <= bank_index_r[1];
+	bank_addr_r[2] <= bank_addr_r[1];
+	bank_index_r[3] <= bank_index_r[2];
+	bank_addr_r[3] <= bank_addr_r[2];
+end
+always@(posedge clk)
+begin
+	if (from_mem.factor == 3'd4) begin
+		to_mem.bank_index <= bank_index_r[1];
+		to_mem.bank_addr <= bank_addr_r[1];
+	end
+	else if (from_mem.factor == 3'd5) begin
+		to_mem.bank_index <= bank_index_r[3];
+		to_mem.bank_addr <= bank_addr_r[3];
+	end
+	else begin
+		to_mem.bank_index <= bank_index_r[1];
+		to_mem.bank_addr <= bank_addr_r[1];
+	end
 end
 
 
@@ -54,12 +79,45 @@ dft_rdx4 (
 	.dout_imag  (imag_rdx4)
 	);
 
-assign dft_val = val_rdx4;
+mrd_dft_rdx5 #(
+	.wDataInOut (30)
+	)
+dft_rdx5 (
+	.clk  (clk),
+	.rst_n  (rst_n),
+
+	.in_val  (from_mem.valid),
+	.din_real  (from_mem.d_real),
+	.din_imag  (from_mem.d_imag),
+
+	.out_val  (val_rdx5),
+	.dout_real  (real_rdx5),
+	.dout_imag  (imag_rdx5)
+	);
+
+always@(*)
+begin
+	if (from_mem.factor == 3'd4)
+ 		dft_val = val_rdx4;
+ 	else if (from_mem.factor == 3'd5)
+ 		dft_val = val_rdx5;
+ 	else
+ 		dft_val = val_rdx3;
+end
 always@(posedge clk)
 begin
-	// dft_val <= val_rdx4;
-	dft_real <= real_rdx4;
-	dft_imag <= imag_rdx4;
+	if (from_mem.factor == 3'd4) begin
+		dft_real <= real_rdx4;
+		dft_imag <= imag_rdx4;
+	end
+	else if (from_mem.factor == 3'd5) begin
+		dft_real <= real_rdx5;
+		dft_imag <= imag_rdx5;
+	end
+	else begin
+		dft_real <= real_rdx3;
+		dft_imag <= imag_rdx3;
+	end
 end
 
 twdl_PFA #(
@@ -90,7 +148,7 @@ always@(posedge clk)
 			cnt_val_debug <= 0;
 		else
 		begin
-				if (to_mem.valid && cnt_val_debug != 16'd601)
+				if (to_mem.valid && cnt_val_debug != 16'd841)
 				begin
 					cnt_val_debug <= cnt_val_debug + 'd1;
 					$fwrite(wr_file, "%d %d\n", $signed(to_mem.d_real[0]), $signed(to_mem.d_imag[0]));
@@ -100,10 +158,10 @@ always@(posedge clk)
 					$fwrite(wr_file, "%d %d\n", $signed(to_mem.d_real[4]), $signed(to_mem.d_imag[4]));
 				end
 
-				if (cnt_val_debug==16'd600)  
+				if (cnt_val_debug==16'd840)  
 				begin
 					$fclose(wr_file);
-					cnt_val_debug <= 16'd601;
+					cnt_val_debug <= 16'd841;
 				end
 		end
 
