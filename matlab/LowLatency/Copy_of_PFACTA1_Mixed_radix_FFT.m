@@ -105,7 +105,7 @@ x_real=round((2*rand(1,N)-1)*8192);
 x_imag=round((2*rand(1,N)-1)*8192);
 
 x = x_real + 1j*x_imag;
-x = [0:1:1199];
+x = [0:1:1199]*(1+1i);
 % x = x;
 
 FX = fft(x);
@@ -183,6 +183,7 @@ tw_coeff = zeros(1,5);
 n_tw = 0;
 cnt_n_tw = 0;
 sum_addr_coeff = zeros(1,NumOfFactors_max);
+x_debug = zeros(5,600);
 %---------------------------------
 for m=1:NumOfFactors
 
@@ -271,13 +272,17 @@ for m=1:NumOfFactors
                             end
                                 
                             fft_tw_out = fft_tw2(read_data_index(1:5), Nf(m), tw_coeff, is_last_stage );
-                            fft_tw_out = read_data_index(1:5);
-                        
+                            %fft_tw_out = read_data_index(1:5);
+                            % fft_tw_out = int16(fft_tw_out);
+
                             cnt_debug = cnt_debug+1;
-                            if (cnt_debug>=1 && m==1)
+                            if (cnt_debug<=300 && m==1)
+                                x_debug(:,cnt_debug) = fft_tw_out;
+                            end
+                            if (cnt_debug >= 75)
                                 cnt_debug = cnt_debug;
                             end
-%                             
+                           
                             % write data to each bank of another RAM
                             for t = 1:NumOfBanks
                                 if (t <= Nf(m))

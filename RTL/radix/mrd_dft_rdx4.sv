@@ -6,20 +6,28 @@ module mrd_dft_rdx4  #(parameter
 	input rst_n,
 
 	input in_val,
-	input signed [0:4][wDataInOut-1:0] din_real,
-	input signed [0:4][wDataInOut-1:0] din_imag,
+	input signed [wDataInOut-1:0] din_real [0:4],
+	input signed [wDataInOut-1:0] din_imag [0:4],
 
 	output logic out_val,
-	output logic signed [0:4][wDataInOut-1:0] dout_real,
-	output logic signed [0:4][wDataInOut-1:0] dout_imag  
+	output logic signed [wDataInOut-1:0] dout_real [0:4],
+	output logic signed [wDataInOut-1:0] dout_imag [0:4]  
 );
 
 always@(posedge clk)
 begin
 	if (!rst_n) begin
 		out_val <= 0;
-		dout_real <= 0;
-		dout_imag <= 0;
+		dout_real[0] <= 0;
+		dout_real[1] <= 0;
+		dout_real[2] <= 0;
+		dout_real[3] <= 0;
+		dout_real[4] <= 0;
+		dout_imag[0] <= 0;
+		dout_imag[1] <= 0;
+		dout_imag[2] <= 0;
+		dout_imag[3] <= 0;
+		dout_imag[4] <= 0;
 	end
 	else begin
 		out_val <= in_val;
@@ -35,6 +43,9 @@ begin
 
 		dout_real[3] <= din_real[0]-din_imag[1]-din_real[2]+din_imag[3]; 
 		dout_imag[3] <= din_imag[0]+din_real[1]-din_imag[2]-din_real[3]; 
+
+		dout_real[4] <= 0;
+		dout_imag[4] <= 0;
 	end
 end
 

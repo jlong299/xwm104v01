@@ -248,6 +248,57 @@ assign out_rdx2345_data.valid = rd_ongoing_r[2];
 assign out_rdx2345_data.bank_index = bank_index_rd_rr;
 assign out_rdx2345_data.bank_addr = bank_addr_rd_rr;
 
+always@(*)
+begin
+	if (ctrl.state==2'b01 || ctrl.state==2'b10 )
+	begin
+		case (ctrl.current_stage)
+		3'd0 :
+		begin
+			out_rdx2345_data.tw_ROM_addr_step <= 8'd16;
+			out_rdx2345_data.tw_ROM_exp_ceil <= 8'd4;
+			out_rdx2345_data.tw_ROM_exp_time <= 8'd75;
+		end
+		3'd1 :
+		begin
+			out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
+			out_rdx2345_data.tw_ROM_exp_ceil <= 8'd1;
+			out_rdx2345_data.tw_ROM_exp_time <= 8'd1;
+		end
+		3'd2 :
+		begin
+			out_rdx2345_data.tw_ROM_addr_step <= 8'd1;
+			out_rdx2345_data.tw_ROM_exp_ceil <= 8'd5;
+			out_rdx2345_data.tw_ROM_exp_time <= 8'd3;
+		end
+		3'd3 :
+		begin
+			out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
+			out_rdx2345_data.tw_ROM_exp_ceil <= 8'd1;
+			out_rdx2345_data.tw_ROM_exp_time <= 8'd1;
+		end
+		3'd4 :
+		begin
+			out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
+			out_rdx2345_data.tw_ROM_exp_ceil <= 8'd1;
+			out_rdx2345_data.tw_ROM_exp_time <= 8'd1;
+		end
+		3'd5 :
+		begin
+			out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
+			out_rdx2345_data.tw_ROM_exp_ceil <= 8'd1;
+			out_rdx2345_data.tw_ROM_exp_time <= 8'd1;
+		end
+		endcase
+	end
+	else
+	begin
+		out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
+		out_rdx2345_data.tw_ROM_exp_ceil <= 8'd0;
+		out_rdx2345_data.tw_ROM_exp_time <= 8'd0;
+	end
+end
+
 
 generate
 	for (i=0; i<7; i++) begin : RAM_banks

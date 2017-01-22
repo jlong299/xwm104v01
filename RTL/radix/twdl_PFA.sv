@@ -11,19 +11,21 @@ module twdl_PFA #(parameter
 	input [7:0]  tw_ROM_exp_time,
 
 	input  in_val,
-	input  signed [0:4][wDataInOut-1:0]  din_real,
-	input  signed [0:4][wDataInOut-1:0]  din_imag,
+	input  signed [wDataInOut-1:0]  din_real [0:4],
+	input  signed [wDataInOut-1:0]  din_imag [0:4],
 
 	output out_val,
-	output signed [0:4][wDataInOut-1:0]  dout_real,
-	output signed [0:4][wDataInOut-1:0]  dout_imag
+	output signed [wDataInOut-1:0]  dout_real [0:4],
+	output signed [wDataInOut-1:0]  dout_imag [0:4]
 );
 
 logic [7:0]  n_tw, cnt_n_tw;
 logic [1:0]  valid_r;
 logic [0:4][7:0] rdaddr;
-logic signed [0:4][17:0] tw_real, tw_imag;
-logic signed [0:4][wDataInOut-1:0] dout_real_t, dout_imag_t;
+logic signed [17:0] tw_real [0:4]; 
+logic signed [17:0] tw_imag [0:4]; 
+logic signed [wDataInOut-1:0] dout_real_t [0:4];
+logic signed [wDataInOut-1:0] dout_imag_t [0:4];
 
 always@(posedge clk)
 begin
@@ -102,8 +104,8 @@ begin
 	else
 	begin
 		if (valid_r[0]) begin
-			dout_real_t[i] <= din_real[i] * tw_real[i];
-			dout_imag_t[i] <= din_imag[i] * tw_imag[i];
+			dout_real_t[i] <= din_real[i]*tw_real[i] - din_imag[i]*tw_imag[i];
+			dout_imag_t[i] <= din_real[i]*tw_imag[i] + din_imag[i]*tw_real[i];
 		end
 		else begin
 			dout_real_t[i] <= 0;
@@ -112,8 +114,10 @@ begin
 	end
 end
 
-assign dout_real[i] = dout_real_t[i][wDataInOut-1:17];
-assign dout_imag[i] = dout_imag_t[i][wDataInOut-1:17];
+assign dout_real[i] ={ {16{dout_real_t[i][wDataInOut-1]}}, 
+                       dout_real_t[i][wDataInOut-1:16] };
+assign dout_imag[i] ={ {16{dout_imag_t[i][wDataInOut-1]}}, 
+                       dout_imag_t[i][wDataInOut-1:16] };                      
 end
 endgenerate
 
