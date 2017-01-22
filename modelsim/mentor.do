@@ -24,17 +24,23 @@ add wave -radix unsigned sim:/top_tb/top_inst/ctrl_fsm/*
 # add wave -radix unsigned sim:/top_tb/top_inst/mem0/ctrl/*
 # add wave -radix unsigned sim:/top_tb/top_inst/mem0/stat_to_ctrl/*
 # add wave -radix unsigned sim:/top_tb/top_inst/mem0/out_rdx2345_data/*
-# add wave -radix unsigned sim:/top_tb/top_inst/mem1/out_rdx2345_data/*
-# add wave -radix unsigned sim:/top_tb/top_inst/mem1/in_rdx2345_data/*
-# add wave -radix unsigned sim:/top_tb/top_inst/mem1/out_data/*
-# add wave -radix unsigned sim:/top_tb/top_inst/mem1/*
-# add wave -radix unsigned sim:/top_tb/top_inst/mem1/ctrl/*
-# add wave -radix unsigned sim:/top_tb/top_inst/mem1/stat_to_ctrl/*
+add wave -radix unsigned sim:/top_tb/top_inst/mem1/out_rdx2345_data/*
+add wave -radix unsigned sim:/top_tb/top_inst/mem1/out_rdx2345_data/d_real
+add wave -radix unsigned sim:/top_tb/top_inst/mem1/in_rdx2345_data/*
+add wave -radix unsigned sim:/top_tb/top_inst/mem1/out_data/*
+add wave -radix unsigned sim:/top_tb/top_inst/mem1/*
+add wave -radix unsigned sim:/top_tb/top_inst/mem1/ctrl/*
+add wave -radix unsigned sim:/top_tb/top_inst/mem1/stat_to_ctrl/*
 
 add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/*
 add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/dft_rdx4/*
 add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/twdl/*
 add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/twdl/dout_imag_t
+# add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/twdl/twdl_ROM[0]
+# add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/twdl/twdl_ROM[1]
+# add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/twdl/twdl_ROM[2]
+# add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/twdl/twdl_ROM[3]
+# add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/twdl/twdl_ROM[4]
 
 
 view structure

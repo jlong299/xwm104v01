@@ -6,7 +6,7 @@ outf = fopen('../../modelsim/rdx2345_result.dat','r');
 fclose(outf);
 len_FPGA_out = length(FPGA_out(1,:));
 
-x_debug_rsh = reshape(x_debug(:,1:300),1,len_FPGA_out);
+x_debug_rsh = reshape(x_debug(:,1:600),1,len_FPGA_out);
 
 x_debug_t = [real(x_debug_rsh); imag(x_debug_rsh)];
 

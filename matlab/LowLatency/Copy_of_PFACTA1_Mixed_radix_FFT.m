@@ -183,7 +183,7 @@ tw_coeff = zeros(1,5);
 n_tw = 0;
 cnt_n_tw = 0;
 sum_addr_coeff = zeros(1,NumOfFactors_max);
-x_debug = zeros(5,600);
+x_debug = zeros(5,2000);
 %---------------------------------
 for m=1:NumOfFactors
 
@@ -276,7 +276,7 @@ for m=1:NumOfFactors
                             % fft_tw_out = int16(fft_tw_out);
 
                             cnt_debug = cnt_debug+1;
-                            if (cnt_debug<=300 && m==1)
+                            if (cnt_debug<=600 )
                                 x_debug(:,cnt_debug) = fft_tw_out;
                             end
                             if (cnt_debug >= 75)
