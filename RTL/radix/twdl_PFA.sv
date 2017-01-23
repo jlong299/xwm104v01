@@ -115,10 +115,8 @@ begin
 	end
 end
 
-assign dout_real[i] ={ {16{dout_real_t[i][wDataTemp-1]}}, 
-                       dout_real_t[i][wDataInOut-1:16] };
-assign dout_imag[i] ={ {16{dout_imag_t[i][wDataTemp-1]}}, 
-                       dout_imag_t[i][wDataInOut-1:16] };                      
+assign dout_real[i] = dout_real_t[i][wDataInOut+16-1:16];
+assign dout_imag[i] = dout_imag_t[i][wDataInOut+16-1:16];
 end
 endgenerate
 

@@ -276,13 +276,13 @@ for m=1:NumOfFactors
                             % fft_tw_out = int16(fft_tw_out);
 
                             cnt_debug = cnt_debug+1;
-                            if (cnt_debug<=600 )
+                            if (cnt_debug<=1480 )
                                 x_debug(:,cnt_debug) = fft_tw_out;
                             end
                             if (cnt_debug >= 300)
                                 cnt_debug = cnt_debug;
-                                fft(read_data_index(1:4))
-                                int16(fft_tw_out)
+                                fft(read_data_index(1:4));
+                                int16(fft_tw_out);
                             end
                            
                             % write data to each bank of another RAM

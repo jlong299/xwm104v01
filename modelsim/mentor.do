@@ -34,6 +34,8 @@ add wave -radix unsigned sim:/top_tb/top_inst/mem1/stat_to_ctrl/*
 
 add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/*
 add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/dft_rdx4/*
+add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/dft_rdx5/*
+add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/dft_rdx3/*
 add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/twdl/*
 add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/twdl/dout_imag_t
 add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/from_mem/*

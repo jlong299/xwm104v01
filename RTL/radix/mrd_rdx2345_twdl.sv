@@ -57,8 +57,8 @@ begin
 		to_mem.bank_addr <= bank_addr_r[3];
 	end
 	else begin
-		to_mem.bank_index <= bank_index_r[1];
-		to_mem.bank_addr <= bank_addr_r[1];
+		to_mem.bank_index <= bank_index_r[3];
+		to_mem.bank_addr <= bank_addr_r[3];
 	end
 end
 
@@ -93,6 +93,22 @@ dft_rdx5 (
 	.out_val  (val_rdx5),
 	.dout_real  (real_rdx5),
 	.dout_imag  (imag_rdx5)
+	);
+
+mrd_dft_rdx3 #(
+	.wDataInOut (30)
+	)
+dft_rdx3 (
+	.clk  (clk),
+	.rst_n  (rst_n),
+
+	.in_val  (from_mem.valid),
+	.din_real  (from_mem.d_real),
+	.din_imag  (from_mem.d_imag),
+
+	.out_val  (val_rdx3),
+	.dout_real  (real_rdx3),
+	.dout_imag  (imag_rdx3)
 	);
 
 always@(*)
@@ -148,7 +164,7 @@ always@(posedge clk)
 			cnt_val_debug <= 0;
 		else
 		begin
-				if (to_mem.valid && cnt_val_debug != 16'd841)
+				if (to_mem.valid && cnt_val_debug != 16'd1481)
 				begin
 					cnt_val_debug <= cnt_val_debug + 'd1;
 					$fwrite(wr_file, "%d %d\n", $signed(to_mem.d_real[0]), $signed(to_mem.d_imag[0]));
@@ -158,10 +174,10 @@ always@(posedge clk)
 					$fwrite(wr_file, "%d %d\n", $signed(to_mem.d_real[4]), $signed(to_mem.d_imag[4]));
 				end
 
-				if (cnt_val_debug==16'd840)  
+				if (cnt_val_debug==16'd1480)  
 				begin
 					$fclose(wr_file);
-					cnt_val_debug <= 16'd841;
+					cnt_val_debug <= 16'd1481;
 				end
 		end
 
