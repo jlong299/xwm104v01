@@ -27,6 +27,8 @@ add wave -radix unsigned sim:/top_tb/top_inst/ctrl_fsm/*
 add wave -radix unsigned sim:/top_tb/top_inst/mem1/out_rdx2345_data/*
 add wave -radix unsigned sim:/top_tb/top_inst/mem1/out_rdx2345_data/d_real
 add wave -radix unsigned sim:/top_tb/top_inst/mem1/in_rdx2345_data/*
+add wave -radix decimal sim:/top_tb/top_inst/mem1/in_rdx2345_data/d_real
+add wave -radix decimal sim:/top_tb/top_inst/mem1/in_rdx2345_data/d_imag
 add wave -radix unsigned sim:/top_tb/top_inst/mem1/out_data/*
 add wave -radix unsigned sim:/top_tb/top_inst/mem1/*
 add wave -radix unsigned sim:/top_tb/top_inst/mem1/ctrl/*

@@ -13,6 +13,19 @@ logic sink_eop;
 logic [11:0] dftpts_in;
 logic inverse;
 
+logic source_valid, source_sop, source_eop;
+logic [29:0]  source_real, source_imag;
+
+
+integer wr_file;
+initial begin
+	wr_file = $fopen("top_result.dat","w");
+	if (wr_file == 0) begin
+		$display("top_result handle was NULL");
+		$finish;
+	end
+end
+
 initial	begin
 	rst_n = 0;
 	clk = 0;
@@ -75,13 +88,36 @@ top_inst(
 	.dftpts_in  (dftpts_in),
 	.inverse  (inverse),
 
-	.source_valid  (),
+	.source_valid  (source_valid),
 	.source_ready  (1'b1),
-	.source_sop  (),
-	.source_eop  (),
-	.source_real  (),
-	.source_imag  (),
+	.source_sop  (source_sop),
+	.source_eop  (source_eop),
+	.source_real  (source_real),
+	.source_imag  (source_imag),
 	.dftpts_out  ()
 );
+
+
+logic [15:0]  cnt_val_debug;
+always@(posedge clk)
+begin
+	if (!rst_n)
+		cnt_val_debug <= 0;
+	else
+	begin
+			if (source_valid && cnt_val_debug != 16'd1200)
+			begin
+				cnt_val_debug <= cnt_val_debug + 'd1;
+				$fwrite(wr_file, "%d %d\n", $signed(source_real), $signed(source_imag));
+			end
+
+			if (cnt_val_debug==16'd1200)  
+			begin
+				$fclose(wr_file);
+				cnt_val_debug <= 16'd1201;
+			end
+	end
+
+end
 
 endmodule

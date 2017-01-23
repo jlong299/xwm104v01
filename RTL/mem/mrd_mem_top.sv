@@ -11,12 +11,12 @@ module mrd_mem_top (
 	input clk,  
 	input rst_n,
 
-	mrd_st_if.ST_IN  in_data,
+	mrd_st_if  in_data,
 	mrd_rdx2345_if  in_rdx2345_data,
 
 	mrd_ctrl_if  ctrl,
 
-	mrd_st_if.ST_OUT  out_data,
+	mrd_st_if  out_data,
 	mrd_rdx2345_if  out_rdx2345_data,
 	mrd_stat_if  stat_to_ctrl
 );
@@ -122,8 +122,8 @@ begin
 	        + n2_PFA_in*ctrl.Nf_PFA[2] + n3_PFA_in;
 	input_valid_r[in_dly:0] <= {input_valid_r[in_dly-1:0],
 	                              in_data.valid} ;
-	input_real_r[in_dly:0] <= {input_real_r[in_dly-1:0],in_data.d_real};
-	input_imag_r[in_dly:0] <= {input_imag_r[in_dly-1:0],in_data.d_imag};
+	input_real_r[in_dly:0] <= {input_real_r[in_dly-1:0],in_data.din_real};
+	input_imag_r[in_dly:0] <= {input_imag_r[in_dly-1:0],in_data.din_imag};
 end
 
 
@@ -583,8 +583,8 @@ assign d_imag_rd[i] = (ctrl.state==2'b01)? dout_imag_RAM[i] : 30'd0;
 end
 endgenerate
 
-assign out_data.d_real = dout_real_RAM[bank_index_source_r];
-assign out_data.d_imag = dout_imag_RAM[bank_index_source_r];
+assign out_data.dout_real = dout_real_RAM[bank_index_source_r];
+assign out_data.dout_imag = dout_imag_RAM[bank_index_source_r];
 
 always@(posedge clk)
 begin

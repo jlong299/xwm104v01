@@ -36,8 +36,8 @@ output reg source_valid;
 input  source_ready;
 output reg source_sop;
 output reg source_eop;
-output reg [17:0] source_real;
-output reg [17:0] source_imag;
+output reg [29:0] source_real;
+output reg [29:0] source_imag;
 output reg [11:0] dftpts_out;
 
 reg rst_n_sync, rst_n_r0, rst_n_r1;
@@ -58,8 +58,8 @@ mrd_st_if source_st_1();
 assign sink_st.valid = sink_valid;
 assign sink_st.sop = sink_sop;
 assign sink_st.eop = sink_eop;
-assign sink_st.d_real = sink_real;
-assign sink_st.d_imag = sink_imag;
+assign sink_st.din_real = sink_real;
+assign sink_st.din_imag = sink_imag;
 assign sink_st.dftpts = dftpts_in;
 assign sink_st.inverse = inverse;
 assign sink_ready = sink_st.ready;
@@ -67,8 +67,8 @@ assign sink_ready = sink_st.ready;
 assign source_valid = source_st.valid;
 assign source_sop = source_st.sop;
 assign source_eop = source_st.eop;
-assign source_real = source_st.d_real;
-assign source_imag = source_st.d_imag;
+assign source_real = source_st.dout_real;
+assign source_imag = source_st.dout_imag;
 assign dftpts_out = source_st.dftpts;
 assign source_st.ready = source_ready;
 
@@ -85,10 +85,8 @@ mrd_ctrl_if ctrl_to_mem1();
 mrd_stat_if stat_from_mem0();
 mrd_stat_if stat_from_mem1();
 
-
 logic goto_next_fsm_0, goto_next_fsm_1;
 logic sw_in, sw_out, sw_1to0;
-
 
 mrd_switch_in1out2
 switch_in (
@@ -181,7 +179,6 @@ ctrl_fsm(
 	.sw_1to0 (sw_1to0)
 
 	);
-
 
 
 endmodule
