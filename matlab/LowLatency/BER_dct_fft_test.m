@@ -25,6 +25,6 @@ x_debug_t = [real(x_debug_rsh); imag(x_debug_rsh)];
 
 %max(abs(FPGA_out - x_debug_t))
 max(max(abs(FPGA_out - x_debug_t)))
-mse = mean(mean( (abs(FPGA_out - x_debug_t)).^2 ))
+mse = mean(mean( (abs(FPGA_out - x_debug_t)).^2 ));
 mse/ mean(mean((abs(x_debug_t)).^2))
  

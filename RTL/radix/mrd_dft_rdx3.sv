@@ -64,8 +64,8 @@ begin
 		p2_real[2] <= p1_real[1] - p1_real[2]/2;
 		p2_imag[2] <= p1_imag[1] - p1_imag[2]/2;
 
-		p2_real[3] <= p1_imag[3] * $signed(-18'd14189) ;
-		p2_imag[3] <= p1_real[3] * $signed(18'd14189) ;
+		p2_real[3] <= p1_imag[3] * -18'sd14189 ;
+		p2_imag[3] <= p1_real[3] * 18'sd14189 ;
 	end
 end
 

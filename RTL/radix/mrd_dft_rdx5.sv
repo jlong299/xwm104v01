@@ -96,25 +96,25 @@ begin
 		p2_real[2] <= p1_real[1] - p1_real[2]/4;
 		p2_imag[2] <= p1_imag[1] - p1_imag[2]/4;
 
-		p2_real[3] <= p1_real[3] * $signed(18'd9159) ;
-		p2_imag[3] <= p1_imag[3] * $signed(18'd9159) ;
+		p2_real[3] <= p1_real[3] * 18'sd9159 ;
+		p2_imag[3] <= p1_imag[3] * 18'sd9159 ;
 		// p2_real[3] <= p1_real[3] * 0.559 ;
 		// p2_imag[3] <= p1_imag[3] * 0.559 ;
 
-		p2_real[4] <= p1_imag[4] * $signed(18'd25215);
-		p2_imag[4] <= p1_real[4] * $signed(-18'd25215);
+		p2_real[4] <= p1_imag[4] * 18'sd25215;
+		p2_imag[4] <= p1_real[4] * -18'sd25215;
 		// p2_real[4] <= p1_imag[4] * 1.539;
 		// p2_imag[4] <= p1_real[4] * (-1.539);
 
-		p2_real[5] <= p1_imag[5] * $signed(18'd5931);
-		p2_imag[5] <= p1_real[5] * $signed(-18'd5931);
+		p2_real[5] <= p1_imag[5] * 18'sd5931;
+		p2_imag[5] <= p1_real[5] * -18'sd5931;
 		// p2_real[5] <= p1_imag[5] * 0.362;
 		// p2_imag[5] <= p1_real[5] * (-0.362);
 
 		// p2_real[6] <= p1_imag[5] * (-0.951);
 		// p2_imag[6] <= p1_real[5] * 0.951;
-		p2_real[6] <= p1_imag[6] * $signed(-18'd15581);
-		p2_imag[6] <= p1_real[6] * $signed(18'd15581);
+		p2_real[6] <= p1_imag[6] * -18'sd15581;
+		p2_imag[6] <= p1_real[6] * 18'sd15581;
 	end
 end
 
