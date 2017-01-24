@@ -52,8 +52,8 @@ begin
 		p2_real[1] <= p1_real[1] + p1_real[2];
 		p2_imag[1] <= p1_imag[1] + p1_imag[2];
 
-		p2_real[2] <= p1_real[1] - p1_real[2]/2;
-		p2_imag[2] <= p1_imag[1] - p1_imag[2]/2;
+		p2_real[2] <= p1_real[1] - (p1_real[2] >>>1);
+		p2_imag[2] <= p1_imag[1] - (p1_imag[2] >>>1);
 
 		p2_real[3] <= p1_imag[3] * -18'sd14189 ;
 		p2_imag[3] <= p1_real[3] * 18'sd14189 ;
@@ -64,8 +64,8 @@ assign p2_real_tr[1] = p2_real[1];
 assign p2_imag_tr[1] = p2_imag[1];
 assign p2_real_tr[2] = p2_real[2];
 assign p2_imag_tr[2] = p2_imag[2];
-assign p2_real_tr[3] =p2_real[3][wDataInOut+14-1 : 14];
-assign p2_imag_tr[3] =p2_imag[3][wDataInOut+14-1 : 14];
+assign p2_real_tr[3] = (p2_real[3] >>>14);
+assign p2_imag_tr[3] = (p2_imag[3] >>>14);
 
 
 // 3rd pipeline

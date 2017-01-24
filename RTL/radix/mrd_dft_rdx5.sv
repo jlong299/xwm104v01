@@ -73,8 +73,8 @@ begin
 		p2_real[1] <= p1_real[1] + p1_real[2];
 		p2_imag[1] <= p1_imag[1] + p1_imag[2];
 
-		p2_real[2] <= p1_real[1] - p1_real[2]/4;
-		p2_imag[2] <= p1_imag[1] - p1_imag[2]/4;
+		p2_real[2] <= p1_real[1] - (p1_real[2] >>>2);
+		p2_imag[2] <= p1_imag[1] - (p1_imag[2] >>>2);
 
 		p2_real[3] <= p1_real[3] * 18'sd9159 ;
 		p2_imag[3] <= p1_imag[3] * 18'sd9159 ;
@@ -98,17 +98,10 @@ begin
 	end
 end
 
-// genvar i;
-// generate
-// 	for (i=3; i<=6; i++) begin
-// 		assign p2_real_tr[i] =p2_real[i][wDataInOut+14-1 : 14];
-// 		assign p2_imag_tr[i] =p2_imag[i][wDataInOut+14-1 : 14];
-// 	end
-// endgenerate;
 genvar i;
 for (i=3; i<=6; i++) begin
-	assign p2_real_tr[i] =p2_real[i][wDataInOut+14-1 : 14];
-	assign p2_imag_tr[i] =p2_imag[i][wDataInOut+14-1 : 14];
+	assign p2_real_tr[i] = (p2_real[i] >>> 14);
+	assign p2_imag_tr[i] = (p2_imag[i] >>> 14);
 end
 
 assign p2_real_tr[1] = p2_real[1];

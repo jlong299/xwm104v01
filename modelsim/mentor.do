@@ -45,4 +45,4 @@ add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/from_mem/*
 
 view structure
 view signals
-run 50us
+run 200us

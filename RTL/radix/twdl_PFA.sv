@@ -44,20 +44,20 @@ begin
 		end
 		else
 		begin
-			if ((n_tw==tw_ROM_exp_ceil-'d1) &&(cnt_n_tw==tw_ROM_exp_time-'d1))
+			if((n_tw==tw_ROM_exp_ceil-8'd1)&&(cnt_n_tw==tw_ROM_exp_time-8'd1))
 			begin
 				n_tw <= 0;
 				cnt_n_tw <= 0;
 			end
-			else if (cnt_n_tw==tw_ROM_exp_time-'d1)
+			else if (cnt_n_tw==tw_ROM_exp_time-8'd1)
 			begin
-				n_tw <= n_tw + 'd1;
+				n_tw <= n_tw + 8'd1;
 				cnt_n_tw <= 0;
 			end
 			else
 			begin
 				n_tw <= n_tw;
-				cnt_n_tw <= cnt_n_tw + 'd1;
+				cnt_n_tw <= cnt_n_tw + 8'd1;
 			end
 		end
 	end

@@ -15,7 +15,7 @@ logic inverse;
 
 logic source_valid, source_sop, source_eop;
 logic [29:0]  source_real, source_imag;
-
+logic [3:0]  cnt_sink_sop;
 
 integer wr_file;
 initial begin
@@ -38,7 +38,7 @@ end
 always # 5 clk = ~clk; //100M
 
 logic [15:0]  cnt0;
-localparam logic [15:0] gap = 16'd3000;
+localparam logic [15:0] gap = 16'd1550;
 
 always@(posedge clk) 
 begin
@@ -52,14 +52,18 @@ begin
 		dftpts_in <= 0;
 		inverse <= 0;
 		cnt0 <= 0;
+		cnt_sink_sop <= 0;
 	end
 	else
 	begin
 		dftpts_in <= 12'd1200;
 		cnt0 <= (cnt0 == dftpts_in + gap)? 16'd0 : cnt0+1'b1;
-		sink_sop <= (cnt0==16'd10);
+		sink_sop <= (cnt0==16'd10 && cnt_sink_sop!=4'd4);
 		sink_eop <= (cnt0==16'd10+dftpts_in);
 		sink_valid <= (cnt0>=16'd10 && cnt0<16'd10+dftpts_in);
+
+		cnt_sink_sop <= (sink_sop && cnt_sink_sop!=4'd4)? cnt_sink_sop+4'd1 : cnt_sink_sop;
+
 		if (cnt0 <= 16'd11+dftpts_in)
 		begin
 			sink_real <= {2'b00, cnt0} - 18'd10;
@@ -105,16 +109,16 @@ begin
 		cnt_val_debug <= 0;
 	else
 	begin
-			if (source_valid && cnt_val_debug != 16'd1200)
+			if (source_valid && cnt_val_debug <= 16'd4800)
 			begin
-				cnt_val_debug <= cnt_val_debug + 'd1;
+				cnt_val_debug <= cnt_val_debug + 16'd1;
 				$fwrite(wr_file, "%d %d\n", $signed(source_real), $signed(source_imag));
 			end
 
-			if (cnt_val_debug==16'd1200)  
+			if (cnt_val_debug==16'd4800)  
 			begin
 				$fclose(wr_file);
-				cnt_val_debug <= 16'd1201;
+				cnt_val_debug <= 16'd4801;
 			end
 	end
 
