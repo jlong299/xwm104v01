@@ -42,36 +42,16 @@ assign pm1_imag[3] = din_imag[2] + din_imag[3];
 assign pm1_imag[4] = din_imag[1] - din_imag[4];
 assign pm1_imag[5] = din_imag[2] - din_imag[3];
 
+integer j;
 always@(posedge clk)
 begin
 	if (!rst_n) begin
-		p1_real[1] <= 0;
-		p1_real[2] <= 0;
-		p1_real[3] <= 0;
-		p1_real[4] <= 0;
-		p1_real[5] <= 0;
-		p1_real[6] <= 0;
-
-		p2_real[1] <= 0;
-		p2_real[2] <= 0;
-		p2_real[3] <= 0;
-		p2_real[4] <= 0;
-		p2_real[5] <= 0;
-		p2_real[6] <= 0;
-
-		p1_imag[1] <= 0;
-		p1_imag[2] <= 0;
-		p1_imag[3] <= 0;
-		p1_imag[4] <= 0;
-		p1_imag[5] <= 0;
-		p1_imag[6] <= 0;
-
-		p2_imag[1] <= 0;
-		p2_imag[2] <= 0;
-		p2_imag[3] <= 0;
-		p2_imag[4] <= 0;
-		p2_imag[5] <= 0;
-		p2_imag[6] <= 0;
+		for (j=1; j<=6; j=j+1) begin
+			p1_real[j] <= 0;
+			p2_real[j] <= 0;
+			p1_imag[j] <= 0;
+			p1_imag[j] <= 0;
+		end
 	end
 	else begin
 		// 1st pipeline
@@ -118,13 +98,19 @@ begin
 	end
 end
 
+// genvar i;
+// generate
+// 	for (i=3; i<=6; i++) begin
+// 		assign p2_real_tr[i] =p2_real[i][wDataInOut+14-1 : 14];
+// 		assign p2_imag_tr[i] =p2_imag[i][wDataInOut+14-1 : 14];
+// 	end
+// endgenerate;
 genvar i;
-generate
-	for (i=3; i<=6; i++) begin
-		assign p2_real_tr[i] =p2_real[i][wDataInOut+14-1 : 14];
-		assign p2_imag_tr[i] =p2_imag[i][wDataInOut+14-1 : 14];
-	end
-endgenerate;
+for (i=3; i<=6; i++) begin
+	assign p2_real_tr[i] =p2_real[i][wDataInOut+14-1 : 14];
+	assign p2_imag_tr[i] =p2_imag[i][wDataInOut+14-1 : 14];
+end
+
 assign p2_real_tr[1] = p2_real[1];
 assign p2_imag_tr[1] = p2_imag[1];
 assign p2_real_tr[2] = p2_real[2];
@@ -146,16 +132,10 @@ begin
 	if (!rst_n) begin
 		out_val <= 0;
 		val_r <= 0;
-		dout_real[0] <= 0;
-		dout_real[1] <= 0;
-		dout_real[2] <= 0;
-		dout_real[3] <= 0;
-		dout_real[4] <= 0;
-		dout_imag[0] <= 0;
-		dout_imag[1] <= 0;
-		dout_imag[2] <= 0;
-		dout_imag[3] <= 0;
-		dout_imag[4] <= 0;
+		for (j=0; j<=4; j++) begin
+			dout_real[j] <= 0;
+			dout_imag[j] <= 0;
+		end
 	end
 	else begin
 		val_r[0] <= in_val;
