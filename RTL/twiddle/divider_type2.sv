@@ -35,11 +35,14 @@ endgenerate
 assign remd_quot_r[0] = dividend; 
 generate
 for (i=1; i <= n_stages; i++) begin
-	assign remd_quot_r[j][w_divident-1:w_divident-w_divisor] = remd[j-1];
-	assign remd_quot_r[j][w_pipe-1:0] = quot[j-1];
-	assign remd_quot_r[j][w_divident-w_divisor-1:w_pipe] =
-	           remd_quot_r[j-1][w_divident-w_divisor-1-w_pipe:0];
+	assign remd_quot_r[i][w_divident-1:w_divident-w_divisor] = remd[i-1];
+	assign remd_quot_r[i][w_pipe-1:0] = quot[i-1];
+	assign remd_quot_r[i][w_divident-w_divisor-1:w_pipe] =
+	           remd_quot_r[i-1][w_divident-w_divisor-1-w_pipe:0];
 end
 endgenerate
+
+assign quotient = remd_quot_r[n_stages][w_divident-w_divisor-1:0];
+assign remainder = remd_quot_r[n_stages][w_divident-1:w_divident-w_divisor];
 
 endmodule
