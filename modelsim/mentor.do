@@ -1,6 +1,6 @@
-# set TOP_LEVEL_NAME top_tb
+set TOP_LEVEL_NAME top_tb
 # set TOP_LEVEL_NAME divider_pipe0_tb
-set TOP_LEVEL_NAME mrd_twdl_tb
+# set TOP_LEVEL_NAME mrd_twdl_tb
 
 vlib work
 #  com
@@ -19,11 +19,30 @@ vsim -t ns  -L work $TOP_LEVEL_NAME
 
 # radix signal sim:/....  unsigned
 
-# add wave -radix unsigned sim:/top_tb/*
+add wave -radix signed {sim:/top_tb/*}
 # add wave -radix unsigned sim:/top_tb/top_inst/*
 # add wave -radix unsigned sim:/top_tb/top_inst/ctrl_fsm/*
 
-# add wave -radix unsigned sim:/top_tb/top_inst/mem0/*
+# add wave -radix signed {sim:/top_tb/top_inst/mem0/*}
+
+# # Sink --> RAMs 
+# add wave -radix signed {sim:/top_tb/top_inst/mem0/din_real_RAM}
+# add wave -radix signed {sim:/top_tb/top_inst/mem0/din_imag_RAM}
+# add wave -radix signed {sim:/top_tb/top_inst/mem0/wren}
+# add wave -radix signed {sim:/top_tb/top_inst/mem0/wraddr_RAM}
+
+# Read from RAMs
+add wave -radix signed {sim:/top_tb/top_inst/mem0/rden}
+add wave -radix signed {sim:/top_tb/top_inst/mem0/dout_real_RAM}
+add wave -radix signed {sim:/top_tb/top_inst/mem0/dout_imag_RAM}
+add wave -radix signed {sim:/top_tb/top_inst/mem0/rdaddr_RAM}
+
+add wave -radix unsigned {sim:/top_tb/top_inst/mem0/out_rdx2345_data/*}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem0/out_rdx2345_data/d_real}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem0/out_rdx2345_data/d_imag}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem0/ctrl/state}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem0/ctrl/current_stage}
+
 # add wave -radix unsigned sim:/top_tb/top_inst/mem0/in_data/*
 # add wave -radix unsigned sim:/top_tb/top_inst/mem0/ctrl/*
 # add wave -radix unsigned sim:/top_tb/top_inst/mem0/stat_to_ctrl/*
@@ -47,13 +66,15 @@ vsim -t ns  -L work $TOP_LEVEL_NAME
 # add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/twdl/dout_imag_t
 # add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/from_mem/*
 
+# # divider_pipe0_tb
 # add wave -radix unsigned sim:/divider_pipe0_tb/divider_pipe0_inst/*
 # add wave -radix unsigned sim:/divider_pipe0_tb/divider_pipe0_inst/divider_inst_0/*
 # add wave -radix unsigned {sim:/divider_pipe0_tb/divider_pipe0_inst/div_gen[1]/divider_inst/*}
 
+# # mrd_twdl_tb
 # add wave -radix signed {sim:/mrd_twdl_tb/mrd_twdl_inst/*}
 
 view structure
 view signals
 # run 200us
-run 10us
+run 40us

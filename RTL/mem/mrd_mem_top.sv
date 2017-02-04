@@ -26,7 +26,7 @@ logic  clr_n_PFA_addr, clr_n_PFA_addr_o;
 logic  [9:0]  n1_PFA_in, n2_PFA_in, n3_PFA_in;
 logic  [9:0]  k1_PFA_out, k2_PFA_out, k3_PFA_out;
 
-localparam  in_dly = 1;
+localparam  in_dly = 0;
 logic [in_dly:0]  input_valid_r;
 logic [in_dly:0][17:0]  input_real_r;
 logic [in_dly:0][17:0]  input_imag_r;
@@ -36,8 +36,8 @@ logic [3:0] rd_ongoing_r;
 assign stat_to_ctrl.sink_sop = in_data.sop;
 assign stat_to_ctrl.dftpts = in_data.dftpts;
 
-logic [11:0]  bank_addr_sink;
-logic [2:0] bank_index_sink;
+logic [11:0]  bank_addr_sink, bank_addr_sink_pre;
+logic [2:0] bank_index_sink, bank_index_sink_pre;
 logic [0:6]  wren_sink;
 
 
@@ -65,6 +65,8 @@ logic [2:0] bank_index_source, bank_index_source_r;
 logic [0:6][29:0] dout_real_RAM, dout_imag_RAM;
 logic [0:6][7:0]  rdaddr_RAM;
 
+logic [11:0]  addr_sink_CTA;
+
 
 //------------------------------------------------
 //------------------ 1st stage: Sink -------------
@@ -74,7 +76,7 @@ begin
 	if (!rst_n)
 	begin
 		dftpts <= 0;
-		clr_n_PFA_addr <= 0;
+		// clr_n_PFA_addr <= 0;
 	end
 	else
 	begin
@@ -85,54 +87,77 @@ begin
 		else
 			dftpts <= dftpts;
 
-		if (in_data.sop)
-			clr_n_PFA_addr <= 1'b1;
-		else if (in_data.eop)
-			clr_n_PFA_addr <= 1'b0;
-		else
-			clr_n_PFA_addr <= clr_n_PFA_addr;
+		// if (in_data.sop)
+		// 	clr_n_PFA_addr <= 1'b1;
+		// else if (in_data.eop)
+		// 	clr_n_PFA_addr <= 1'b0;
+		// else
+		// 	clr_n_PFA_addr <= clr_n_PFA_addr;
 
 	end
 end
 
-PFA_addr_trans #(
-		.wDataInOut (10)
-	)
-PFA_addr_trans_inst
-	(
-	.clk  (clk),    
-	.rst_n  (rst_n), 
+// PFA_addr_trans #(
+// 		.wDataInOut (10)
+// 	)
+// PFA_addr_trans_inst
+// 	(
+// 	.clk  (clk),    
+// 	.rst_n  (rst_n), 
 
-	.clr_n (clr_n_PFA_addr),
+// 	.clr_n (clr_n_PFA_addr),
 
-	.Nf1 (ctrl.Nf_PFA[0]),  //N1
-	.Nf2 (ctrl.Nf_PFA[1]),  //N2
-	.Nf3 (ctrl.Nf_PFA[2]),  //N3
-	.q_p (ctrl.q_p),  //q'
-	.r_p (ctrl.r_p),  //r'
+// 	.Nf1 (ctrl.Nf_PFA[0]),  //N1
+// 	.Nf2 (ctrl.Nf_PFA[1]),  //N2
+// 	.Nf3 (ctrl.Nf_PFA[2]),  //N3
+// 	.q_p (ctrl.q_p),  //q'
+// 	.r_p (ctrl.r_p),  //r'
 
-	.n1 (n1_PFA_in),
-	.n2 (n2_PFA_in),
-	.n3 (n3_PFA_in)
-);
+// 	.n1 (n1_PFA_in),
+// 	.n2 (n2_PFA_in),
+// 	.n3 (n3_PFA_in)
+// );
 
 always@(posedge clk)
 begin
-	N_PFA_in <= n1_PFA_in*ctrl.Nf_PFA[1]*ctrl.Nf_PFA[2]
-	        + n2_PFA_in*ctrl.Nf_PFA[2] + n3_PFA_in;
-	input_valid_r[in_dly:0] <= {input_valid_r[in_dly-1:0],
-	                              in_data.valid} ;
-	input_real_r[in_dly:0] <= {input_real_r[in_dly-1:0],in_data.din_real};
-	input_imag_r[in_dly:0] <= {input_imag_r[in_dly-1:0],in_data.din_imag};
+	// N_PFA_in <= n1_PFA_in*ctrl.Nf_PFA[1]*ctrl.Nf_PFA[2]
+	//         + n2_PFA_in*ctrl.Nf_PFA[2] + n3_PFA_in;
+
+	// If in_dly >= 1
+	// input_valid_r[in_dly:0] <= {input_valid_r[in_dly-1:0],
+	//                               in_data.valid} ;
+	// input_real_r[in_dly:0] <= {input_real_r[in_dly-1:0],in_data.din_real};
+	// input_imag_r[in_dly:0] <= {input_imag_r[in_dly-1:0],in_data.din_imag};
+
+	// If in_dly == 0
+	input_valid_r[0] <= in_data.valid;
+	input_real_r[0] <= in_data.din_real;
+	input_imag_r[0] <= in_data.din_imag;
 end
 
+always@(posedge clk)
+begin
+	if (!rst_n)
+		addr_sink_CTA <= 0;
+	else begin
+		if (in_data.valid)
+			addr_sink_CTA <= addr_sink_CTA + 12'd1;
+		else
+			addr_sink_CTA <= 0;
+	end
+end
 
 divider_7 divider_7_inst0 (
-	.dividend 	(N_PFA_in),  
+	.dividend 	(addr_sink_CTA),  
 
-	.quotient 	(bank_addr_sink),
-	.remainder 	(bank_index_sink)
+	.quotient 	(bank_addr_sink_pre),
+	.remainder 	(bank_index_sink_pre)
 );
+
+always@(posedge clk) begin
+	bank_addr_sink <= bank_addr_sink_pre;
+	bank_index_sink <= bank_index_sink_pre;
+end
 
 always@(*)
 begin
@@ -151,7 +176,6 @@ end
 //------------------------------------------------
 //------------------ 2nd stage: Read -------------
 //------------------------------------------------
-
 
 always@(posedge clk)
 begin
@@ -350,7 +374,9 @@ begin
 		ctrl_state_r <= ctrl.state;
 
 		if (in_data.sop)  stat_to_ctrl.sink_ongoing <= 1'b1;
-		else if (input_valid_r[in_dly:in_dly-1]==2'b10)
+		// else if (input_valid_r[in_dly:in_dly-1]==2'b10)
+		// 	stat_to_ctrl.sink_ongoing <= 1'b0;
+		else if ({input_valid_r[0], in_data.valid}==2'b10)
 			stat_to_ctrl.sink_ongoing <= 1'b0;
 		else
 			stat_to_ctrl.sink_ongoing <= stat_to_ctrl.sink_ongoing;

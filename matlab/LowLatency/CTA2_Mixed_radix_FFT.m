@@ -69,7 +69,7 @@ Nf_temp = zeros(1,NumOfFactors_max-2);
 NumOfLen = 0;
 
 %  Loop  from  12*1  to  12*100
-for m_len = 1:100   % The end of loop body is at the end of this file
+for m_len = 100:100   % The end of loop body is at the end of this file
     % factorize  N 
     [Nf_temp, err] = factor_2345(m_len);
     if err==1   % m_len can not be factorized to 2,3,4,5
@@ -107,8 +107,8 @@ end
 x_real=round((2*rand(1,N)-1)*8192);
 x_imag=round((2*rand(1,N)-1)*8192);
 
-x = x_real + 1j*x_imag;
-% x = [0:1:1199];
+% x = x_real + 1j*x_imag;
+x = [0:1:1199];
 x = x;
 
 FX = fft(x);
@@ -235,10 +235,11 @@ for m=1:NumOfFactors
                                 tw_coeff(t) = exp(-1i*2*pi* (t-1)*(tw_N_exp)/tw_base);
                             end
                                 
-                            fft_tw_out = fft_tw2(read_data_index(1:5), Nf(m), tw_coeff, is_last_stage );
+                            % fft_tw_out = fft_tw2(read_data_index(1:5), Nf(m), tw_coeff, is_last_stage );
+                            fft_tw_out = read_data_index(1:5);
                         
                             cnt_debug = cnt_debug+1;
-                            if (cnt_debug>=298)
+                            if ( (cnt_debug<=2 || cnt_debug >= 398) && m==5 )
                                 cnt_debug = cnt_debug;
                             end
                             
