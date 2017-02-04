@@ -43,6 +43,16 @@ add wave -radix unsigned {sim:/top_tb/top_inst/mem0/out_rdx2345_data/d_imag}
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/ctrl/state}
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/ctrl/current_stage}
 
+# Source from RAMs
+add wave -radix unsigned {sim:/top_tb/top_inst/mem1/rden}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem1/dout_real_RAM}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem1/dout_imag_RAM}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem1/rdaddr_RAM}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem1/addr_source_CTA}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem1/bank_addr_source}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem1/bank_index_source}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem1/out_data/*}
+
 # add wave -radix unsigned sim:/top_tb/top_inst/mem0/in_data/*
 # add wave -radix unsigned sim:/top_tb/top_inst/mem0/ctrl/*
 # add wave -radix unsigned sim:/top_tb/top_inst/mem0/stat_to_ctrl/*

@@ -109,16 +109,16 @@ begin
 		cnt_val_debug <= 0;
 	else
 	begin
-			if (source_valid && cnt_val_debug <= 16'd4800)
+			if (source_valid && cnt_val_debug <= 16'd1200)
 			begin
 				cnt_val_debug <= cnt_val_debug + 16'd1;
 				$fwrite(wr_file, "%d %d\n", $signed(source_real), $signed(source_imag));
 			end
 
-			if (cnt_val_debug==16'd4800)  
+			if (cnt_val_debug==16'd1200)  
 			begin
 				$fclose(wr_file);
-				cnt_val_debug <= 16'd4801;
+				cnt_val_debug <= 16'd1201;
 			end
 	end
 

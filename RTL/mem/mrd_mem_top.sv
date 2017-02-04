@@ -58,7 +58,7 @@ logic [0:6]  wren_wr;
 logic [1:0] ctrl_state_r;
 logic [11:0] cnt_rd_ongoing, cnt_rd_stop, cnt_source_ongoing;
 
-logic [11:0] N_PFA_out;
+//logic [11:0] N_PFA_out;
 logic [0:6]  rden_source;
 logic [11:0]  bank_addr_source;
 logic [2:0] bank_index_source, bank_index_source_r;
@@ -520,48 +520,61 @@ end
 
 logic [2:0]  k1,k2,k3,k4,k5,k6; 
 
-PFA_addr_trans_out #(
-		.wDataInOut (10)
-	)
-PFA_addr_trans_o_inst
-	(
-	.clk  (clk),    
-	.rst_n  (rst_n), 
+// PFA_addr_trans_out #(
+// 		.wDataInOut (10)
+// 	)
+// PFA_addr_trans_o_inst
+// 	(
+// 	.clk  (clk),    
+// 	.rst_n  (rst_n), 
 
-	.clr_n (clr_n_PFA_addr_o),
+// 	.clr_n (clr_n_PFA_addr_o),
 
-	.Nf1 (ctrl.Nf_PFA[0]),  //N1
-	.Nf2 (ctrl.Nf_PFA[1]),  //N2
-	.Nf3 (ctrl.Nf_PFA[2]),  //N3
-	.q_p (ctrl.q_p_o),  //q'
-	.r_p (ctrl.r_p_o),  //r'
+// 	.Nf1 (ctrl.Nf_PFA[0]),  //N1
+// 	.Nf2 (ctrl.Nf_PFA[1]),  //N2
+// 	.Nf3 (ctrl.Nf_PFA[2]),  //N3
+// 	.q_p (ctrl.q_p_o),  //q'
+// 	.r_p (ctrl.r_p_o),  //r'
 
-	.k1 (k1_PFA_out),
-	.k2 (k2_PFA_out),
-	.k3 (k3_PFA_out)
-);
+// 	.k1 (k1_PFA_out),
+// 	.k2 (k2_PFA_out),
+// 	.k3 (k3_PFA_out)
+// );
 
-//-------- Below is only 1200 case -----------
-assign k1 = k1_PFA_out % 3'd4;
-assign k2 = k1_PFA_out / 3'd4;
-assign k3 = k2_PFA_out % 3'd5;
-assign k4 = k2_PFA_out / 3'd5;
-assign k5 = k3_PFA_out;
-assign k6 = 0;
-always@(posedge clk)
-begin 
-	if (!rst_n)
-	begin
-		N_PFA_out <= 0;
-	end
-	else
-	begin
-		N_PFA_out <= k1*10'd300 + k2*10'd75 + k3*10'd15 + k4*10'd3 + k5 + k6;
-	end
-end
+// //-------- Below is only 1200 case -----------
+// assign k1 = k1_PFA_out % 3'd4;
+// assign k2 = k1_PFA_out / 3'd4;
+// assign k3 = k2_PFA_out % 3'd5;
+// assign k4 = k2_PFA_out / 3'd5;
+// assign k5 = k3_PFA_out;
+// assign k6 = 0;
+// always@(posedge clk)
+// begin 
+// 	if (!rst_n)
+// 	begin
+// 		N_PFA_out <= 0;
+// 	end
+// 	else
+// 	begin
+// 		N_PFA_out <= k1*10'd300 + k2*10'd75 + k3*10'd15 + k4*10'd3 + k5 + k6;
+// 	end
+// end
 
 
 //-------------------------------------------- 
+logic [11:0]  addr_source_CTA;
+CTA_addr_source #(
+		12
+	)
+CTA_addr_source_inst (
+	clk,    
+	rst_n,  
+	clr_n_PFA_addr_o,
+
+	ctrl.Nf,  //N1,N2,...,N6
+
+	addr_source_CTA 
+);
 
 
 always@(posedge clk)
@@ -579,7 +592,7 @@ begin
 end
 
 divider_7 divider_7_inst2 (
-	.dividend 	(N_PFA_out),  
+	.dividend 	(addr_source_CTA),  
 
 	.quotient 	(bank_addr_source),
 	.remainder 	(bank_index_source)

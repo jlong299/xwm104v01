@@ -239,7 +239,7 @@ for m=1:NumOfFactors
                             fft_tw_out = read_data_index(1:5);
                         
                             cnt_debug = cnt_debug+1;
-                            if ( (cnt_debug<=2 || cnt_debug >= 398) && m==5 )
+                            if ( (cnt_debug<=2 || cnt_debug >= 238) && m==3 )
                                 cnt_debug = cnt_debug;
                             end
                             
