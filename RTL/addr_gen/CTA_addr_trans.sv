@@ -15,7 +15,8 @@ module CTA_addr_trans #(parameter
 	input [0:5][2:0] 	Nf,  //N1,N2,...,N6
 	input [2:0] current_stage,
 
-	output reg [0:4][wDataInOut-1:0] addrs_butterfly 
+	output reg [0:4][wDataInOut-1:0] addrs_butterfly,
+	output reg [0:4][wDataInOut-1:0] twdl_coeff
 	
 );
 
@@ -155,23 +156,23 @@ begin
 	endcase
 end
 
-always@(*)
-begin
-	case (current_stage)
-	3'd0:
-		num_radix = Nf[0];
-	3'd1:
-		num_radix = Nf[1];
-	3'd2:
-		num_radix = Nf[2];
-	3'd3:
-		num_radix = Nf[3];
-	3'd4:
-		num_radix = Nf[4];
-	3'd5:
-		num_radix = Nf[5];
-	endcase
-end
+// always@(*)
+// begin
+// 	case (current_stage)
+// 	3'd0:
+// 		num_radix = Nf[0];
+// 	3'd1:
+// 		num_radix = Nf[1];
+// 	3'd2:
+// 		num_radix = Nf[2];
+// 	3'd3:
+// 		num_radix = Nf[3];
+// 	3'd4:
+// 		num_radix = Nf[4];
+// 	3'd5:
+// 		num_radix = Nf[5];
+// 	endcase
+// end
 
 always@(posedge clk)
 begin
@@ -197,5 +198,48 @@ assign addrs_butterfly[1] = addrs_all + coeff_stage;
 assign addrs_butterfly[2] = addrs_all + 3'd2*coeff_stage; 
 assign addrs_butterfly[3] = addrs_all + 3'd3*coeff_stage; 
 assign addrs_butterfly[4] = addrs_all + 3'd4*coeff_stage; 
+
+logic [wDataInOut-1:0]  twdl_coeff_base;
+always@(posedge clk)
+begin
+	if (!rst_n)
+		twdl_coeff_base <= 0;
+	else begin
+		case (current_stage)
+		3'd0 :
+		twdl_coeff_base <= n[1]*Nf[2]*Nf[3]*Nf[4]*Nf[5]
+		             + n[2]*Nf[3]*Nf[4]*Nf[5]
+		             + n[3]*Nf[4]*Nf[5]
+		             + n[4]*Nf[5]
+		             + n[5] ;
+		3'd1 :
+		twdl_coeff_base <= n[2]*Nf[3]*Nf[4]*Nf[5]
+		             + n[3]*Nf[4]*Nf[5]
+		             + n[4]*Nf[5]
+		             + n[5] ;
+		3'd2 :
+		twdl_coeff_base <= n[3]*Nf[4]*Nf[5]
+		             + n[4]*Nf[5]
+		             + n[5] ;
+		3'd3 :
+		twdl_coeff_base <= n[4]*Nf[5]
+		             + n[5] ;
+		3'd4 :
+		twdl_coeff_base <= n[5] ;
+		3'd5 :
+		twdl_coeff_base <= 0 ;
+		default :
+		twdl_coeff_base <= 0;
+		endcase
+	end
+end
+
+always@(posedge clk) begin
+	twdl_coeff[0] <= 0; 
+	twdl_coeff[1] <= twdl_coeff_base; 
+	twdl_coeff[2] <= 3'd2*twdl_coeff_base; 
+	twdl_coeff[3] <= 3'd3*twdl_coeff_base; 
+	twdl_coeff[4] <= 3'd4*twdl_coeff_base; 
+end
 
 endmodule

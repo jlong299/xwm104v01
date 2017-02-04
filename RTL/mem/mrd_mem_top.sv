@@ -66,7 +66,7 @@ logic [0:6][29:0] dout_real_RAM, dout_imag_RAM;
 logic [0:6][7:0]  rdaddr_RAM;
 
 logic [11:0]  addr_sink_CTA;
-
+logic [0:4][11:0]  twdl_coeff;
 
 //------------------------------------------------
 //------------------ 1st stage: Sink -------------
@@ -271,6 +271,7 @@ endgenerate
 assign out_rdx2345_data.valid = rd_ongoing_r[2];
 assign out_rdx2345_data.bank_index = bank_index_rd_rr;
 assign out_rdx2345_data.bank_addr = bank_addr_rd_rr;
+always@(posedge clk) out_rdx2345_data.twdl_coeff <= twdl_coeff;
 
 always@(*)
 begin
@@ -280,53 +281,53 @@ begin
 		3'd0 :
 		begin
 			out_rdx2345_data.factor <= 3'd4;
-			out_rdx2345_data.tw_ROM_addr_step <= 8'd16;
-			out_rdx2345_data.tw_ROM_exp_ceil <= 8'd4;
-			out_rdx2345_data.tw_ROM_exp_time <= 8'd75;
+			// out_rdx2345_data.tw_ROM_addr_step <= 8'd16;
+			// out_rdx2345_data.tw_ROM_exp_ceil <= 8'd4;
+			// out_rdx2345_data.tw_ROM_exp_time <= 8'd75;
 		end
 		3'd1 :
 		begin
 			out_rdx2345_data.factor <= 3'd4;
-			out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
-			out_rdx2345_data.tw_ROM_exp_ceil <= 8'd1;
-			out_rdx2345_data.tw_ROM_exp_time <= 8'd1;
+			// out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
+			// out_rdx2345_data.tw_ROM_exp_ceil <= 8'd1;
+			// out_rdx2345_data.tw_ROM_exp_time <= 8'd1;
 		end
 		3'd2 :
 		begin
 			out_rdx2345_data.factor <= 3'd5;
-			out_rdx2345_data.tw_ROM_addr_step <= 8'd1;
-			out_rdx2345_data.tw_ROM_exp_ceil <= 8'd5;
-			out_rdx2345_data.tw_ROM_exp_time <= 8'd3;
+			// out_rdx2345_data.tw_ROM_addr_step <= 8'd1;
+			// out_rdx2345_data.tw_ROM_exp_ceil <= 8'd5;
+			// out_rdx2345_data.tw_ROM_exp_time <= 8'd3;
 		end
 		3'd3 :
 		begin
 			out_rdx2345_data.factor <= 3'd5;
-			out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
-			out_rdx2345_data.tw_ROM_exp_ceil <= 8'd1;
-			out_rdx2345_data.tw_ROM_exp_time <= 8'd1;
+			// out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
+			// out_rdx2345_data.tw_ROM_exp_ceil <= 8'd1;
+			// out_rdx2345_data.tw_ROM_exp_time <= 8'd1;
 		end
 		3'd4 :
 		begin
 			out_rdx2345_data.factor <= 3'd3;
-			out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
-			out_rdx2345_data.tw_ROM_exp_ceil <= 8'd1;
-			out_rdx2345_data.tw_ROM_exp_time <= 8'd1;
+			// out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
+			// out_rdx2345_data.tw_ROM_exp_ceil <= 8'd1;
+			// out_rdx2345_data.tw_ROM_exp_time <= 8'd1;
 		end
 		3'd5 :
 		begin
 			out_rdx2345_data.factor <= 3'd1;
-			out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
-			out_rdx2345_data.tw_ROM_exp_ceil <= 8'd1;
-			out_rdx2345_data.tw_ROM_exp_time <= 8'd1;
+			// out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
+			// out_rdx2345_data.tw_ROM_exp_ceil <= 8'd1;
+			// out_rdx2345_data.tw_ROM_exp_time <= 8'd1;
 		end
 		endcase
 	end
 	else
 	begin
 		out_rdx2345_data.factor <= 3'd1;
-		out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
-		out_rdx2345_data.tw_ROM_exp_ceil <= 8'd0;
-		out_rdx2345_data.tw_ROM_exp_time <= 8'd0;
+		// out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
+		// out_rdx2345_data.tw_ROM_exp_ceil <= 8'd0;
+		// out_rdx2345_data.tw_ROM_exp_time <= 8'd0;
 	end
 end
 
@@ -419,9 +420,9 @@ CTA_addr_trans_inst	(
 	.Nf  (ctrl.Nf),
 	.current_stage  (ctrl.current_stage),
 
-	.addrs_butterfly  (addrs_butterfly)
+	.addrs_butterfly  (addrs_butterfly),
+	.twdl_coeff  (twdl_coeff)
 	);
-
 
 //------------------------------------------------
 //------------------ 3rd stage: Write ------------
