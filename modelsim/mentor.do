@@ -1,5 +1,6 @@
 # set TOP_LEVEL_NAME top_tb
-set TOP_LEVEL_NAME divider_pipe0_tb
+# set TOP_LEVEL_NAME divider_pipe0_tb
+set TOP_LEVEL_NAME mrd_twdl_tb
 
 vlib work
 #  com
@@ -46,14 +47,11 @@ vsim -t ns  -L work $TOP_LEVEL_NAME
 # add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/twdl/dout_imag_t
 # add wave -radix decimal sim:/top_tb/top_inst/rdx2345_twdl/from_mem/*
 
-add wave -radix unsigned sim:/divider_pipe0_tb/divider_pipe0_inst/*
-add wave -radix unsigned sim:/divider_pipe0_tb/divider_pipe0_inst/divider_inst_0/*
-add wave -radix unsigned sim:/divider_pipe0_tb/divider_pipe0_inst/divider_inst_0/remd_quot_r
-add wave -radix unsigned sim:/divider_pipe0_tb/divider_pipe0_inst/divider_inst_0/quot
-add wave -radix unsigned sim:/divider_pipe0_tb/divider_pipe0_inst/divider_inst_0/remd
-add wave -radix unsigned sim:/divider_pipe0_tb/divider_pipe0_inst/divider_inst_0/subtr
+# add wave -radix unsigned sim:/divider_pipe0_tb/divider_pipe0_inst/*
+# add wave -radix unsigned sim:/divider_pipe0_tb/divider_pipe0_inst/divider_inst_0/*
+# add wave -radix unsigned {sim:/divider_pipe0_tb/divider_pipe0_inst/div_gen[1]/divider_inst/*}
 
-# add wave -radix unsigned {sim:/divider_pipe0_tb/divider_pipe0_inst/div_gen[7]/divider_inst/*}
+# add wave -radix signed {sim:/mrd_twdl_tb/mrd_twdl_inst/*}
 
 view structure
 view signals

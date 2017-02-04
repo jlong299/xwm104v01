@@ -1,4 +1,5 @@
 // Pipeline divider
+// Output delay : 8 clk cycles
 module divider_pipe0  #(parameter
 	integer w_divident = 44,
 	integer w_divisor = 12
