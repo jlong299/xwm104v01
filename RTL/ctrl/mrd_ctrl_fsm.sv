@@ -70,16 +70,10 @@ assign  NumOfFactors = 3'd5;
 
 assign ctrl_to_mem0.Nf[0:5] = '{3'd4,3'd4,3'd5,3'd5,3'd3,3'd1};
 assign ctrl_to_mem1.Nf[0:5] = '{3'd4,3'd4,3'd5,3'd5,3'd3,3'd1};
-assign ctrl_to_mem0.Nf_PFA[0:2] = '{10'd16, 10'd25, 10'd3};
-assign ctrl_to_mem1.Nf_PFA[0:2] = '{10'd16, 10'd25, 10'd3};
-assign ctrl_to_mem0.q_p = 10'd3;
-assign ctrl_to_mem1.q_p = 10'd3;
-assign ctrl_to_mem0.r_p = 10'd17;
-assign ctrl_to_mem1.r_p = 10'd17;
-assign ctrl_to_mem0.q_p_o = 10'd1;
-assign ctrl_to_mem1.q_p_o = 10'd1;
-assign ctrl_to_mem0.r_p_o = 10'd11;
-assign ctrl_to_mem1.r_p_o = 10'd11;
+assign ctrl_to_mem0.dftpts_div_Nf[0:5] = 
+            '{12'd300,12'd300,12'd240,12'd240,12'd400,12'd1200};
+assign ctrl_to_mem1.dftpts_div_Nf[0:5] = 
+            '{12'd300,12'd300,12'd240,12'd240,12'd400,12'd1200};
 
 always@(posedge clk)
 begin
@@ -196,6 +190,7 @@ begin
 	end
 	else
 	begin
+		// Update dftpts when sink_sop comes
 		if (fsm==2'd0 && stat_from_mem0.sink_sop==1'b1)
 			dftpts <= stat_from_mem0.dftpts;
 		else if (fsm==2'd0 && stat_from_mem1.sink_sop==1'b1)

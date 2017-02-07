@@ -36,7 +36,7 @@ add wave -radix unsigned {sim:/top_tb/top_inst/mem0/rden}
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/dout_real_RAM}
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/dout_imag_RAM}
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/rdaddr_RAM}
-add wave -radix unsigned {sim:/top_tb/top_inst/mem0/twdl_coeff}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem0/twdl_numrtr}
 
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/out_rdx2345_data/*}
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/out_rdx2345_data/d_real}

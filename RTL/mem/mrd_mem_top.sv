@@ -21,7 +21,9 @@ module mrd_mem_top (
 	mrd_stat_if  stat_to_ctrl
 );
 
-logic [11:0]  dftpts, N_PFA_in;
+logic [11:0]  dftpts;
+logic [0:5][2:0] Nf;
+logic [0:5][11:0] dftpts_div_Nf; 
 logic  clr_n_PFA_addr, clr_n_PFA_addr_o;
 logic  [9:0]  n1_PFA_in, n2_PFA_in, n3_PFA_in;
 logic  [9:0]  k1_PFA_out, k2_PFA_out, k3_PFA_out;
@@ -66,7 +68,8 @@ logic [0:6][29:0] dout_real_RAM, dout_imag_RAM;
 logic [0:6][7:0]  rdaddr_RAM;
 
 logic [11:0]  addr_sink_CTA;
-logic [0:4][11:0]  twdl_coeff;
+logic [0:4][11:0]  twdl_numrtr;
+logic clr_n_twdl;
 
 //------------------------------------------------
 //------------------ 1st stage: Sink -------------
@@ -76,53 +79,28 @@ begin
 	if (!rst_n)
 	begin
 		dftpts <= 0;
-		// clr_n_PFA_addr <= 0;
+		Nf <= 0;
+		dftpts_div_Nf <= 0;   //  dftpts/Nf
 	end
 	else
 	begin
-		if (ctrl.state==2'b00 && in_data.sop)
-			dftpts <= in_data.dftpts;
-		else if (ctrl.state==2'b10 && ctrl_state_r==2'b00)
+		// Accept new paramter value from ctrl module when  00 --> 01 or 10
+		if ((ctrl.state==2'b10 || ctrl.state==2'b01)  && ctrl_state_r==2'b00)
+		begin
 			dftpts <= ctrl.dftpts;
-		else
+			Nf <= ctrl.Nf;
+			dftpts_div_Nf <= ctrl.dftpts_div_Nf;
+		end
+		else begin
 			dftpts <= dftpts;
-
-		// if (in_data.sop)
-		// 	clr_n_PFA_addr <= 1'b1;
-		// else if (in_data.eop)
-		// 	clr_n_PFA_addr <= 1'b0;
-		// else
-		// 	clr_n_PFA_addr <= clr_n_PFA_addr;
-
+			Nf <= Nf;
+			dftpts_div_Nf <= dftpts_div_Nf;
+		end
 	end
 end
 
-// PFA_addr_trans #(
-// 		.wDataInOut (10)
-// 	)
-// PFA_addr_trans_inst
-// 	(
-// 	.clk  (clk),    
-// 	.rst_n  (rst_n), 
-
-// 	.clr_n (clr_n_PFA_addr),
-
-// 	.Nf1 (ctrl.Nf_PFA[0]),  //N1
-// 	.Nf2 (ctrl.Nf_PFA[1]),  //N2
-// 	.Nf3 (ctrl.Nf_PFA[2]),  //N3
-// 	.q_p (ctrl.q_p),  //q'
-// 	.r_p (ctrl.r_p),  //r'
-
-// 	.n1 (n1_PFA_in),
-// 	.n2 (n2_PFA_in),
-// 	.n3 (n3_PFA_in)
-// );
-
 always@(posedge clk)
 begin
-	// N_PFA_in <= n1_PFA_in*ctrl.Nf_PFA[1]*ctrl.Nf_PFA[2]
-	//         + n2_PFA_in*ctrl.Nf_PFA[2] + n3_PFA_in;
-
 	// If in_dly >= 1
 	// input_valid_r[in_dly:0] <= {input_valid_r[in_dly-1:0],
 	//                               in_data.valid} ;
@@ -253,7 +231,7 @@ generate
 		.remainder 	(div7_rmdr_rd[k])
 	);
 	// index 3'd7 means the index is not valid
-	assign bank_index_rd[k] = (k >= ctrl.Nf[ctrl.current_stage]) ?
+	assign bank_index_rd[k] = (k >= Nf[ctrl.current_stage]) ?
 	                          3'd7 : div7_rmdr_rd[k];
 	end
 endgenerate
@@ -271,67 +249,19 @@ endgenerate
 assign out_rdx2345_data.valid = rd_ongoing_r[2];
 assign out_rdx2345_data.bank_index = bank_index_rd_rr;
 assign out_rdx2345_data.bank_addr = bank_addr_rd_rr;
-always@(posedge clk) out_rdx2345_data.twdl_coeff <= twdl_coeff;
+always@(posedge clk) out_rdx2345_data.twdl_numrtr <= twdl_numrtr;
 
 always@(*)
 begin
 	if (ctrl.state==2'b01 || ctrl.state==2'b10 )
-	begin
-		case (ctrl.current_stage)
-		3'd0 :
-		begin
-			out_rdx2345_data.factor <= 3'd4;
-			// out_rdx2345_data.tw_ROM_addr_step <= 8'd16;
-			// out_rdx2345_data.tw_ROM_exp_ceil <= 8'd4;
-			// out_rdx2345_data.tw_ROM_exp_time <= 8'd75;
-		end
-		3'd1 :
-		begin
-			out_rdx2345_data.factor <= 3'd4;
-			// out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
-			// out_rdx2345_data.tw_ROM_exp_ceil <= 8'd1;
-			// out_rdx2345_data.tw_ROM_exp_time <= 8'd1;
-		end
-		3'd2 :
-		begin
-			out_rdx2345_data.factor <= 3'd5;
-			// out_rdx2345_data.tw_ROM_addr_step <= 8'd1;
-			// out_rdx2345_data.tw_ROM_exp_ceil <= 8'd5;
-			// out_rdx2345_data.tw_ROM_exp_time <= 8'd3;
-		end
-		3'd3 :
-		begin
-			out_rdx2345_data.factor <= 3'd5;
-			// out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
-			// out_rdx2345_data.tw_ROM_exp_ceil <= 8'd1;
-			// out_rdx2345_data.tw_ROM_exp_time <= 8'd1;
-		end
-		3'd4 :
-		begin
-			out_rdx2345_data.factor <= 3'd3;
-			// out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
-			// out_rdx2345_data.tw_ROM_exp_ceil <= 8'd1;
-			// out_rdx2345_data.tw_ROM_exp_time <= 8'd1;
-		end
-		3'd5 :
-		begin
-			out_rdx2345_data.factor <= 3'd1;
-			// out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
-			// out_rdx2345_data.tw_ROM_exp_ceil <= 8'd1;
-			// out_rdx2345_data.tw_ROM_exp_time <= 8'd1;
-		end
-		endcase
-	end
+		out_rdx2345_data.factor = Nf[ctrl.current_stage];
 	else
-	begin
 		out_rdx2345_data.factor <= 3'd1;
-		// out_rdx2345_data.tw_ROM_addr_step <= 8'd0;
-		// out_rdx2345_data.tw_ROM_exp_ceil <= 8'd0;
-		// out_rdx2345_data.tw_ROM_exp_time <= 8'd0;
-	end
 end
 
-
+//-------------------------------------------
+//--------------  7 RAMs --------------------
+//-------------------------------------------
 generate
 	for (i=0; i<7; i++) begin : RAM_banks
 	mrd_RAM_fake RAM_fake(
@@ -348,10 +278,11 @@ generate
 		);
 	end
 endgenerate
+//--------------------------------------------
 
 always@(*)
 begin
-	cnt_rd_stop = dftpts/(ctrl.Nf[ctrl.current_stage]);
+	cnt_rd_stop = dftpts_div_Nf[ctrl.current_stage];
 end
 
 always@(posedge clk)
@@ -363,8 +294,6 @@ begin
 		stat_to_ctrl.rd_ongoing <= 0;
 		stat_to_ctrl.wr_ongoing <= 0;
 		stat_to_ctrl.source_ongoing <= 0;
-
-		//source_ongoing_r <= 0;
 
 		cnt_rd_ongoing <= 0;
 		rd_ongoing_r <= 0;
@@ -417,11 +346,33 @@ CTA_addr_trans_inst	(
 	.clk  (clk),    
 	.rst_n  (rst_n),  
 	.clr_n  (stat_to_ctrl.rd_ongoing),
-	.Nf  (ctrl.Nf),
+	.Nf  (Nf),
 	.current_stage  (ctrl.current_stage),
 
-	.addrs_butterfly  (addrs_butterfly),
-	.twdl_coeff  (twdl_coeff)
+	.addrs_butterfly  (addrs_butterfly)
+	);
+
+// always@(posedge clk)
+// begin
+// 	if (!rst_n) begin
+// 		clr_n_twdl <= 0;
+// 	end
+// 	else begin
+// 		if (ctrl.state==2'b00 && ctrl_state_r != 2'b00) begin
+// 			clr_n_twdl <= 0;
+
+
+CTA_twdl_numrtr #(
+		.wDataInOut (12)
+	)
+CTA_twdl_numrtr_inst	(
+	.clk  (clk),    
+	.rst_n  (rst_n),  
+	.clr_n  (clr_n_twdl),
+	.Nf  (Nf),
+	.current_stage  (ctrl.current_stage),
+
+	.twdl_numrtr  (twdl_numrtr)
 	);
 
 //------------------------------------------------
@@ -521,47 +472,6 @@ end
 
 logic [2:0]  k1,k2,k3,k4,k5,k6; 
 
-// PFA_addr_trans_out #(
-// 		.wDataInOut (10)
-// 	)
-// PFA_addr_trans_o_inst
-// 	(
-// 	.clk  (clk),    
-// 	.rst_n  (rst_n), 
-
-// 	.clr_n (clr_n_PFA_addr_o),
-
-// 	.Nf1 (ctrl.Nf_PFA[0]),  //N1
-// 	.Nf2 (ctrl.Nf_PFA[1]),  //N2
-// 	.Nf3 (ctrl.Nf_PFA[2]),  //N3
-// 	.q_p (ctrl.q_p_o),  //q'
-// 	.r_p (ctrl.r_p_o),  //r'
-
-// 	.k1 (k1_PFA_out),
-// 	.k2 (k2_PFA_out),
-// 	.k3 (k3_PFA_out)
-// );
-
-// //-------- Below is only 1200 case -----------
-// assign k1 = k1_PFA_out % 3'd4;
-// assign k2 = k1_PFA_out / 3'd4;
-// assign k3 = k2_PFA_out % 3'd5;
-// assign k4 = k2_PFA_out / 3'd5;
-// assign k5 = k3_PFA_out;
-// assign k6 = 0;
-// always@(posedge clk)
-// begin 
-// 	if (!rst_n)
-// 	begin
-// 		N_PFA_out <= 0;
-// 	end
-// 	else
-// 	begin
-// 		N_PFA_out <= k1*10'd300 + k2*10'd75 + k3*10'd15 + k4*10'd3 + k5 + k6;
-// 	end
-// end
-
-
 //-------------------------------------------- 
 logic [11:0]  addr_source_CTA;
 CTA_addr_source #(
@@ -572,7 +482,7 @@ CTA_addr_source_inst (
 	rst_n,  
 	clr_n_PFA_addr_o,
 
-	ctrl.Nf,  //N1,N2,...,N6
+	Nf,  //N1,N2,...,N6
 
 	addr_source_CTA 
 );

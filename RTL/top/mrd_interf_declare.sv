@@ -30,7 +30,7 @@ interface mrd_rdx2345_if ();
 	// logic [7:0]  tw_ROM_addr_step;
 	// logic [7:0]  tw_ROM_exp_ceil;
 	// logic [7:0]  tw_ROM_exp_time;
-	logic [0:4][11:0]  twdl_coeff;
+	logic [0:4][11:0]  twdl_numrtr;
 endinterface
 
 
@@ -46,11 +46,13 @@ interface mrd_ctrl_if ();
 	logic [11:0] dftpts;
 
 	logic [0:5][2:0] Nf;
-	logic [0:2][9:0] Nf_PFA;
-	logic [9:0] q_p;
-	logic [9:0] r_p;
-	logic [9:0] q_p_o;
-	logic [9:0] r_p_o;
+	logic [0:5][11:0] dftpts_div_Nf; 
+
+	// logic [0:2][9:0] Nf_PFA;
+	// logic [9:0] q_p;
+	// logic [9:0] r_p;
+	// logic [9:0] q_p_o;
+	// logic [9:0] r_p_o;
 endinterface
 
 //mrd_stat_if :  State signals from mrd_mem_top to mrd_ctrl_fsm.
