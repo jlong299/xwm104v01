@@ -28,14 +28,14 @@ logic val_rdx3;
 logic signed [wDFTout-1:0] real_rdx3 [0:4];
 logic signed [wDFTout-1:0] imag_rdx3 [0:4];
 	
-	integer wr_file;
-	initial begin
-		wr_file = $fopen("rdx2345_result.dat","w");
-		if (wr_file == 0) begin
-			$display("rdx2345_result handle was NULL");
-			$finish;
-		end
-	end
+	// integer wr_file;
+	// initial begin
+	// 	wr_file = $fopen("rdx2345_result.dat","w");
+	// 	if (wr_file == 0) begin
+	// 		$display("rdx2345_result handle was NULL");
+	// 		$finish;
+	// 	end
+	// end
 
 
 
@@ -157,32 +157,32 @@ twdl (
 	.dout_imag  (to_mem.d_imag)
 	);
 
-logic [15:0]  cnt_val_debug;
-always@(posedge clk)
-	begin
-		if (!rst_n)
-			cnt_val_debug <= 0;
-		else
-		begin
-				if (to_mem.valid && cnt_val_debug != 16'd841)
-				begin
-					cnt_val_debug <= cnt_val_debug + 'd1;
-					if (cnt_val_debug >= 600) begin
-					$fwrite(wr_file, "%d %d\n", $signed(to_mem.d_real[0]), $signed(to_mem.d_imag[0]));
-					$fwrite(wr_file, "%d %d\n", $signed(to_mem.d_real[1]), $signed(to_mem.d_imag[1]));
-					$fwrite(wr_file, "%d %d\n", $signed(to_mem.d_real[2]), $signed(to_mem.d_imag[2]));
-					$fwrite(wr_file, "%d %d\n", $signed(to_mem.d_real[3]), $signed(to_mem.d_imag[3]));
-					$fwrite(wr_file, "%d %d\n", $signed(to_mem.d_real[4]), $signed(to_mem.d_imag[4]));
-					end
-				end
+// logic [15:0]  cnt_val_debug;
+// always@(posedge clk)
+// 	begin
+// 		if (!rst_n)
+// 			cnt_val_debug <= 0;
+// 		else
+// 		begin
+// 				if (to_mem.valid && cnt_val_debug != 16'd841)
+// 				begin
+// 					cnt_val_debug <= cnt_val_debug + 'd1;
+// 					if (cnt_val_debug >= 600) begin
+// 					$fwrite(wr_file, "%d %d\n", $signed(to_mem.d_real[0]), $signed(to_mem.d_imag[0]));
+// 					$fwrite(wr_file, "%d %d\n", $signed(to_mem.d_real[1]), $signed(to_mem.d_imag[1]));
+// 					$fwrite(wr_file, "%d %d\n", $signed(to_mem.d_real[2]), $signed(to_mem.d_imag[2]));
+// 					$fwrite(wr_file, "%d %d\n", $signed(to_mem.d_real[3]), $signed(to_mem.d_imag[3]));
+// 					$fwrite(wr_file, "%d %d\n", $signed(to_mem.d_real[4]), $signed(to_mem.d_imag[4]));
+// 					end
+// 				end
 
-				if (cnt_val_debug==16'd840)  
-				begin
-					$fclose(wr_file);
-					cnt_val_debug <= 16'd841;
-				end
-		end
+// 				if (cnt_val_debug==16'd840)  
+// 				begin
+// 					$fclose(wr_file);
+// 					cnt_val_debug <= 16'd841;
+// 				end
+// 		end
 
-	end
+// 	end
 
 endmodule

@@ -104,12 +104,18 @@ end
 % e.g. If N=1200  = 4*4*5*5*3,  NumOfFactors=5,  ena=[1,1,1,1,1,0]
 
 %------------- gen test source data -------------------
-x_real=round((2*rand(1,N)-1)*8192);
-x_imag=round((2*rand(1,N)-1)*8192);
+x_real=round((2*rand(1,N)-1)*2048);
+x_imag=round((2*rand(1,N)-1)*2048);
 
-% x = x_real + 1j*x_imag;
-x = [0:1:1199];
-x = x + x*(1i);
+x = x_real + 1j*x_imag;
+% x = [0:1:1199];
+% x = x + x*(1i);
+
+outf = fopen('../../modelsim/dft_src.dat','w');
+for k = 1 : length(x_real)
+    fprintf(outf , '%d %d\n' , x_real(k), x_imag(k));
+end
+fclose(outf);
 
 FX = fft(x);
 

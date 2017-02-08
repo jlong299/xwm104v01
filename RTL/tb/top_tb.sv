@@ -17,8 +17,17 @@ logic source_valid, source_sop, source_eop;
 logic [29:0]  source_real, source_imag;
 logic [3:0]  cnt_sink_sop;
 
-integer wr_file;
+integer 	data_file, scan_file, wr_file;
+logic [31:0] 	captured_data, captured_data_imag;
+logic [15:0]  cnt_file_end; 
+
 initial begin
+	data_file = $fopen("dft_src.dat","r");
+	if (data_file == 0) begin
+		$display("dft_src handle was NULL");
+		$finish;
+	end
+
 	wr_file = $fopen("top_result.dat","w");
 	if (wr_file == 0) begin
 		$display("top_result handle was NULL");
@@ -53,6 +62,7 @@ begin
 		inverse <= 0;
 		cnt0 <= 0;
 		cnt_sink_sop <= 0;
+		cnt_file_end <= 0;
 	end
 	else
 	begin
@@ -64,16 +74,42 @@ begin
 
 		cnt_sink_sop <= (sink_sop && cnt_sink_sop!=4'd4)? cnt_sink_sop+4'd1 : cnt_sink_sop;
 
-		if (cnt0 <= 16'd11+dftpts_in)
-		begin
-			sink_real <= {2'b00, cnt0} - 18'd10;
-			sink_imag <= {2'b00, cnt0} - 18'd10;
+		// if (cnt0 <= 16'd11+dftpts_in)
+		// begin
+		// 	sink_real <= {2'b00, cnt0} - 18'd10;
+		// 	sink_imag <= {2'b00, cnt0} - 18'd10;
+		// end
+		// else
+		// begin
+		// 	sink_real <= 0;
+		// 	sink_imag <= 0;
+		// end
+
+		if (cnt_file_end==16'd0) begin
+		if (cnt0>=16'd10 && cnt0<16'd10+dftpts_in) begin
+			if (!$feof(data_file)) begin
+				scan_file = $fscanf(data_file, "%d %d\n", captured_data, captured_data_imag);
+				sink_real = captured_data[17:0];
+				sink_imag = captured_data_imag[17:0];
+			end
+			else begin
+				sink_real = 0;
+				sink_imag = 0;
+			end
 		end
 		else
 		begin
-			sink_real <= 0;
-			sink_imag <= 0;
+			if ($feof(data_file))
+			begin
+				// $fseek(data_file,0,0);
+				// cnt_file_end = cnt_file_end + 16'd1;
+				// if (cnt_file_end==param_cnt_file_end) $fclose(data_file);
+				cnt_file_end = cnt_file_end + 16'd1;
+				$fclose(data_file);
+			end
 		end
+		end
+
 	end
 end
 
