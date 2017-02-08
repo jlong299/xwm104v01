@@ -31,6 +31,7 @@ interface mrd_rdx2345_if ();
 	// logic [7:0]  tw_ROM_exp_ceil;
 	// logic [7:0]  tw_ROM_exp_time;
 	logic [0:4][11:0]  twdl_numrtr;
+	logic [11:0]  twdl_demontr; 
 endinterface
 
 
@@ -47,6 +48,7 @@ interface mrd_ctrl_if ();
 
 	logic [0:5][2:0] Nf;
 	logic [0:5][11:0] dftpts_div_Nf; 
+	logic [0:5][11:0] twdl_demontr; 
 
 	// logic [0:2][9:0] Nf_PFA;
 	// logic [9:0] q_p;

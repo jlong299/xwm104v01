@@ -69,6 +69,7 @@ logic [0:6][7:0]  rdaddr_RAM;
 
 logic [11:0]  addr_sink_CTA;
 logic [0:4][11:0]  twdl_numrtr;
+logic [0:5][11:0]  twdl_demontr;
 logic clr_n_twdl;
 
 //------------------------------------------------
@@ -81,6 +82,7 @@ begin
 		dftpts <= 0;
 		Nf <= 0;
 		dftpts_div_Nf <= 0;   //  dftpts/Nf
+		twdl_demontr <= 0;
 	end
 	else
 	begin
@@ -90,11 +92,13 @@ begin
 			dftpts <= ctrl.dftpts;
 			Nf <= ctrl.Nf;
 			dftpts_div_Nf <= ctrl.dftpts_div_Nf;
+			twdl_demontr <= ctrl.twdl_demontr;
 		end
 		else begin
 			dftpts <= dftpts;
 			Nf <= Nf;
 			dftpts_div_Nf <= dftpts_div_Nf;
+			twdl_demontr <= twdl_demontr;
 		end
 	end
 end
@@ -250,6 +254,8 @@ assign out_rdx2345_data.valid = rd_ongoing_r[2];
 assign out_rdx2345_data.bank_index = bank_index_rd_rr;
 assign out_rdx2345_data.bank_addr = bank_addr_rd_rr;
 always@(posedge clk) out_rdx2345_data.twdl_numrtr <= twdl_numrtr;
+always@(posedge clk) out_rdx2345_data.twdl_demontr <= 
+                         twdl_demontr[ctrl.current_stage];
 
 always@(*)
 begin
@@ -368,9 +374,10 @@ CTA_twdl_numrtr #(
 CTA_twdl_numrtr_inst	(
 	.clk  (clk),    
 	.rst_n  (rst_n),  
-	.clr_n  (clr_n_twdl),
+	.clr_n  (stat_to_ctrl.rd_ongoing),
 	.Nf  (Nf),
 	.current_stage  (ctrl.current_stage),
+	.twdl_demontr  (twdl_demontr),
 
 	.twdl_numrtr  (twdl_numrtr)
 	);

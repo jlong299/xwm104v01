@@ -45,14 +45,34 @@ add wave -radix unsigned {sim:/top_tb/top_inst/mem0/ctrl/state}
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/ctrl/current_stage}
 
 # Source from RAMs
-add wave -radix unsigned {sim:/top_tb/top_inst/mem1/rden}
-add wave -radix unsigned {sim:/top_tb/top_inst/mem1/dout_real_RAM}
-add wave -radix unsigned {sim:/top_tb/top_inst/mem1/dout_imag_RAM}
-add wave -radix unsigned {sim:/top_tb/top_inst/mem1/rdaddr_RAM}
-add wave -radix unsigned {sim:/top_tb/top_inst/mem1/addr_source_CTA}
-add wave -radix unsigned {sim:/top_tb/top_inst/mem1/bank_addr_source}
-add wave -radix unsigned {sim:/top_tb/top_inst/mem1/bank_index_source}
-add wave -radix unsigned {sim:/top_tb/top_inst/mem1/out_data/*}
+# add wave -radix unsigned {sim:/top_tb/top_inst/mem1/rden}
+# add wave -radix unsigned {sim:/top_tb/top_inst/mem1/dout_real_RAM}
+# add wave -radix unsigned {sim:/top_tb/top_inst/mem1/dout_imag_RAM}
+# add wave -radix unsigned {sim:/top_tb/top_inst/mem1/rdaddr_RAM}
+# add wave -radix unsigned {sim:/top_tb/top_inst/mem1/addr_source_CTA}
+# add wave -radix unsigned {sim:/top_tb/top_inst/mem1/bank_addr_source}
+# add wave -radix unsigned {sim:/top_tb/top_inst/mem1/bank_index_source}
+# add wave -radix unsigned {sim:/top_tb/top_inst/mem1/out_data/*}
+
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/dft_rdx5/in_val}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/dft_rdx5/din_real}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/dft_rdx5/din_imag}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/dft_rdx5/out_val}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/dft_rdx5/dout_real}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/dft_rdx5/dout_imag}
+
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/*}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/d_real_r[0][21]}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/d_imag_r[0][21]}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/tw_real}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/tw_imag}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/dout_real_t}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/dout_imag_t}
+
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/to_mem/*}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/to_mem/d_real}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/to_mem/d_imag}
+
 
 # add wave -radix unsigned sim:/top_tb/top_inst/mem0/in_data/*
 # add wave -radix unsigned sim:/top_tb/top_inst/mem0/ctrl/*
@@ -88,4 +108,4 @@ add wave -radix unsigned {sim:/top_tb/top_inst/mem1/out_data/*}
 view structure
 view signals
 # run 200us
-run 40us
+run 50us

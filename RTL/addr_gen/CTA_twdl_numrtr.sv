@@ -14,6 +14,7 @@ module CTA_twdl_numrtr #(parameter
 	//param
 	input [0:5][2:0] 	Nf,  //N1,N2,...,N6
 	input [2:0] current_stage,
+	input [0:5][11:0] twdl_demontr,
 
 	output reg [0:4][wDataInOut-1:0] twdl_numrtr
 	
@@ -142,24 +143,45 @@ begin
 		twdl_numrtr_base <= 0;
 	else begin
 		case (current_stage)
+		// 3'd0 :
+		// twdl_numrtr_base <= n[1]*Nf[2]*Nf[3]*Nf[4]*Nf[5]
+		//              + n[2]*Nf[3]*Nf[4]*Nf[5]
+		//              + n[3]*Nf[4]*Nf[5]
+		//              + n[4]*Nf[5]
+		//              + n[5] ;
+		// 3'd1 :
+		// twdl_numrtr_base <= n[2]*Nf[3]*Nf[4]*Nf[5]
+		//              + n[3]*Nf[4]*Nf[5]
+		//              + n[4]*Nf[5]
+		//              + n[5] ;
+		// 3'd2 :
+		// twdl_numrtr_base <= n[3]*Nf[4]*Nf[5]
+		//              + n[4]*Nf[5]
+		//              + n[5] ;
+		// 3'd3 :
+		// twdl_numrtr_base <= n[4]*Nf[5]
+		//              + n[5] ;
+		// 3'd4 :
+		// twdl_numrtr_base <= n[5] ;
+
 		3'd0 :
-		twdl_numrtr_base <= n[1]*Nf[2]*Nf[3]*Nf[4]*Nf[5]
-		             + n[2]*Nf[3]*Nf[4]*Nf[5]
-		             + n[3]*Nf[4]*Nf[5]
-		             + n[4]*Nf[5]
-		             + n[5] ;
+		twdl_numrtr_base <= n[1]*twdl_demontr[2]
+		                  + n[2]*twdl_demontr[3]
+		                  + n[3]*twdl_demontr[4]
+		                  + n[4]*twdl_demontr[5]
+		                  + n[5] ;
 		3'd1 :
-		twdl_numrtr_base <= n[2]*Nf[3]*Nf[4]*Nf[5]
-		             + n[3]*Nf[4]*Nf[5]
-		             + n[4]*Nf[5]
-		             + n[5] ;
+		twdl_numrtr_base <= n[2]*twdl_demontr[3]
+		                  + n[3]*twdl_demontr[4]
+		                  + n[4]*twdl_demontr[5]
+		                  + n[5] ;
 		3'd2 :
-		twdl_numrtr_base <= n[3]*Nf[4]*Nf[5]
-		             + n[4]*Nf[5]
-		             + n[5] ;
+		twdl_numrtr_base <= n[3]*twdl_demontr[4]
+		                  + n[4]*twdl_demontr[5]
+		                  + n[5] ;
 		3'd3 :
-		twdl_numrtr_base <= n[4]*Nf[5]
-		             + n[5] ;
+		twdl_numrtr_base <= n[4]*twdl_demontr[5]
+		                  + n[5] ;
 		3'd4 :
 		twdl_numrtr_base <= n[5] ;
 		3'd5 :

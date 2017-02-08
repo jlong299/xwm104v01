@@ -95,8 +95,9 @@ module CORDIC(clock, cosine, sine, x_start, y_start, angle);
     wire z_sign;
     wire signed [width:0] x_shr, y_shr;
 
-    assign x_shr = x[i] >>> i; // signed shift right
-    assign y_shr = y[i] >>> i;
+    assign x_shr = (i==0)? x[0] : ( (x[i][i-1])? (x[i] >>> i) +2'sd1 : (x[i] >>> i) ); // signed shift right
+    assign y_shr = (i==0)? y[0] : ( (y[i][i-1])? (y[i] >>> i) +2'sd1 : (y[i] >>> i) ); // signed shift right
+    // assign y_shr = y[i] >>> i;
 
     //the sign of the current rotation angle
     assign z_sign = z[i][31];

@@ -109,7 +109,7 @@ x_imag=round((2*rand(1,N)-1)*8192);
 
 % x = x_real + 1j*x_imag;
 x = [0:1:1199];
-x = x;
+x = x + x*(1i);
 
 FX = fft(x);
 
@@ -160,9 +160,11 @@ is_last_stage = 0;
 tw_N_exp = 0;
 
 sum_addr_coeff = zeros(1,NumOfFactors_max);
+fft_out_reg = zeros(1200,1);
 %---------------------------------
 for m=1:NumOfFactors
-
+    fft_out_reg  = zeros(1200,1);
+    
     if (current_RAM==0)
         RAM_read = RAM_0;
     else
@@ -235,13 +237,17 @@ for m=1:NumOfFactors
                                 tw_coeff(t) = exp(-1i*2*pi* (t-1)*(tw_N_exp)/tw_base);
                             end
                                 
-                            % fft_tw_out = fft_tw2(read_data_index(1:5), Nf(m), tw_coeff, is_last_stage );
-                            fft_tw_out = read_data_index(1:5);
+                            fft_tw_out = fft_tw2(read_data_index(1:5), Nf(m), tw_coeff, is_last_stage );
+                            %fft_tw_out = read_data_index(1:5);
+                            fft_out_int32 = int32(fft_tw_out);
                         
                             cnt_debug = cnt_debug+1;
-                            if ( (cnt_debug<=2 || cnt_debug >= 238) && m==3 )
+                            if ( (cnt_debug<=1 || cnt_debug >= 239) && m==3 )
                                 cnt_debug = cnt_debug;
                             end
+                            
+                            fft_out_reg(cnt_debug*5-4 : cnt_debug*5,1) = fft_out_int32(1:5);
+                            fft_out_reg = int32(fft_out_reg);
                             
                             % write data to each bank of another RAM
                             for t = 1:NumOfBanks

@@ -1,6 +1,6 @@
 // Output :   exp(-i* 2pi* numerator/demoniator)
 // Delay :    24 clk cycles    numerator/demoniator --> dout_real/dout_imag
-module mrd_twdl #(parameter
+module coeff_twdl_CTA #(parameter
 	wDataIn = 12,
 	wDataOut = 16
 	)
@@ -15,8 +15,9 @@ module mrd_twdl #(parameter
 	output signed [wDataOut-1:0] dout_imag
 );
 
-logic [31:0] quotient;
+logic [31:0] quotient, quotient_round;
 logic signed [wDataOut-1:0]  cosine, sine;
+logic [wDataIn-1:0]  remainder;
 
 divider_pipe0  #(
 	.w_divident  (44),
@@ -30,13 +31,17 @@ divider_pipe0_inst (
 	.divisor  (demoninator),
 
 	.quotient  (quotient),
-	.remainder  ()
+	.remainder  (remainder)
 );
 
-localparam An = 32000/1.647;
+assign quotient_round = (remainder > (demoninator >>1)) ?
+                        quotient + 1'd1 : quotient;
+
+// localparam An = 32000/1.647;
+localparam An = 16384/1.647;
 logic [wDataOut-1:0]  xin = An;
 CORDIC
-cordic_inst(clk, cosine, sine, xin, 16'd0, quotient);
+cordic_inst(clk, cosine, sine, xin, 16'd0, quotient_round);
 
 assign dout_real = cosine;
 assign dout_imag = - sine;

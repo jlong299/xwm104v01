@@ -74,6 +74,11 @@ assign ctrl_to_mem0.dftpts_div_Nf[0:5] =
             '{12'd300,12'd300,12'd240,12'd240,12'd400,12'd1200};
 assign ctrl_to_mem1.dftpts_div_Nf[0:5] = 
             '{12'd300,12'd300,12'd240,12'd240,12'd400,12'd1200};
+// twddle demoninator
+assign ctrl_to_mem0.twdl_demontr[0:5] = 
+            '{12'd1200,12'd300,12'd75,12'd15,12'd3,12'd1};
+assign ctrl_to_mem1.twdl_demontr[0:5] = 
+            '{12'd1200,12'd300,12'd75,12'd15,12'd3,12'd1};
 
 always@(posedge clk)
 begin
