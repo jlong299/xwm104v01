@@ -107,30 +107,34 @@ switch_out (
 	);
 
 
-mrd_mem_top
+mrd_mem_top_v2
 mem0 (
 	.clk (clk),
 	.rst_n (rst_n_sync),
+	.this_mem_index (1'b0),
 
 	.in_data ( sink_st_0 ),
 	.in_rdx2345_data ( rdx2345_to_mem0 ),
 	// .fsm (fsm_to_mem),
 	.ctrl (ctrl_to_mem0),
+	.sw_rdx2345 (sw_rdx2345),
 
 	.out_data ( source_st_0 ),
 	.out_rdx2345_data ( mem0_to_rdx2345 ),
 	.stat_to_ctrl (stat_from_mem0)
 	);
 
-mrd_mem_top
+mrd_mem_top_v2
 mem1 (
 	.clk (clk),
 	.rst_n (rst_n_sync),
+	.this_mem_index (1'b1),
 
 	.in_data ( sink_st_1 ),
 	.in_rdx2345_data ( rdx2345_to_mem1 ),
 	// .fsm (fsm_to_mem),
 	.ctrl (ctrl_to_mem1),
+	.sw_rdx2345 (sw_rdx2345),
 
 	.out_data ( source_st_1 ),
 	.out_rdx2345_data ( mem1_to_rdx2345 ),
@@ -140,7 +144,7 @@ mem1 (
 
 mrd_switch_rdx2345
 switch_rdx2345(
-	.sw (sw_1to0),
+	.sw (sw_rdx2345),
 	.from_mem0  (mem0_to_rdx2345),
 	.to_mem0  (rdx2345_to_mem0),
 
@@ -176,7 +180,7 @@ ctrl_fsm(
 
 	.sw_in (sw_in),
 	.sw_out (sw_out),
-	.sw_1to0 (sw_1to0)
+	.sw_1to0 (sw_rdx2345)
 
 	);
 

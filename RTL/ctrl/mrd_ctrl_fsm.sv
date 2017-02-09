@@ -46,7 +46,7 @@
 //  Description : Ping Pong mem, sink and source may perform concurrently
 //  2017-02-09
 //  Changes :  One packet only be processed in one mem.  mem0 and mem1
-//             perform ping-pong operation based on different packet.
+//             perform ping-pong operation based on packet.
 //------------------------------------------------------------------
 
 module mrd_ctrl_fsm (
@@ -61,13 +61,9 @@ module mrd_ctrl_fsm (
 
 	output reg sw_in,
 	output reg sw_out,
-	output reg sw_1to1
+	output reg sw_rdx2345
 	
 );
-
-// logic [1:0]  fsm;
-// logic [2:0]  cnt_stage, cnt_stage_r;
-// logic wr_ongoing_mem0_r, wr_ongoing_mem1_r;
 
 logic [2:0]  NumOfFactors;
 logic [11:0]  dftpts_mem0, dftpts_mem1;
@@ -108,7 +104,7 @@ begin
 	if(!rst_n) begin
 		sw_in <= 0;
 		sw_out <= 0;
-		sw_1to1 <= 0;
+		sw_rdx2345 <= 0;
 	end
 	else begin
 		if (stat_from_mem0.source_start)
@@ -126,11 +122,11 @@ begin
 			sw_out <= sw_out;
 
 		if (stat_from_mem0.source_start)
-			sw_1to1 <= 1'b1;
+			sw_rdx2345 <= 1'b1;
 		else if (stat_from_mem1.source_start)
-			sw_1to1 <= 1'b0;
+			sw_rdx2345 <= 1'b0;
 		else
-			sw_1to1 <= sw_1to1;
+			sw_rdx2345 <= sw_rdx2345;
 	end
 end
 
