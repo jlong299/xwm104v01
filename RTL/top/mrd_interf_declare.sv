@@ -13,12 +13,7 @@ interface mrd_st_if ();
 	// modport ST_OUT (input ready,
 	// 	            output valid, sop, eop, d_real, d_imag, dftpts, inverse);
 endinterface
-// interface mrd_tw_if (); // Twiddle parameters
-// 	logic [1:0]  tw_ROM_sel;
-// 	logic [7:0]  tw_ROM_addr_step;
-// 	logic [7:0]  tw_ROM_exp_ceil;
-// 	logic [7:0]  tw_ROM_exp_time;
-// endinterface
+
 interface mrd_rdx2345_if ();
 	logic [2:0]  factor;
 	logic valid;
@@ -26,10 +21,7 @@ interface mrd_rdx2345_if ();
 	logic signed [29:0] d_imag [0:4];
 	logic [0:4][2:0]  bank_index;
 	logic [0:4][7:0]  bank_addr;
-	// Twiddle parameters
-	// logic [7:0]  tw_ROM_addr_step;
-	// logic [7:0]  tw_ROM_exp_ceil;
-	// logic [7:0]  tw_ROM_exp_time;
+
 	logic [0:4][11:0]  twdl_numrtr;
 	logic [11:0]  twdl_demontr; 
 endinterface
@@ -37,38 +29,19 @@ endinterface
 
 interface mrd_ctrl_if ();
 	//state: set state of mrd_mem_top 
-	//00 sink; 
-	//11 source; 
-	//01 rd;  
-	//10 wr
-	logic [1:0] state;
-	// CTA stage
-	logic [2:0] current_stage;
-	logic [11:0] dftpts;
+	// logic [1:0] state;
 
+	logic [2:0]  NumOfFactors;
 	logic [0:5][2:0] Nf;
 	logic [0:5][11:0] dftpts_div_Nf; 
 	logic [0:5][11:0] twdl_demontr; 
-
-	// logic [0:2][9:0] Nf_PFA;
-	// logic [9:0] q_p;
-	// logic [9:0] r_p;
-	// logic [9:0] q_p_o;
-	// logic [9:0] r_p_o;
 endinterface
 
 //mrd_stat_if :  State signals from mrd_mem_top to mrd_ctrl_fsm.
-//    1) sink_sop
-//    2) dftpts : valid when sink_sop==1
-//    3) sink_ongoing :  =1 when sink process is ongoing
-//    4) source_ongoing :  =1 when source process is ongoing
-//    5) rd_ongoing :  =1 when rd process is ongoing
-//    6) wr_ongoing :  =1 when wr process is ongoing
 interface mrd_stat_if ();
 	logic sink_sop;
 	logic [11:0]  dftpts;
-	logic sink_ongoing;
-	logic source_ongoing;
-	logic rd_ongoing;
-	logic wr_ongoing;
+
+	logic source_start;
+	logic source_end; 
 endinterface

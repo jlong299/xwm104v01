@@ -40,6 +40,14 @@
 //     | all stages complemented
 //     |
 //    s3:  start source process, then go to s0 at once
+//
+//------------------------------------------------------------------
+//  Version 0.2
+//  Description : Ping Pong mem, sink and source may perform concurrently
+//  2017-02-09
+//  Changes :  One packet only be processed in one mem.  mem0 and mem1
+//             perform ping-pong operation based on different packet.
+//------------------------------------------------------------------
 
 module mrd_ctrl_fsm (
 	input clk,    
@@ -48,26 +56,27 @@ module mrd_ctrl_fsm (
 	mrd_stat_if stat_from_mem0,
 	mrd_stat_if stat_from_mem1,
 
-	//output reg [2:0] fsm,
 	mrd_ctrl_if  ctrl_to_mem0,
 	mrd_ctrl_if  ctrl_to_mem1,
 
 	output reg sw_in,
 	output reg sw_out,
-	output reg sw_1to0
+	output reg sw_1to1
 	
 );
 
-logic [1:0]  fsm;
-logic [2:0]  cnt_stage, cnt_stage_r;
-logic wr_ongoing_mem0_r, wr_ongoing_mem1_r;
+// logic [1:0]  fsm;
+// logic [2:0]  cnt_stage, cnt_stage_r;
+// logic wr_ongoing_mem0_r, wr_ongoing_mem1_r;
 
 logic [2:0]  NumOfFactors;
-logic [11:0]  dftpts;
+logic [11:0]  dftpts_mem0, dftpts_mem1;
 
 //-----------  1200 case ----------------
 assign  NumOfFactors = 3'd5;
 
+assign ctrl_to_mem0.NumOfFactors = NumOfFactors;
+assign ctrl_to_mem1.NumOfFactors = NumOfFactors;
 assign ctrl_to_mem0.Nf[0:5] = '{3'd4,3'd4,3'd5,3'd5,3'd3,3'd1};
 assign ctrl_to_mem1.Nf[0:5] = '{3'd4,3'd4,3'd5,3'd5,3'd3,3'd1};
 assign ctrl_to_mem0.dftpts_div_Nf[0:5] = 
@@ -82,156 +91,46 @@ assign ctrl_to_mem1.twdl_demontr[0:5] =
 
 always@(posedge clk)
 begin
-	if (!rst_n)
-	begin
-		fsm <= 0;
+	if (!rst_n) begin
+		dftpts_mem0 <= 0;
+		dftpts_mem1 <= 0;
 	end
-	else
-	begin
-		case (fsm)
-		// s0, wait
-		2'd0: 
-		begin
-			fsm <= (stat_from_mem0.sink_sop | stat_from_mem1.sink_sop) ?
-			        2'd1 : 2'd0;
-		end
-		// s1, sink data
-		2'd1:
-		begin
-			if ( (!stat_from_mem0.sink_ongoing) 
-				 & (!stat_from_mem1.sink_ongoing)
-			     & (!stat_from_mem0.source_ongoing) 
-			     & (!stat_from_mem1.source_ongoing) )				
-				fsm <= 2'd2;
-			else 
-				fsm <= 2'd1;
-		end
-		// s2, DFT computation
-		2'd2:
-		begin
-			fsm <= (cnt_stage==NumOfFactors) ? 2'd3 : 2'd2;
-		end
-		// s3, source data
-		2'd3:
-		begin
-			fsm <= 2'd0;
-		end
-		endcase
+	else begin
+		dftpts_mem0 <= (sw_in==1'b0 && stat_from_mem0.sink_sop)? 
+		               stat_from_mem0.dftpts : dftpts_mem0; 
+		dftpts_mem1 <= (sw_in==1'b1 && stat_from_mem1.sink_sop)? 
+		               stat_from_mem1.dftpts : dftpts_mem1; 
 	end
 end
 
 always@(posedge clk)
 begin
-	if (!rst_n)
-	begin
+	if(!rst_n) begin
 		sw_in <= 0;
 		sw_out <= 0;
-		sw_1to0 <= 0;
+		sw_1to1 <= 0;
 	end
-	else
-	begin
-		case (fsm)
-		2'd2:
-		begin
-			sw_in <= sw_in;
-			sw_out <= (NumOfFactors[0])? ~sw_in : sw_in;
-			sw_1to0 <= sw_in ^ cnt_stage_r[0];
-		end
-		2'd3:
-		begin
-			sw_in <= ~sw_out;
-			sw_out <= sw_out;
-			sw_1to0 <= 0;
-		end
-		default:
-		begin
-			sw_in <= sw_in;
-			sw_out <= sw_out;
-			sw_1to0 <= 0;
-		end
-		endcase
-	end
-end
-
-always@(posedge clk)
-begin
-	if (!rst_n)
-	begin
-		cnt_stage <= 0;
-		cnt_stage <= 0;
-		wr_ongoing_mem0_r <= 0;
-		wr_ongoing_mem1_r <= 0;
-	end
-	else
-	begin
-		cnt_stage_r <= cnt_stage;
-		wr_ongoing_mem0_r <= stat_from_mem0.wr_ongoing;
-		wr_ongoing_mem1_r <= stat_from_mem1.wr_ongoing;
-		if (fsm==2'd2)
-		begin
-			if ((sw_1to0 & ~(stat_from_mem0.wr_ongoing) & wr_ongoing_mem0_r)
-			  | (~sw_1to0 & ~(stat_from_mem1.wr_ongoing) & wr_ongoing_mem1_r))
-			    cnt_stage <= cnt_stage+3'd1 ;
-			else
-				cnt_stage <= cnt_stage;
-		end
+	else begin
+		if (stat_from_mem0.source_start)
+			sw_in <= 1'b1;
+		else if (stat_from_mem1.source_start)
+			sw_in <= 1'b0;
 		else
-			cnt_stage <= 0;
-	end
-end
+			sw_in <= sw_in;
 
-
-always@(posedge clk)
-begin
-	if (!rst_n)
-	begin
-		dftpts <= 0;
-		ctrl_to_mem0.state <= 0;
-		ctrl_to_mem1.state <= 0;
-		ctrl_to_mem0.current_stage <= 0;
-		ctrl_to_mem1.current_stage <= 0;
-		ctrl_to_mem0.dftpts <= 0;
-		ctrl_to_mem1.dftpts <= 0;
-	end
-	else
-	begin
-		// Update dftpts when sink_sop comes
-		if (fsm==2'd0 && stat_from_mem0.sink_sop==1'b1)
-			dftpts <= stat_from_mem0.dftpts;
-		else if (fsm==2'd0 && stat_from_mem1.sink_sop==1'b1)
-			dftpts <= stat_from_mem1.dftpts;
+		if (stat_from_mem0.source_end)
+			sw_out <= 1'b1;
+		else if (stat_from_mem1.source_end)
+			sw_out <= 1'b0;
 		else
-			dftpts <= dftpts;
+			sw_out <= sw_out;
 
-		case (fsm)
-		2'd0, 2'd1:
-		begin
-			ctrl_to_mem0.state <= (sw_in) ? ctrl_to_mem0.state : 2'b00;
-			ctrl_to_mem1.state <= (!sw_in) ? ctrl_to_mem1.state : 2'b00;
-			ctrl_to_mem0.current_stage <= 0;
-			ctrl_to_mem1.current_stage <= 0;
-			ctrl_to_mem0.dftpts <= 0;
-			ctrl_to_mem1.dftpts <= 0;
-		end
-		2'd2:
-		begin
-			ctrl_to_mem0.state <= (sw_in ^ cnt_stage_r[0]) ? 2'b10 : 2'b01;
-			ctrl_to_mem1.state <= (sw_in ^ cnt_stage_r[0]) ? 2'b01 : 2'b10;
-			ctrl_to_mem0.current_stage <= cnt_stage_r;
-			ctrl_to_mem1.current_stage <= cnt_stage_r;
-			ctrl_to_mem0.dftpts <= dftpts;
-			ctrl_to_mem1.dftpts <= dftpts;
-		end
-		2'd3:
-		begin
-			ctrl_to_mem0.state <= (sw_out) ? 2'b00 : 2'b11;
-			ctrl_to_mem1.state <= (sw_out) ? 2'b11 : 2'b00;
-			ctrl_to_mem0.current_stage <= 0;
-			ctrl_to_mem1.current_stage <= 0;
-			ctrl_to_mem0.dftpts <= 0;
-			ctrl_to_mem1.dftpts <= 0;
-		end
-		endcase
+		if (stat_from_mem0.source_start)
+			sw_1to1 <= 1'b1;
+		else if (stat_from_mem1.source_start)
+			sw_1to1 <= 1'b0;
+		else
+			sw_1to1 <= sw_1to1;
 	end
 end
 
