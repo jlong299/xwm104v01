@@ -248,7 +248,7 @@ for m=1:NumOfFactors
                             fft_out_int32 = int32(fft_tw_out);
                         
                             cnt_debug = cnt_debug+1;
-                            if ( (cnt_debug<=2 || cnt_debug >= 399) && m==5 )
+                            if ( (cnt_debug<=2 || cnt_debug >= 399) && m==1 )
                                 cnt_debug = cnt_debug;
                             end
                             

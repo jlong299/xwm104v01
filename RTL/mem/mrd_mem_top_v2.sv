@@ -33,7 +33,7 @@ logic [0:5][2:0] Nf;
 logic [0:5][11:0] dftpts_div_Nf; 
 logic  clr_n_PFA_addr, clr_n_PFA_addr_o; 
 
-localparam  in_dly = 0;
+localparam  in_dly = 5;
 logic [in_dly:0]  input_valid_r;
 logic [in_dly:0][17:0]  input_real_r;
 logic [in_dly:0][17:0]  input_imag_r;
@@ -93,14 +93,15 @@ begin
 	else begin
 		case (fsm)
 		Idle : fsm <= (in_data.sop)? Sink : Idle;
-		Sink : fsm <= (sink_3_4)? Wait_to_rd : Sink;
+		// Sink : fsm <= (sink_3_4)? Wait_to_rd : Sink;
+		Sink : fsm <= (sink_3_4)? Rd : Sink;
 
-		Wait_to_rd : begin
-			if ((this_mem_index==1'b1 && sw_rdx2345==1'b1)
-				|| (this_mem_index==1'b0 && sw_rdx2345==1'b0))
-				fsm <= Rd;
-			else fsm <= fsm;
-		end
+		// Wait_to_rd : begin
+		// 	if ((this_mem_index==1'b1 && sw_rdx2345==1'b1)
+		// 		|| (this_mem_index==1'b0 && sw_rdx2345==1'b0))
+		// 		fsm <= Rd;
+		// 	else fsm <= fsm;
+		// end
 
 		Rd : fsm <= (rd_ongoing_r[2:1]==2'b10)? Wait_wr_end : Rd;
 		Wait_wr_end : begin
@@ -148,8 +149,8 @@ always@(*)
 begin
 if (fsm==Sink) 
 begin
-	din_real_RAM[i] = { {12{input_real_r[in_dly][17]}},input_real_r[in_dly] };
-	din_imag_RAM[i] = { {12{input_imag_r[in_dly][17]}},input_imag_r[in_dly] };
+	din_real_RAM[i] = { {12{input_real_r[0][17]}},input_real_r[0] };
+	din_imag_RAM[i] = { {12{input_imag_r[0][17]}},input_imag_r[0] };
 end
 else 
 begin
@@ -160,7 +161,7 @@ end
 
 assign wraddr_RAM[i]= (fsm==Sink)? bank_addr_sink[7:0] 
                       : wraddr_wr[i];
-assign wren[i] = (fsm==Sink)? (wren_sink[i] & input_valid_r[in_dly])
+assign wren[i] = (fsm==Sink)? (wren_sink[i] & input_valid_r[0])
                   : wren_wr[i] ; 
 
 assign rdaddr_RAM[i]= (fsm==Rd)? rdaddr_rd[i] : bank_addr_source;
@@ -210,15 +211,15 @@ end
 always@(posedge clk)
 begin
 	// If in_dly >= 1
-	// input_valid_r[in_dly:0] <= {input_valid_r[in_dly-1:0],
-	//                               in_data.valid} ;
-	// input_real_r[in_dly:0] <= {input_real_r[in_dly-1:0],in_data.din_real};
-	// input_imag_r[in_dly:0] <= {input_imag_r[in_dly-1:0],in_data.din_imag};
+	input_valid_r[in_dly:0] <= {input_valid_r[in_dly-1:0],
+	                              in_data.valid} ;
+	input_real_r[in_dly:0] <= {input_real_r[in_dly-1:0],in_data.din_real};
+	input_imag_r[in_dly:0] <= {input_imag_r[in_dly-1:0],in_data.din_imag};
 
 	// If in_dly == 0
-	input_valid_r[0] <= in_data.valid;
-	input_real_r[0] <= in_data.din_real;
-	input_imag_r[0] <= in_data.din_imag;
+	// input_valid_r[0] <= in_data.valid;
+	// input_real_r[0] <= in_data.din_real;
+	// input_imag_r[0] <= in_data.din_imag;
 end
 
 always@(posedge clk)
@@ -267,7 +268,8 @@ begin
 	end
 	else begin
 		cnt_sink <= (in_data.valid)? cnt_sink+12'd1 : 0;
-		if (cnt_sink != 12'd0 && cnt_sink==dftpts)
+		if (cnt_sink != 12'd0 && cnt_sink==
+			(ctrl.twdl_demontr[0] - ctrl.twdl_demontr[1] - 12'd1))
 			sink_3_4 <= 1'b1;
 		else sink_3_4 <= 1'b0;
 	end
@@ -340,14 +342,25 @@ generate
 endgenerate
 
 generate
-	for (i=0; i<5; i++) begin : rd_out
+	for (i=0; i<3; i++) begin : rd_out
 	always@(*)
 	begin
 		out_rdx2345_data.d_real[i] = d_real_rd[(bank_index_rd_rr[i])]; 
-		out_rdx2345_data.d_imag[i] = d_imag_rd[(bank_index_rd_rr[i])];
+		out_rdx2345_data.d_imag[i] = d_imag_rd[(bank_index_rd_rr[i])]; 
 	end
 	end
 endgenerate
+	always@(*)
+	begin
+		out_rdx2345_data.d_real[3] = (fsm==Rd && cnt_stage==3'd0)?
+		        {{(30-18){input_real_r[5][17]}}, input_real_r[5]} : 
+		        d_real_rd[(bank_index_rd_rr[3])]; 
+		out_rdx2345_data.d_imag[3] = (fsm==Rd && cnt_stage==3'd0)?
+		        {{(30-18){input_imag_r[5][17]}}, input_imag_r[5]} : 
+		        d_imag_rd[(bank_index_rd_rr[3])]; 
+		out_rdx2345_data.d_real[4] = d_real_rd[(bank_index_rd_rr[4])]; 
+		out_rdx2345_data.d_imag[4] = d_imag_rd[(bank_index_rd_rr[4])]; 
+	end
 
 assign out_rdx2345_data.valid = rd_ongoing_r[2];
 assign out_rdx2345_data.bank_index = bank_index_rd_rr;

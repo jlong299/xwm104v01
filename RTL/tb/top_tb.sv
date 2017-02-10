@@ -74,6 +74,8 @@ begin
 
 		cnt_sink_sop <= (sink_sop && cnt_sink_sop!=4'd4)? cnt_sink_sop+4'd1 : cnt_sink_sop;
 
+
+
 		// if (cnt0 <= 16'd11+dftpts_in)
 		// begin
 		// 	sink_real <= {2'b00, cnt0} - 18'd10;
@@ -109,6 +111,7 @@ begin
 			end
 		end
 		end
+		
 
 	end
 end
