@@ -47,7 +47,7 @@ end
 always # 5 clk = ~clk; //100M
 
 logic [15:0]  cnt0;
-localparam logic [15:0] gap = 16'd1550;
+localparam logic [15:0] gap = 16'd3000;
 
 always@(posedge clk) 
 begin

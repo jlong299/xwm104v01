@@ -180,7 +180,7 @@ ctrl_fsm(
 
 	.sw_in (sw_in),
 	.sw_out (sw_out),
-	.sw_1to0 (sw_rdx2345)
+	.sw_rdx2345 (sw_rdx2345)
 
 	);
 

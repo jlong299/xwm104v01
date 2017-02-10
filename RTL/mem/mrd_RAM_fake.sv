@@ -22,7 +22,8 @@ begin
 		mem_r[wraddr] <= din_real;
 		mem_i[wraddr] <= din_imag;
 	end
-	else if (rden)
+	
+	if (rden)
 	begin
 		dout_real <= mem_r[rdaddr];
 		dout_imag <= mem_i[rdaddr];

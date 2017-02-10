@@ -32,15 +32,11 @@ logic [11:0]  dftpts;
 logic [0:5][2:0] Nf;
 logic [0:5][11:0] dftpts_div_Nf; 
 logic  clr_n_PFA_addr, clr_n_PFA_addr_o; 
-logic  [9:0]  n1_PFA_in, n2_PFA_in, n3_PFA_in;
-logic  [9:0]  k1_PFA_out, k2_PFA_out, k3_PFA_out;
 
 localparam  in_dly = 0;
 logic [in_dly:0]  input_valid_r;
 logic [in_dly:0][17:0]  input_real_r;
 logic [in_dly:0][17:0]  input_imag_r;
-
-logic [3:0] rd_ongoing_r;
 
 assign stat_to_ctrl.sink_sop = in_data.sop;
 assign stat_to_ctrl.dftpts = in_data.dftpts;
@@ -48,7 +44,6 @@ assign stat_to_ctrl.dftpts = in_data.dftpts;
 logic [11:0]  bank_addr_sink, bank_addr_sink_pre;
 logic [2:0] bank_index_sink, bank_index_sink_pre;
 logic [0:6]  wren_sink;
-
 
 logic [0:6] rden, wren;
 logic [0:6] rden_rd;
@@ -66,7 +61,6 @@ logic [0:6]  wren_wr;
 
 logic [11:0] cnt_rd_ongoing, cnt_rd_stop, cnt_source_ongoing;
 
-//logic [11:0] N_PFA_out;
 logic [0:6]  rden_source;
 logic [11:0]  bank_addr_source;
 logic [2:0] bank_index_source, bank_index_source_r;
@@ -76,21 +70,16 @@ logic [0:6][7:0]  rdaddr_RAM;
 logic [11:0]  addr_sink_CTA;
 logic [0:4][11:0]  twdl_numrtr;
 logic [0:5][11:0]  twdl_demontr;
-logic clr_n_twdl;
 logic [2:0]  cnt_stage;
 
-typedef enum { Idle = 3'd0,
-               Sink = 3'd1,
-               Wait_to_rd = 3'd2,
-               Rd = 3'd3,
-               Wait_wr_end = 3'd4,
-               Source = 3'd5
-             }  fsm_e;
-fsm_e  fsm, fsm_r;
+logic [2:0] fsm, fsm_r;
+parameter Idle = 3'd0, Sink = 3'd1, Wait_to_rd = 3'd2,
+  			Rd = 3'd3,  Wait_wr_end = 3'd4,  Source = 3'd5;
 
 logic sink_3_4;
 logic [11:0]  cnt_sink;
-logic source_ongoing, rd_ongoing, wr_ongoing;
+logic source_ongoing, rd_ongoing, wr_ongoing, wr_ongoing_r;
+logic [3:0] rd_ongoing_r;
 
 //------------------------------------------------
 //------------------ FSM -------------------------
@@ -107,16 +96,16 @@ begin
 		Sink : fsm <= (sink_3_4)? Wait_to_rd : Sink;
 
 		Wait_to_rd : begin
-			if (this_mem_index==1'b1 && sw_rdx2345==1'b1)
-				|| (this_mem_index==1'b0 && sw_rdx2345==1'b0)
+			if ((this_mem_index==1'b1 && sw_rdx2345==1'b1)
+				|| (this_mem_index==1'b0 && sw_rdx2345==1'b0))
 				fsm <= Rd;
 			else fsm <= fsm;
 		end
 
-		Rd : fsm <= (!rd_ongoing && rd_ongoing_r[0])? Wait_wr_end : Rd;
+		Rd : fsm <= (rd_ongoing_r[2:1]==2'b10)? Wait_wr_end : Rd;
 		Wait_wr_end : begin
-			if (!wr_ongoing && wr_ongoing_r[0])
-				if (cnt_stage == ctrl.NumOfFactors)
+			if (!wr_ongoing && wr_ongoing_r)
+				if (cnt_stage == ctrl.NumOfFactors-3'd1)
 					fsm <= Source;
 				else
 					fsm <= Rd;
@@ -135,6 +124,7 @@ end
 //-------------------------------------------
 //--------------  7 RAMs --------------------
 //-------------------------------------------
+genvar i;
 generate
 	for (i=0; i<7; i++) begin : RAM_banks
 	mrd_RAM_fake RAM_fake(
@@ -152,7 +142,6 @@ generate
 	end
 endgenerate
 
-genvar i;
 generate
 for (i=0; i<=6; i++)  begin : din_switch
 always@(*)
@@ -182,8 +171,10 @@ assign d_imag_rd[i] = (fsm==Rd)? dout_imag_RAM[i] : 30'd0;
 end
 endgenerate 
 
-assign out_data.dout_real = dout_real_RAM[bank_index_source_r];
-assign out_data.dout_imag = dout_imag_RAM[bank_index_source_r];
+assign out_data.dout_real = (fsm==Source)? 
+                            dout_real_RAM[bank_index_source_r] : 0;
+assign out_data.dout_imag = (fsm==Source)? 
+                            dout_imag_RAM[bank_index_source_r] : 0;
 //--------------------------------------------
 
 
@@ -343,7 +334,7 @@ generate
 		.remainder 	(div7_rmdr_rd[k])
 	);
 	// index 3'd7 means the index is not valid
-	assign bank_index_rd[k] = (k >= Nf[ctrl.current_stage]) ?
+	assign bank_index_rd[k] = (k >= Nf[cnt_stage]) ?
 	                          3'd7 : div7_rmdr_rd[k];
 	end
 endgenerate
@@ -363,19 +354,19 @@ assign out_rdx2345_data.bank_index = bank_index_rd_rr;
 assign out_rdx2345_data.bank_addr = bank_addr_rd_rr;
 always@(posedge clk) out_rdx2345_data.twdl_numrtr <= twdl_numrtr;
 always@(posedge clk) out_rdx2345_data.twdl_demontr <= 
-                         twdl_demontr[ctrl.current_stage];
+                         twdl_demontr[cnt_stage];
 
 always@(*)
 begin
 	if (fsm==Rd || fsm==Wait_wr_end)
-		out_rdx2345_data.factor = Nf[ctrl.current_stage];
+		out_rdx2345_data.factor = Nf[cnt_stage];
 	else
 		out_rdx2345_data.factor <= 3'd1;
 end
 
 always@(*)
 begin
-	cnt_rd_stop = dftpts_div_Nf[ctrl.current_stage];
+	cnt_rd_stop = dftpts_div_Nf[cnt_stage];
 end
 
 always@(posedge clk)
@@ -403,7 +394,8 @@ begin
 		rd_ongoing_r[3:1] <= rd_ongoing_r[2:0];
 
 		if (fsm==Source) cnt_stage <= 0;
-		else cnt_stage <= (fsm==Rd && fsm_r !=Rd)? cnt_stage+3'd1 : cnt_stage;
+		else cnt_stage <= (fsm==Rd && fsm_r==Wait_wr_end)? 
+			               cnt_stage+3'd1 : cnt_stage;
 	end
 end
 
@@ -415,7 +407,7 @@ CTA_addr_trans_inst	(
 	.rst_n  (rst_n),  
 	.clr_n  (rd_ongoing),
 	.Nf  (Nf),
-	.current_stage  (ctrl.current_stage),
+	.current_stage  (cnt_stage),
 
 	.addrs_butterfly  (addrs_butterfly)
 	);
@@ -428,7 +420,7 @@ CTA_twdl_numrtr_inst	(
 	.rst_n  (rst_n),  
 	.clr_n  (rd_ongoing),
 	.Nf  (Nf),
-	.current_stage  (ctrl.current_stage),
+	.current_stage  (cnt_stage),
 	.twdl_demontr  (twdl_demontr),
 
 	.twdl_numrtr  (twdl_numrtr)
@@ -506,16 +498,18 @@ begin
 	if (!rst_n)
 	begin
 		wr_ongoing <= 0;
+		wr_ongoing_r <= 0;
 	end
 	else
 	begin
-		wr_ongoing <= (fsm==Rd || fsm==Wait_wr_end ? 
+		wr_ongoing <= (fsm==Rd || fsm==Wait_wr_end) ? 
 		                           in_rdx2345_data.valid : 1'b0;
+		wr_ongoing_r <= wr_ongoing;
 	end
 end
 
 //------------------------------------------------
-//------------------ 4th stage: Source ------------
+//------------------ 4th stage: Source -----------
 //------------------------------------------------
 always@(posedge clk)
 begin
@@ -623,7 +617,7 @@ begin
 	end
 	else
 	begin
-		if (fsm == Source)                          
+		if (fsm == Source && fsm_r != Source)                          
 			cnt_source_ongoing <= 12'd1;
 		else if (cnt_source_ongoing != 12'd0)
 			cnt_source_ongoing <= (cnt_source_ongoing==dftpts+'d2) ?
