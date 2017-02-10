@@ -113,7 +113,7 @@ x = x_real + 1j*x_imag;
 
 outf = fopen('../../modelsim/dft_src.dat','w');
 for k = 1 : length(x_real)
-    fprintf(outf , '%d %d\n' , x_real(k), x_imag(k));
+    fprintf(outf , '%d %d\n' , real(x(k)), imag(x(k)));
 end
 fclose(outf);
 
@@ -248,7 +248,7 @@ for m=1:NumOfFactors
                             fft_out_int32 = int32(fft_tw_out);
                         
                             cnt_debug = cnt_debug+1;
-                            if ( (cnt_debug<=2 || cnt_debug >= 399) && m==1 )
+                            if ( (cnt_debug<=2 || cnt_debug >= 399) && m==5 )
                                 cnt_debug = cnt_debug;
                             end
                             

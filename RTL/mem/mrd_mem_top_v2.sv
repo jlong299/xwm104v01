@@ -48,7 +48,7 @@ logic [0:6]  wren_sink;
 logic [0:6] rden, wren;
 logic [0:6] rden_rd;
 logic [0:6][7:0]  rdaddr_rd;
-logic [0:4][11:0]  addrs_butterfly;
+logic [0:4][11:0]  addrs_butterfly, addrs_butterfly_mux, addrs_butterfly_src;
 logic [0:4][7:0]  bank_addr_rd, bank_addr_rd_r, bank_addr_rd_rr;
 logic [0:4][2:0]  bank_index_rd, bank_index_rd_r, bank_index_rd_rr, 
                   div7_rmdr_rd;
@@ -80,6 +80,7 @@ logic sink_3_4;
 logic [11:0]  cnt_sink;
 logic source_ongoing, rd_ongoing, wr_ongoing, wr_ongoing_r;
 logic [3:0] rd_ongoing_r;
+logic fsm_lastRd_source;
 
 //------------------------------------------------
 //------------------ FSM -------------------------
@@ -172,10 +173,12 @@ assign d_imag_rd[i] = (fsm==Rd)? dout_imag_RAM[i] : 30'd0;
 end
 endgenerate 
 
-assign out_data.dout_real = (fsm==Source)? 
-                            dout_real_RAM[bank_index_source_r] : 0;
-assign out_data.dout_imag = (fsm==Source)? 
-                            dout_imag_RAM[bank_index_source_r] : 0;
+always@(posedge clk) begin
+	 out_data.dout_real <= (fsm_lastRd_source && in_rdx2345_data.valid)? 
+            in_rdx2345_data.d_real[0] : dout_real_RAM[bank_index_source_r] ;
+	 out_data.dout_imag <= (fsm_lastRd_source && in_rdx2345_data.valid)? 
+            in_rdx2345_data.d_imag[0] : dout_imag_RAM[bank_index_source_r] ;
+end
 //--------------------------------------------
 
 
@@ -330,7 +333,7 @@ endgenerate
 generate
 	for (k=3'd0; k < 3'd5; k=k+3'd1) begin : addr_banks
 	divider_7 divider_7_inst1 (
-		.dividend 	(addrs_butterfly[k]),  
+		.dividend 	(addrs_butterfly_mux[k]),  
 
 		.quotient 	(bank_addr_rd[k]),
 		.remainder 	(div7_rmdr_rd[k])
@@ -424,6 +427,13 @@ CTA_addr_trans_inst	(
 
 	.addrs_butterfly  (addrs_butterfly)
 	);
+
+generate
+	for (k=3'd0; k < 3'd5; k=k+3'd1) begin 
+assign addrs_butterfly_mux[k] = (fsm==Rd && cnt_stage < ctrl.NumOfFactors-3'd1)?
+                              addrs_butterfly[k] : addrs_butterfly_src[k] ;
+    end
+endgenerate
 
 CTA_twdl_numrtr #(
 		.wDataInOut (12)
@@ -545,19 +555,34 @@ logic [2:0]  k1,k2,k3,k4,k5,k6;
 
 //-------------------------------------------- 
 logic [11:0]  addr_source_CTA;
+logic [27:0][11:0]  addr_source_CTA_r;
+
+assign fsm_lastRd_source = (fsm==Source || cnt_stage==ctrl.NumOfFactors-3'd1);
+
 CTA_addr_source #(
 		12
 	)
 CTA_addr_source_inst (
 	clk,    
 	rst_n,  
-	clr_n_PFA_addr_o,
+	fsm_lastRd_source,
 
 	Nf,  //N1,N2,...,N6
 
 	addr_source_CTA 
 );
 
+always@(posedge clk) 
+	addr_source_CTA_r <= {addr_source_CTA_r[26:0], addr_source_CTA};
+
+always@(posedge clk)
+begin
+	addrs_butterfly_src[0] <= addr_source_CTA;
+	addrs_butterfly_src[1] <= addr_source_CTA + 12'd1;
+	addrs_butterfly_src[2] <= addr_source_CTA + 12'd2;
+	addrs_butterfly_src[3] <= 0;
+	addrs_butterfly_src[4] <= 0;
+end
 
 always@(posedge clk)
 begin 
@@ -574,7 +599,7 @@ begin
 end
 
 divider_7 divider_7_inst2 (
-	.dividend 	(addr_source_CTA),  
+	.dividend 	(addr_source_CTA_r[26]),  
 
 	.quotient 	(bank_addr_source),
 	.remainder 	(bank_index_source)
@@ -594,7 +619,8 @@ begin
 	endcase
 end
 
-
+logic in_rdx2345_valid_r;
+logic [11:0]  cnt_source;
 always@(posedge clk)
 begin
 	if (!rst_n)
@@ -604,18 +630,46 @@ begin
 		out_data.valid <= 0;
 		stat_to_ctrl.source_start <= 0;
 		stat_to_ctrl.source_end <= 0;
+		cnt_source <= 0;
+		in_rdx2345_valid_r <= 0;
 	end
 	else
 	begin
-		out_data.sop <= (cnt_source_ongoing==12'd3)? 1'b1 : 1'b0;
-		out_data.eop <= (cnt_source_ongoing==dftpts+12'd2)? 1'b1 : 1'b0;
-		if (cnt_source_ongoing==12'd3)
-			out_data.valid <= 1'b1;
-		else if (out_data.eop)
-			out_data.valid <= 1'b0;
-		else
-			out_data.valid <= out_data.valid;
+		// out_data.sop <= (cnt_source_ongoing==12'd3)? 1'b1 : 1'b0;
+		// out_data.eop <= (cnt_source_ongoing==dftpts+12'd2)? 1'b1 : 1'b0;
+		// if (cnt_source_ongoing==12'd3)
+		// 	out_data.valid <= 1'b1;
+		// else if (out_data.eop)
+		// 	out_data.valid <= 1'b0;
+		// else
+		// 	out_data.valid <= out_data.valid;
+		// stat_to_ctrl.source_start <= (fsm == Source && fsm_r != Source);
+		// stat_to_ctrl.source_end <= (fsm != Source && fsm_r == Source);
 
+		in_rdx2345_valid_r <= in_rdx2345_data.valid;
+		if (fsm_lastRd_source) begin
+			if (in_rdx2345_data.valid && (!in_rdx2345_valid_r)) begin
+				out_data.sop <= 1'b1;
+				cnt_source <= 12'd1;
+			end
+			else begin
+				out_data.sop <= 1'b0;
+				cnt_source <= cnt_source+12'd1;
+			end
+			out_data.eop <= (cnt_source==dftpts-12'd1)? 1'b1 : 1'b0;
+			if (in_rdx2345_data.valid && (!in_rdx2345_valid_r))
+				out_data.valid <= 1'b1;
+			else if (out_data.eop)
+				out_data.valid <= 1'b0;
+			else
+				out_data.valid <= out_data.valid;
+		end
+		else begin
+			out_data.sop <= 0;
+			cnt_source <= 0;
+			out_data.eop <= 0;
+			out_data.valid <= 0;
+		end
 		stat_to_ctrl.source_start <= (fsm == Source && fsm_r != Source);
 		stat_to_ctrl.source_end <= (fsm != Source && fsm_r == Source);
 	end

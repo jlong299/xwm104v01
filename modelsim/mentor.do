@@ -36,11 +36,20 @@ add wave -radix signed {sim:/top_tb/top_inst/mem0/din_imag_RAM}
 # Read from RAMs
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/rden}
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/rdaddr_RAM}
-add wave -radix unsigned {sim:/top_tb/top_inst/mem0/dout_real_RAM}
-add wave -radix unsigned {sim:/top_tb/top_inst/mem0/dout_imag_RAM}
+add wave -radix signed {sim:/top_tb/top_inst/mem0/dout_real_RAM}
+add wave -radix signed {sim:/top_tb/top_inst/mem0/dout_imag_RAM}
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/twdl_numrtr}
 
-add wave -radix unsigned {sim:/top_tb/top_inst/mem0/out_data/*}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem0/rd_ongoing_r}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem0/addrs_butterfly_mux}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem0/addrs_butterfly_mux}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem0/addr_source_CTA}
+
+add wave -radix unsigned {sim:/top_tb/top_inst/mem0/fsm_lastRd_source}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem0/in_rdx2345_data/valid}
+add wave -radix signed {sim:/top_tb/top_inst/mem0/in_rdx2345_data/d_real}
+add wave -radix signed {sim:/top_tb/top_inst/mem0/in_rdx2345_data/d_imag}
+add wave -radix signed {sim:/top_tb/top_inst/mem0/out_data/*}
 
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/out_rdx2345_data/*}
 add wave -radix signed {sim:/top_tb/top_inst/mem0/out_rdx2345_data/d_real}
