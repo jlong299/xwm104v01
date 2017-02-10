@@ -167,7 +167,7 @@ assign wren[i] = (fsm==Sink)? (wren_sink[i] & input_valid_r[0])
 
 assign rdaddr_RAM[i]= (fsm==Rd)? rdaddr_rd[i] : bank_addr_source;
 assign rden[i] = (fsm==Rd)? rden_rd[i] : 
-                 (rden_source[i] & source_ongoing);
+                 (rden_source[i] & fsm_lastRd_source);
 assign d_real_rd[i] = (fsm==Rd)? dout_real_RAM[i] : 30'd0;
 assign d_imag_rd[i] = (fsm==Rd)? dout_imag_RAM[i] : 30'd0;
 end

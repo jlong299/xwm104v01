@@ -50,10 +50,12 @@ add wave -radix unsigned {sim:/top_tb/top_inst/mem0/in_rdx2345_data/valid}
 add wave -radix signed {sim:/top_tb/top_inst/mem0/in_rdx2345_data/d_real}
 add wave -radix signed {sim:/top_tb/top_inst/mem0/in_rdx2345_data/d_imag}
 add wave -radix signed {sim:/top_tb/top_inst/mem0/out_data/*}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem0/cnt_source}
 
-add wave -radix unsigned {sim:/top_tb/top_inst/mem0/out_rdx2345_data/*}
-add wave -radix signed {sim:/top_tb/top_inst/mem0/out_rdx2345_data/d_real}
-add wave -radix signed {sim:/top_tb/top_inst/mem0/out_rdx2345_data/d_imag}
+
+# add wave -radix unsigned {sim:/top_tb/top_inst/mem0/out_rdx2345_data/*}
+# add wave -radix signed {sim:/top_tb/top_inst/mem0/out_rdx2345_data/d_real}
+# add wave -radix signed {sim:/top_tb/top_inst/mem0/out_rdx2345_data/d_imag}
 
 # Source from RAMs
 # add wave -radix unsigned {sim:/top_tb/top_inst/mem1/rden}
