@@ -27,6 +27,10 @@ logic signed [wDFTout-1:0] imag_rdx5 [0:4];
 logic val_rdx3;
 logic signed [wDFTout-1:0] real_rdx3 [0:4];
 logic signed [wDFTout-1:0] imag_rdx3 [0:4];
+
+logic val_rdx2;
+logic signed [wDFTout-1:0] real_rdx2 [0:4];
+logic signed [wDFTout-1:0] imag_rdx2 [0:4];
 	
 	// integer wr_file;
 	// initial begin
@@ -48,13 +52,9 @@ begin
 end
 always@(posedge clk)
 begin
-	if (from_mem.factor == 3'd4) begin
+	if (from_mem.factor == 3'd4 || from_mem.factor == 3'd2) begin
 		to_mem.bank_index <= bank_index_r[delay_twdl];
 		to_mem.bank_addr <= bank_addr_r[delay_twdl];
-	end
-	else if (from_mem.factor == 3'd5) begin
-		to_mem.bank_index <= bank_index_r[delay_twdl+0];
-		to_mem.bank_addr <= bank_addr_r[delay_twdl+0];
 	end
 	else begin
 		to_mem.bank_index <= bank_index_r[delay_twdl+0];
@@ -111,6 +111,22 @@ dft_rdx3 (
 	.dout_imag  (imag_rdx3)
 	);
 
+mrd_dft_rdx2 #(
+	.wDataInOut (30)
+	)
+dft_rdx2 (
+	.clk  (clk),
+	.rst_n  (rst_n),
+
+	.in_val  (from_mem.valid),
+	.din_real  (from_mem.d_real),
+	.din_imag  (from_mem.d_imag),
+
+	.out_val  (val_rdx2),
+	.dout_real  (real_rdx2),
+	.dout_imag  (imag_rdx2)
+	);
+
 always@(*)
 begin
 	if (from_mem.factor == 3'd4)
@@ -130,8 +146,12 @@ begin
 		dft_real <= real_rdx5;
 		dft_imag <= imag_rdx5;
 	end
-	else begin
+	else if (from_mem.factor == 3'd3) begin
 		dft_real <= real_rdx3;
+		dft_imag <= imag_rdx3;
+	end
+	else begin
+		dft_real <= real_rdx2;
 		dft_imag <= imag_rdx3;
 	end
 end

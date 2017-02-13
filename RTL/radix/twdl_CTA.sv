@@ -53,8 +53,8 @@ end
 end
 endgenerate
 
-always@(posedge clk) out_val <= (factor==3'd4)? valid_r[delay_twdl-1]
-                                : valid_r[delay_twdl-2-1] ;
+always@(posedge clk) out_val <= (factor==3'd4 || factor==3'd2)? 
+                     valid_r[delay_twdl-1] : valid_r[delay_twdl-2-1] ;
 always@(posedge clk)
 begin
 	if (!rst_n)  valid_r <= 0;
@@ -91,7 +91,7 @@ begin
 	end
 	else
 	begin
-		if (factor == 3'd4) begin
+		if (factor == 3'd4 || factor==3'd2) begin
 			if (valid_r[delay_twdl-1]) begin
 				dout_real_t[i] <= d_real_r[i][delay_twdl-2]*tw_real[i] 
 				                  - d_imag_r[i][delay_twdl-2]*tw_imag[i];

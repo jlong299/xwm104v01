@@ -48,6 +48,7 @@ always # 5 clk = ~clk; //100M
 
 logic [15:0]  cnt0;
 localparam logic [15:0] gap = 16'd3000;
+localparam logic [11:0] dftpts = 12'd24;
 
 always@(posedge clk) 
 begin
@@ -66,7 +67,7 @@ begin
 	end
 	else
 	begin
-		dftpts_in <= 12'd1200;
+		dftpts_in <= dftpts;
 		cnt0 <= (cnt0 == dftpts_in + gap)? 16'd0 : cnt0+1'b1;
 		sink_sop <= (cnt0==16'd10 && cnt_sink_sop!=4'd4);
 		sink_eop <= (cnt0==16'd10+dftpts_in);
@@ -148,16 +149,16 @@ begin
 		cnt_val_debug <= 0;
 	else
 	begin
-			if (source_valid && cnt_val_debug <= 16'd1200)
+			if (source_valid && cnt_val_debug <= dftpts)
 			begin
 				cnt_val_debug <= cnt_val_debug + 16'd1;
 				$fwrite(wr_file, "%d %d\n", $signed(source_real), $signed(source_imag));
 			end
 
-			if (cnt_val_debug==16'd1200)  
+			if (cnt_val_debug==dftpts)  
 			begin
 				$fclose(wr_file);
-				cnt_val_debug <= 16'd1201;
+				cnt_val_debug <= dftpts + 16'd1;
 			end
 	end
 

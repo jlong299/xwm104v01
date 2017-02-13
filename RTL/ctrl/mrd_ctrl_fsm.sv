@@ -69,21 +69,90 @@ logic [2:0]  NumOfFactors;
 logic [11:0]  dftpts_mem0, dftpts_mem1;
 
 //-----------  1200 case ----------------
-assign  NumOfFactors = 3'd5;
+assign  NumOfFactors = 3'd3;
 
 assign ctrl_to_mem0.NumOfFactors = NumOfFactors;
 assign ctrl_to_mem1.NumOfFactors = NumOfFactors;
-assign ctrl_to_mem0.Nf[0:5] = '{3'd4,3'd4,3'd5,3'd5,3'd3,3'd1};
-assign ctrl_to_mem1.Nf[0:5] = '{3'd4,3'd4,3'd5,3'd5,3'd3,3'd1};
-assign ctrl_to_mem0.dftpts_div_Nf[0:5] = 
-            '{12'd300,12'd300,12'd240,12'd240,12'd400,12'd1200};
-assign ctrl_to_mem1.dftpts_div_Nf[0:5] = 
-            '{12'd300,12'd300,12'd240,12'd240,12'd400,12'd1200};
+// assign ctrl_to_mem0.Nf[0:5] = '{3'd4,3'd4,3'd5,3'd5,3'd3,3'd1};
+// assign ctrl_to_mem1.Nf[0:5] = '{3'd4,3'd4,3'd5,3'd5,3'd3,3'd1};
+// assign ctrl_to_mem0.dftpts_div_Nf[0:5] = 
+//             '{12'd300,12'd300,12'd240,12'd240,12'd400,12'd1200};
+// assign ctrl_to_mem1.dftpts_div_Nf[0:5] = 
+//             '{12'd300,12'd300,12'd240,12'd240,12'd400,12'd1200};
+// // twddle demoninator
+// assign ctrl_to_mem0.twdl_demontr[0:5] = 
+//             '{12'd1200,12'd300,12'd75,12'd15,12'd3,12'd1};
+// assign ctrl_to_mem1.twdl_demontr[0:5] = 
+//             '{12'd1200,12'd300,12'd75,12'd15,12'd3,12'd1};
+
+// assign ctrl_to_mem0.Nf[0:5] = '{3'd4,3'd4,3'd4,3'd5,3'd3,3'd1};
+// assign ctrl_to_mem1.Nf[0:5] = '{3'd4,3'd4,3'd4,3'd5,3'd3,3'd1};
+// assign ctrl_to_mem0.dftpts_div_Nf[0:5] = 
+//             '{12'd240,12'd240,12'd240,12'd192,12'd320,12'd960};
+// assign ctrl_to_mem1.dftpts_div_Nf[0:5] = 
+//             '{12'd240,12'd240,12'd240,12'd192,12'd320,12'd960};
+// // twddle demoninator
+// assign ctrl_to_mem0.twdl_demontr[0:5] = 
+//             '{12'd960,12'd240,12'd60,12'd15,12'd3,12'd1};
+// assign ctrl_to_mem1.twdl_demontr[0:5] = 
+//             '{12'd960,12'd240,12'd60,12'd15,12'd3,12'd1};
+
+// 60
+// assign ctrl_to_mem0.Nf[0:5] = '{3'd4,3'd5,3'd3,3'd1,3'd1,3'd1};
+// assign ctrl_to_mem1.Nf[0:5] = '{3'd4,3'd5,3'd3,3'd1,3'd1,3'd1};
+// assign ctrl_to_mem0.dftpts_div_Nf[0:5] = 
+//             '{12'd15,12'd12,12'd20,12'd60,12'd60,12'd60};
+// assign ctrl_to_mem1.dftpts_div_Nf[0:5] = 
+//             '{12'd15,12'd12,12'd20,12'd60,12'd60,12'd60};
+// // twddle demoninator
+// assign ctrl_to_mem0.twdl_demontr[0:5] = 
+//             '{12'd60,12'd15,12'd3,12'd1,12'd1,12'd1};
+// assign ctrl_to_mem1.twdl_demontr[0:5] = 
+//             '{12'd60,12'd15,12'd3,12'd1,12'd1,12'd1};
+
+// // 12
+// assign ctrl_to_mem0.Nf[0:5] = '{3'd4,3'd3,3'd1,3'd1,3'd1,3'd1};
+// assign ctrl_to_mem1.Nf[0:5] = '{3'd4,3'd3,3'd1,3'd1,3'd1,3'd1};
+// assign ctrl_to_mem0.dftpts_div_Nf[0:5] = 
+//             '{12'd3,12'd4,12'd12,12'd12,12'd12,12'd12};
+// assign ctrl_to_mem1.dftpts_div_Nf[0:5] = 
+//             '{12'd3,12'd4,12'd12,12'd12,12'd12,12'd12};
+// // twddle demoninator
+// assign ctrl_to_mem0.twdl_demontr[0:5] = 
+//             '{12'd12,12'd3,12'd1,12'd1,12'd1,12'd1};
+// assign ctrl_to_mem1.twdl_demontr[0:5] = 
+//             '{12'd12,12'd3,12'd1,12'd1,12'd1,12'd1};
+
+// // 180
+// assign ctrl_to_mem0.Nf[0:5] = '{4,5,3,3,1,1};
+// assign ctrl_to_mem1.Nf[0:5] = '{4,5,3,3,1,1};
+// assign ctrl_to_mem0.dftpts_div_Nf[0:5] = 
+//             '{45,36,60,60,180,180};
+// assign ctrl_to_mem1.dftpts_div_Nf[0:5] = 
+//             '{45,36,60,60,180,180};
+// // twddle demoninator
+// assign ctrl_to_mem0.twdl_demontr[0:5] = 
+//             '{180,45,9,3,1,1};
+// assign ctrl_to_mem1.twdl_demontr[0:5] = 
+//             '{180,45,9,3,1,1};
+
+// // 972
+// assign ctrl_to_mem0.Nf[0:5] = '{4,3,3,3,3,3};
+// assign ctrl_to_mem1.Nf[0:5] = '{4,3,3,3,3,3};
+// assign ctrl_to_mem0.dftpts_div_Nf[0:5] = '{243,324,324,324,324,324};
+// assign ctrl_to_mem1.dftpts_div_Nf[0:5] = '{243,324,324,324,324,324};
+// // twddle demoninator
+// assign ctrl_to_mem0.twdl_demontr[0:5] = '{972,243,81,27,9,3};
+// assign ctrl_to_mem1.twdl_demontr[0:5] = '{972,243,81,27,9,3};
+
+// 24
+assign ctrl_to_mem0.Nf[0:5] = '{4,2,3,1,1,1};
+assign ctrl_to_mem1.Nf[0:5] = '{4,2,3,1,1,1};
+assign ctrl_to_mem0.dftpts_div_Nf[0:5] = '{6,12,8,24,24,24};
+assign ctrl_to_mem1.dftpts_div_Nf[0:5] = '{6,12,8,24,24,24};
 // twddle demoninator
-assign ctrl_to_mem0.twdl_demontr[0:5] = 
-            '{12'd1200,12'd300,12'd75,12'd15,12'd3,12'd1};
-assign ctrl_to_mem1.twdl_demontr[0:5] = 
-            '{12'd1200,12'd300,12'd75,12'd15,12'd3,12'd1};
+assign ctrl_to_mem0.twdl_demontr[0:5] = '{24,6,3,1,1,1};
+assign ctrl_to_mem1.twdl_demontr[0:5] = '{24,6,3,1,1,1};
 
 always@(posedge clk)
 begin
