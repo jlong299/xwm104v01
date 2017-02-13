@@ -108,7 +108,7 @@ x_real=round((2*rand(1,N)-1)*2048);
 x_imag=round((2*rand(1,N)-1)*2048);
 
 x = x_real + 1j*x_imag;
-% x = [0:1:1199];
+% x = [0:1:23];
 % x = x + x*(1i);
 
 outf = fopen('../../modelsim/dft_src.dat','w');
@@ -248,7 +248,7 @@ for m=1:NumOfFactors
                             fft_out_int32 = int32(fft_tw_out);
                         
                             cnt_debug = cnt_debug+1;
-                            if ( (cnt_debug<=2 || cnt_debug >= 399) && m==5 )
+                            if ( (cnt_debug<=2 || cnt_debug >= 11) && m==2 )
                                 cnt_debug = cnt_debug;
                             end
                             

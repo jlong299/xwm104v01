@@ -133,8 +133,10 @@ begin
  		dft_val = val_rdx4;
  	else if (from_mem.factor == 3'd5)
  		dft_val = val_rdx5;
- 	else
+ 	else if (from_mem.factor == 3'd3)
  		dft_val = val_rdx3;
+ 	else
+ 		dft_val = val_rdx2;
 end
 always@(posedge clk)
 begin
@@ -152,7 +154,7 @@ begin
 	end
 	else begin
 		dft_real <= real_rdx2;
-		dft_imag <= imag_rdx3;
+		dft_imag <= imag_rdx2;
 	end
 end
 
