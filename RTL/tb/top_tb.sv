@@ -48,7 +48,8 @@ always # 5 clk = ~clk; //100M
 
 logic [15:0]  cnt0;
 localparam logic [15:0] gap = 16'd3000;
-localparam logic [11:0] dftpts = 12'd24;
+localparam logic [11:0] dftpts = 12'd1200;
+logic rd_file_end;
 
 always@(posedge clk) 
 begin
@@ -64,14 +65,24 @@ begin
 		cnt0 <= 0;
 		cnt_sink_sop <= 0;
 		cnt_file_end <= 0;
+		rd_file_end <= 0;
 	end
 	else
 	begin
-		dftpts_in <= dftpts;
-		cnt0 <= (cnt0 == dftpts_in + gap)? 16'd0 : cnt0+1'b1;
-		sink_sop <= (cnt0==16'd10 && cnt_sink_sop!=4'd4);
-		sink_eop <= (cnt0==16'd10+dftpts_in);
-		sink_valid <= (cnt0>=16'd10 && cnt0<16'd10+dftpts_in);
+		//dftpts_in <= dftpts;
+		if (cnt0==1 && !rd_file_end) begin
+			scan_file = $fscanf(data_file, "%d\n", captured_data);
+			dftpts_in = captured_data;
+		end
+
+		if (dftpts_in <= 180)
+			cnt0 <= (cnt0 == dftpts_in + 180)? 16'd0 : cnt0+1'b1;
+		else
+			cnt0 <= (cnt0 == dftpts_in + dftpts_in)? 16'd0 : cnt0+1'b1;
+
+		sink_sop <= (cnt0==16'd10 && !rd_file_end);
+		sink_eop <= (cnt0==16'd10+dftpts_in-1 && !rd_file_end);
+		sink_valid <= (cnt0>=16'd10 && cnt0<16'd10+dftpts_in && !rd_file_end);
 
 		cnt_sink_sop <= (sink_sop && cnt_sink_sop!=4'd4)? cnt_sink_sop+4'd1 : cnt_sink_sop;
 
@@ -88,7 +99,7 @@ begin
 		// 	sink_imag <= 0;
 		// end
 
-		if (cnt_file_end==16'd0) begin
+		if (!rd_file_end) begin
 		if (cnt0>=16'd10 && cnt0<16'd10+dftpts_in) begin
 			if (!$feof(data_file)) begin
 				scan_file = $fscanf(data_file, "%d %d\n", captured_data, captured_data_imag);
@@ -109,6 +120,7 @@ begin
 				// if (cnt_file_end==param_cnt_file_end) $fclose(data_file);
 				cnt_file_end = cnt_file_end + 16'd1;
 				$fclose(data_file);
+				rd_file_end <= 1'b1;
 			end
 		end
 		end
@@ -142,24 +154,30 @@ top_inst(
 );
 
 
-logic [15:0]  cnt_val_debug;
+logic [15:0]  cnt_val_debug, cnt_close_file;
 always@(posedge clk)
 begin
-	if (!rst_n)
+	if (!rst_n) begin
 		cnt_val_debug <= 0;
+		cnt_close_file <= 0;
+	end
 	else
 	begin
-			if (source_valid && cnt_val_debug <= dftpts)
+			if (source_valid)
 			begin
 				cnt_val_debug <= cnt_val_debug + 16'd1;
 				$fwrite(wr_file, "%d %d\n", $signed(source_real), $signed(source_imag));
 			end
 
-			if (cnt_val_debug==dftpts)  
-			begin
+			// if (cnt_val_debug==dftpts)  
+			// begin
+			// 	$fclose(wr_file);
+			// 	cnt_val_debug <= dftpts + 16'd1;
+			// end
+
+			cnt_close_file <= (rd_file_end)? cnt_close_file+1 : 0;
+			if (cnt_close_file == 16'd3200)
 				$fclose(wr_file);
-				cnt_val_debug <= dftpts + 16'd1;
-			end
 	end
 
 end

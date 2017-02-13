@@ -68,6 +68,10 @@ module mrd_ctrl_fsm (
 logic [2:0]  NumOfFactors;
 logic [11:0]  dftpts_mem0, dftpts_mem1;
 
+logic [0:5][2:0] Nf;
+logic [0:5][11:0] dftpts_div_Nf; 
+logic [0:5][11:0] twdl_demontr;
+logic [2:0] j;
 //-----------  1200 case ----------------
 assign  NumOfFactors = 3'd3;
 
@@ -153,6 +157,64 @@ assign ctrl_to_mem1.dftpts_div_Nf[0:5] = '{6,12,8,24,24,24};
 // twddle demoninator
 assign ctrl_to_mem0.twdl_demontr[0:5] = '{24,6,3,1,1,1};
 assign ctrl_to_mem1.twdl_demontr[0:5] = '{24,6,3,1,1,1};
+
+logic [2:0]  cnt_Nf, next_factor;
+logic [11:0]  N_iter;
+// Compute parameters
+always@(posedge clk)
+begin
+	if (!rst_n) 
+	begin
+		Nf <= 0;
+		dftpts_div_Nf <= 0;
+		twdl_demontr <= 0;
+		cnt_Nf <= 0;
+		N_iter <= 0;
+	end
+	else begin
+		if (sw_in==1'b0 && stat_from_mem0.sink_sop)
+			cnt_Nf <= 3'd1;
+		else if (cnt_Nf != 3'd0 && cnt_Nf != 3'd6)
+			cnt_Nf <= cnt_Nf + 3'd1;
+		else
+			cnt_Nf <= 0;
+
+		if (sw_in==1'b0 && stat_from_mem0.sink_sop) 
+			N_iter <= stat_from_mem0.dftpts;
+		else if (cnt_Nf != 0) 
+			N_iter <= N_iter/next_factor;
+		else N_iter <= N_iter;
+
+		for (j=3'd0; j<=3'd5; j++) begin
+			Nf[j] <= (cnt_Nf == j+3'd1)? next_factor : Nf[j];
+			dftpts_div_Nf[j] <= (cnt_Nf == j+3'd1)? 
+			                 twdl_demontr[0]/next_factor : dftpts_div_Nf[j];
+		end
+
+		if (sw_in==1'b0 && stat_from_mem0.sink_sop) 
+			twdl_demontr[0] <= stat_from_mem0.dftpts;
+		else twdl_demontr[0] <= twdl_demontr[0];
+		
+		for (j=3'd1; j<=3'd5; j++) begin
+			twdl_demontr[j] <= (cnt_Nf == j)? twdl_demontr[j-1]/next_factor
+			                                  : twdl_demontr[j];
+		end
+	end
+end
+
+always@(*)
+	if ( (N_iter % 3'd4)==0 )
+		next_factor = 3'd4;
+	else if ( (N_iter % 3'd2)==0 )
+		next_factor = 3'd2;
+	else if ( (N_iter % 3'd5)==0 )
+		next_factor = 3'd5;
+	else if ( (N_iter % 3'd3)==0 )
+		next_factor = 3'd3;
+	else
+		next_factor = 3'd1;
+
+
 
 always@(posedge clk)
 begin
