@@ -53,15 +53,9 @@ module mrd_ctrl_fsm (
 	input clk,    
 	input rst_n,  
 
-	mrd_stat_if stat_from_mem0,
-	mrd_stat_if stat_from_mem1,
+	mrd_stat_if stat_from_mem,
 
-	mrd_ctrl_if  ctrl_to_mem0,
-	mrd_ctrl_if  ctrl_to_mem1,
-
-	output reg sw_in,
-	output reg sw_out,
-	output reg sw_rdx2345
+	mrd_ctrl_if  ctrl_to_mem
 	
 );
 

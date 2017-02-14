@@ -15,13 +15,11 @@
 module mrd_mem_top_v2 (
 	input clk,  
 	input rst_n,
-	input this_mem_index,
 
 	mrd_st_if  in_data,
 	mrd_rdx2345_if  in_rdx2345_data,
 
 	mrd_ctrl_if  ctrl,
-	input sw_rdx2345,
 
 	mrd_st_if  out_data,
 	mrd_rdx2345_if  out_rdx2345_data,
