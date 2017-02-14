@@ -48,30 +48,31 @@
 //  Changes :  One packet only be processed in one mem.  mem0 and mem1
 //             perform ping-pong operation based on packet.
 //------------------------------------------------------------------
+//  Version 0.3
+//  2017-02-14
+//  Changes :  Remove mem1. Only 1 RAM to reduce FPGA storage utilization
+//------------------------------------------------------------------
 
 module mrd_ctrl_fsm (
 	input clk,    
 	input rst_n,  
 
-	mrd_stat_if stat_from_mem,
+	input sink_sop,
+	input [11:0]  dftpts,
 
 	mrd_ctrl_if  ctrl_to_mem
-	
 );
 
 logic [2:0]  NumOfFactors;
-logic [11:0]  dftpts_mem0, dftpts_mem1;
+logic [11:0]  dftpts_mem;
 
 logic [11:0]  N_iter;
 logic [0:5][2:0] Nf;
 logic [0:5][11:0] dftpts_div_Nf; 
 logic [0:5][11:0] twdl_demontr;
 logic [2:0] j;
-//-----------  1200 case ----------------
-// assign  NumOfFactors = 3'd3;
 
-assign ctrl_to_mem0.NumOfFactors = NumOfFactors;
-assign ctrl_to_mem1.NumOfFactors = NumOfFactors;
+//-----------  1200 case ----------------
 // assign ctrl_to_mem0.Nf[0:5] = '{3'd4,3'd4,3'd5,3'd5,3'd3,3'd1};
 // assign ctrl_to_mem1.Nf[0:5] = '{3'd4,3'd4,3'd5,3'd5,3'd3,3'd1};
 // assign ctrl_to_mem0.dftpts_div_Nf[0:5] = 
@@ -84,82 +85,11 @@ assign ctrl_to_mem1.NumOfFactors = NumOfFactors;
 // assign ctrl_to_mem1.twdl_demontr[0:5] = 
 //             '{12'd1200,12'd300,12'd75,12'd15,12'd3,12'd1};
 
-// assign ctrl_to_mem0.Nf[0:5] = '{3'd4,3'd4,3'd4,3'd5,3'd3,3'd1};
-// assign ctrl_to_mem1.Nf[0:5] = '{3'd4,3'd4,3'd4,3'd5,3'd3,3'd1};
-// assign ctrl_to_mem0.dftpts_div_Nf[0:5] = 
-//             '{12'd240,12'd240,12'd240,12'd192,12'd320,12'd960};
-// assign ctrl_to_mem1.dftpts_div_Nf[0:5] = 
-//             '{12'd240,12'd240,12'd240,12'd192,12'd320,12'd960};
-// // twddle demoninator
-// assign ctrl_to_mem0.twdl_demontr[0:5] = 
-//             '{12'd960,12'd240,12'd60,12'd15,12'd3,12'd1};
-// assign ctrl_to_mem1.twdl_demontr[0:5] = 
-//             '{12'd960,12'd240,12'd60,12'd15,12'd3,12'd1};
-
-// 60
-// assign ctrl_to_mem0.Nf[0:5] = '{3'd4,3'd5,3'd3,3'd1,3'd1,3'd1};
-// assign ctrl_to_mem1.Nf[0:5] = '{3'd4,3'd5,3'd3,3'd1,3'd1,3'd1};
-// assign ctrl_to_mem0.dftpts_div_Nf[0:5] = 
-//             '{12'd15,12'd12,12'd20,12'd60,12'd60,12'd60};
-// assign ctrl_to_mem1.dftpts_div_Nf[0:5] = 
-//             '{12'd15,12'd12,12'd20,12'd60,12'd60,12'd60};
-// // twddle demoninator
-// assign ctrl_to_mem0.twdl_demontr[0:5] = 
-//             '{12'd60,12'd15,12'd3,12'd1,12'd1,12'd1};
-// assign ctrl_to_mem1.twdl_demontr[0:5] = 
-//             '{12'd60,12'd15,12'd3,12'd1,12'd1,12'd1};
-
-// // 12
-// assign ctrl_to_mem0.Nf[0:5] = '{3'd4,3'd3,3'd1,3'd1,3'd1,3'd1};
-// assign ctrl_to_mem1.Nf[0:5] = '{3'd4,3'd3,3'd1,3'd1,3'd1,3'd1};
-// assign ctrl_to_mem0.dftpts_div_Nf[0:5] = 
-//             '{12'd3,12'd4,12'd12,12'd12,12'd12,12'd12};
-// assign ctrl_to_mem1.dftpts_div_Nf[0:5] = 
-//             '{12'd3,12'd4,12'd12,12'd12,12'd12,12'd12};
-// // twddle demoninator
-// assign ctrl_to_mem0.twdl_demontr[0:5] = 
-//             '{12'd12,12'd3,12'd1,12'd1,12'd1,12'd1};
-// assign ctrl_to_mem1.twdl_demontr[0:5] = 
-//             '{12'd12,12'd3,12'd1,12'd1,12'd1,12'd1};
-
-// // 180
-// assign ctrl_to_mem0.Nf[0:5] = '{4,5,3,3,1,1};
-// assign ctrl_to_mem1.Nf[0:5] = '{4,5,3,3,1,1};
-// assign ctrl_to_mem0.dftpts_div_Nf[0:5] = 
-//             '{45,36,60,60,180,180};
-// assign ctrl_to_mem1.dftpts_div_Nf[0:5] = 
-//             '{45,36,60,60,180,180};
-// // twddle demoninator
-// assign ctrl_to_mem0.twdl_demontr[0:5] = 
-//             '{180,45,9,3,1,1};
-// assign ctrl_to_mem1.twdl_demontr[0:5] = 
-//             '{180,45,9,3,1,1};
-
-// // 972
-// assign ctrl_to_mem0.Nf[0:5] = '{4,3,3,3,3,3};
-// assign ctrl_to_mem1.Nf[0:5] = '{4,3,3,3,3,3};
-// assign ctrl_to_mem0.dftpts_div_Nf[0:5] = '{243,324,324,324,324,324};
-// assign ctrl_to_mem1.dftpts_div_Nf[0:5] = '{243,324,324,324,324,324};
-// // twddle demoninator
-// assign ctrl_to_mem0.twdl_demontr[0:5] = '{972,243,81,27,9,3};
-// assign ctrl_to_mem1.twdl_demontr[0:5] = '{972,243,81,27,9,3};
-
-// // 24
-// assign ctrl_to_mem0.Nf[0:5] = '{4,2,3,1,1,1};
-// assign ctrl_to_mem1.Nf[0:5] = '{4,2,3,1,1,1};
-// assign ctrl_to_mem0.dftpts_div_Nf[0:5] = '{6,12,8,24,24,24};
-// assign ctrl_to_mem1.dftpts_div_Nf[0:5] = '{6,12,8,24,24,24};
-// // twddle demoninator
-// assign ctrl_to_mem0.twdl_demontr[0:5] = '{24,6,3,1,1,1};
-// assign ctrl_to_mem1.twdl_demontr[0:5] = '{24,6,3,1,1,1};
-
-assign ctrl_to_mem0.Nf = Nf;
-assign ctrl_to_mem1.Nf = Nf;
-assign ctrl_to_mem0.dftpts_div_Nf = dftpts_div_Nf;
-assign ctrl_to_mem1.dftpts_div_Nf = dftpts_div_Nf;
+assign ctrl_to_mem.NumOfFactors = NumOfFactors;
+assign ctrl_to_mem.Nf = Nf;
+assign ctrl_to_mem.dftpts_div_Nf = dftpts_div_Nf;
 // twddle demoninator
-assign ctrl_to_mem0.twdl_demontr = twdl_demontr;
-assign ctrl_to_mem1.twdl_demontr = twdl_demontr;
+assign ctrl_to_mem.twdl_demontr = twdl_demontr;
 
 logic [2:0]  cnt_Nf, next_factor;
 // Compute parameters
@@ -175,18 +105,15 @@ begin
 		NumOfFactors <= 0;
 	end
 	else begin
-		if ( (sw_in==1'b0 && stat_from_mem0.sink_sop) ||
-			 (sw_in==1'b1 && stat_from_mem1.sink_sop) )
+		if (sink_sop)
 			cnt_Nf <= 3'd1;
 		else if (cnt_Nf != 3'd0 && cnt_Nf != 3'd6)
 			cnt_Nf <= cnt_Nf + 3'd1;
 		else
 			cnt_Nf <= 0;
 
-		if (sw_in==1'b0 && stat_from_mem0.sink_sop) 
-			N_iter <= stat_from_mem0.dftpts;
-		else if (sw_in==1'b1 && stat_from_mem1.sink_sop)
-			N_iter <= stat_from_mem1.dftpts;
+		if (sink_sop) 
+			N_iter <= dftpts;
 		else if (cnt_Nf != 0) 
 			N_iter <= N_iter/next_factor;
 		else N_iter <= N_iter;
@@ -197,10 +124,8 @@ begin
 			                 twdl_demontr[0]/next_factor : dftpts_div_Nf[j];
 		end
 
-		if (sw_in==1'b0 && stat_from_mem0.sink_sop) 
-			twdl_demontr[0] <= stat_from_mem0.dftpts;
-		else if (sw_in==1'b1 && stat_from_mem1.sink_sop)
-			twdl_demontr[0] <= stat_from_mem1.dftpts;
+		if (sink_sop) 
+			twdl_demontr[0] <= dftpts;
 		else twdl_demontr[0] <= twdl_demontr[0];
 		
 		for (j=3'd1; j<=3'd5; j++) begin
@@ -208,8 +133,7 @@ begin
 			                                  : twdl_demontr[j];
 		end
 
-		if ( (sw_in==1'b0 && stat_from_mem0.sink_sop) ||
-			 (sw_in==1'b1 && stat_from_mem1.sink_sop) )
+		if (sink_sop)
 			NumOfFactors <= 3'd0;
 		else if (cnt_Nf != 3'd0 && next_factor != 3'd1)
 			NumOfFactors <= NumOfFactors + 3'd1;
@@ -229,52 +153,5 @@ always@(*)
 		next_factor = 3'd3;
 	else
 		next_factor = 3'd1;
-
-
-
-always@(posedge clk)
-begin
-	if (!rst_n) begin
-		dftpts_mem0 <= 0;
-		dftpts_mem1 <= 0;
-	end
-	else begin
-		dftpts_mem0 <= (sw_in==1'b0 && stat_from_mem0.sink_sop)? 
-		               stat_from_mem0.dftpts : dftpts_mem0; 
-		dftpts_mem1 <= (sw_in==1'b1 && stat_from_mem1.sink_sop)? 
-		               stat_from_mem1.dftpts : dftpts_mem1; 
-	end
-end
-
-always@(posedge clk)
-begin
-	if(!rst_n) begin
-		sw_in <= 0;
-		sw_out <= 0;
-		sw_rdx2345 <= 0;
-	end
-	else begin
-		if (stat_from_mem0.source_start)
-			sw_in <= 1'b1;
-		else if (stat_from_mem1.source_start)
-			sw_in <= 1'b0;
-		else
-			sw_in <= sw_in;
-
-		if (stat_from_mem0.source_end)
-			sw_out <= 1'b1;
-		else if (stat_from_mem1.source_end)
-			sw_out <= 1'b0;
-		else
-			sw_out <= sw_out;
-
-		if (stat_from_mem0.source_start)
-			sw_rdx2345 <= 1'b1;
-		else if (stat_from_mem1.source_start)
-			sw_rdx2345 <= 1'b0;
-		else
-			sw_rdx2345 <= sw_rdx2345;
-	end
-end
 
 endmodule

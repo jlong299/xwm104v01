@@ -107,10 +107,10 @@ ctrl_fsm(
 	.clk (clk),
 	.rst_n (rst_n),
 
-	.stat_from_mem (stat_from_mem),
+	.sink_sop (sink_sop),
+	.dftpts (dftpts_in),
 
 	.ctrl_to_mem (ctrl_to_mem)
-
 	);
 
 

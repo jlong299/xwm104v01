@@ -75,10 +75,10 @@ begin
 			dftpts_in = captured_data;
 		end
 
-		if (dftpts_in <= 180)
+		if (dftpts_in < 180)
 			cnt0 <= (cnt0 == dftpts_in + 2*180)? 16'd0 : cnt0+1'b1;
 		else
-			cnt0 <= (cnt0 == dftpts_in + 3*dftpts_in)? 16'd0 : cnt0+1'b1;
+			cnt0 <= (cnt0 == dftpts_in + 4*dftpts_in)? 16'd0 : cnt0+1'b1;
 
 		sink_sop <= (cnt0==16'd10 && !rd_file_end);
 		sink_eop <= (cnt0==16'd10+dftpts_in-1 && !rd_file_end);

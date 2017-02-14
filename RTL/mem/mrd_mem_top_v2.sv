@@ -95,13 +95,6 @@ begin
 		// Sink : fsm <= (sink_3_4)? Wait_to_rd : Sink;
 		Sink : fsm <= (sink_3_4)? Rd : Sink;
 
-		// Wait_to_rd : begin
-		// 	if ((this_mem_index==1'b1 && sw_rdx2345==1'b1)
-		// 		|| (this_mem_index==1'b0 && sw_rdx2345==1'b0))
-		// 		fsm <= Rd;
-		// 	else fsm <= fsm;
-		// end
-
 		Rd : fsm <= (rd_ongoing_r[2:1]==2'b10)? Wait_wr_end : Rd;
 		Wait_wr_end : begin
 			if (!wr_ongoing && wr_ongoing_r)
