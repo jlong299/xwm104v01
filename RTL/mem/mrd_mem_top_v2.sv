@@ -654,7 +654,7 @@ begin
 			end
 			else begin
 				out_data.sop <= 1'b0;
-				cnt_source <= cnt_source+12'd1;
+				cnt_source <= (cnt_source==12'd0)? 12'd0 : cnt_source+12'd1;
 			end
 			out_data.eop <= (cnt_source==dftpts-12'd1)? 1'b1 : 1'b0;
 			if (in_rdx2345_data.valid && (!in_rdx2345_valid_r))
@@ -671,7 +671,7 @@ begin
 			out_data.valid <= 0;
 		end
 		stat_to_ctrl.source_start <= (fsm == Source && fsm_r != Source);
-		stat_to_ctrl.source_end <= (fsm != Source && fsm_r == Source);
+		stat_to_ctrl.source_end <=  (fsm == Source && cnt_source==dftpts);
 	end
 end
 

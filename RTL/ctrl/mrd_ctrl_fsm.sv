@@ -68,12 +68,13 @@ module mrd_ctrl_fsm (
 logic [2:0]  NumOfFactors;
 logic [11:0]  dftpts_mem0, dftpts_mem1;
 
+logic [11:0]  N_iter;
 logic [0:5][2:0] Nf;
 logic [0:5][11:0] dftpts_div_Nf; 
 logic [0:5][11:0] twdl_demontr;
 logic [2:0] j;
 //-----------  1200 case ----------------
-assign  NumOfFactors = 3'd3;
+// assign  NumOfFactors = 3'd3;
 
 assign ctrl_to_mem0.NumOfFactors = NumOfFactors;
 assign ctrl_to_mem1.NumOfFactors = NumOfFactors;
@@ -149,17 +150,24 @@ assign ctrl_to_mem1.NumOfFactors = NumOfFactors;
 // assign ctrl_to_mem0.twdl_demontr[0:5] = '{972,243,81,27,9,3};
 // assign ctrl_to_mem1.twdl_demontr[0:5] = '{972,243,81,27,9,3};
 
-// 24
-assign ctrl_to_mem0.Nf[0:5] = '{4,2,3,1,1,1};
-assign ctrl_to_mem1.Nf[0:5] = '{4,2,3,1,1,1};
-assign ctrl_to_mem0.dftpts_div_Nf[0:5] = '{6,12,8,24,24,24};
-assign ctrl_to_mem1.dftpts_div_Nf[0:5] = '{6,12,8,24,24,24};
+// // 24
+// assign ctrl_to_mem0.Nf[0:5] = '{4,2,3,1,1,1};
+// assign ctrl_to_mem1.Nf[0:5] = '{4,2,3,1,1,1};
+// assign ctrl_to_mem0.dftpts_div_Nf[0:5] = '{6,12,8,24,24,24};
+// assign ctrl_to_mem1.dftpts_div_Nf[0:5] = '{6,12,8,24,24,24};
+// // twddle demoninator
+// assign ctrl_to_mem0.twdl_demontr[0:5] = '{24,6,3,1,1,1};
+// assign ctrl_to_mem1.twdl_demontr[0:5] = '{24,6,3,1,1,1};
+
+assign ctrl_to_mem0.Nf = Nf;
+assign ctrl_to_mem1.Nf = Nf;
+assign ctrl_to_mem0.dftpts_div_Nf = dftpts_div_Nf;
+assign ctrl_to_mem1.dftpts_div_Nf = dftpts_div_Nf;
 // twddle demoninator
-assign ctrl_to_mem0.twdl_demontr[0:5] = '{24,6,3,1,1,1};
-assign ctrl_to_mem1.twdl_demontr[0:5] = '{24,6,3,1,1,1};
+assign ctrl_to_mem0.twdl_demontr = twdl_demontr;
+assign ctrl_to_mem1.twdl_demontr = twdl_demontr;
 
 logic [2:0]  cnt_Nf, next_factor;
-logic [11:0]  N_iter;
 // Compute parameters
 always@(posedge clk)
 begin
@@ -170,9 +178,11 @@ begin
 		twdl_demontr <= 0;
 		cnt_Nf <= 0;
 		N_iter <= 0;
+		NumOfFactors <= 0;
 	end
 	else begin
-		if (sw_in==1'b0 && stat_from_mem0.sink_sop)
+		if ( (sw_in==1'b0 && stat_from_mem0.sink_sop) ||
+			 (sw_in==1'b1 && stat_from_mem1.sink_sop) )
 			cnt_Nf <= 3'd1;
 		else if (cnt_Nf != 3'd0 && cnt_Nf != 3'd6)
 			cnt_Nf <= cnt_Nf + 3'd1;
@@ -181,6 +191,8 @@ begin
 
 		if (sw_in==1'b0 && stat_from_mem0.sink_sop) 
 			N_iter <= stat_from_mem0.dftpts;
+		else if (sw_in==1'b1 && stat_from_mem1.sink_sop)
+			N_iter <= stat_from_mem1.dftpts;
 		else if (cnt_Nf != 0) 
 			N_iter <= N_iter/next_factor;
 		else N_iter <= N_iter;
@@ -193,12 +205,22 @@ begin
 
 		if (sw_in==1'b0 && stat_from_mem0.sink_sop) 
 			twdl_demontr[0] <= stat_from_mem0.dftpts;
+		else if (sw_in==1'b1 && stat_from_mem1.sink_sop)
+			twdl_demontr[0] <= stat_from_mem1.dftpts;
 		else twdl_demontr[0] <= twdl_demontr[0];
 		
 		for (j=3'd1; j<=3'd5; j++) begin
 			twdl_demontr[j] <= (cnt_Nf == j)? twdl_demontr[j-1]/next_factor
 			                                  : twdl_demontr[j];
 		end
+
+		if ( (sw_in==1'b0 && stat_from_mem0.sink_sop) ||
+			 (sw_in==1'b1 && stat_from_mem1.sink_sop) )
+			NumOfFactors <= 3'd0;
+		else if (cnt_Nf != 3'd0 && next_factor != 3'd1)
+			NumOfFactors <= NumOfFactors + 3'd1;
+		else
+			NumOfFactors <= NumOfFactors;
 	end
 end
 
