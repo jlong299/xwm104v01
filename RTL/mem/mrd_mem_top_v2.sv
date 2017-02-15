@@ -31,11 +31,6 @@ logic [0:5][2:0] Nf;
 logic [0:5][11:0] dftpts_div_Nf; 
 logic  clr_n_PFA_addr, clr_n_PFA_addr_o; 
 
-localparam  in_dly = 5;
-logic [in_dly:0]  input_valid_r;
-logic [in_dly:0][17:0]  input_real_r;
-logic [in_dly:0][17:0]  input_imag_r;
-
 assign stat_to_ctrl.sink_sop = in_data.sop;
 assign stat_to_ctrl.dftpts = in_data.dftpts;
 
@@ -51,7 +46,7 @@ logic [0:4][7:0]  bank_addr_rd, bank_addr_rd_r, bank_addr_rd_rr;
 logic [0:4][2:0]  bank_index_rd, bank_index_rd_r, bank_index_rd_rr, 
                   div7_rmdr_rd;
 logic [0:6][29:0] d_real_rd, d_imag_rd;
-logic [0:6][29:0] din_real_RAM, din_imag_RAM;
+logic [0:6][mrd_mem_pkt::wDATA-1:0] din_real_RAM, din_imag_RAM;
 
 logic [0:6][29:0] wrdin_real, wrdin_imag;
 logic [0:6][7:0]  wraddr_RAM, wraddr_wr;
@@ -79,6 +74,17 @@ logic [11:0]  cnt_sink;
 logic source_ongoing, rd_ongoing, wr_ongoing, wr_ongoing_r;
 logic [3:0] rd_ongoing_r;
 logic fsm_lastRd_source;
+
+//----------------  Input (Sink) registers -------------
+localparam  in_dly = 5;
+logic [in_dly:0]  valid_r;
+logic [in_dly:0][17:0]  din_real_r, din_imag_r;
+always@(posedge clk)
+begin   // If in_dly >= 1
+	valid_r[in_dly:0] <= {valid_r[in_dly-1:0],in_data.valid} ;
+	din_real_r[in_dly:0] <= {din_real_r[in_dly-1:0],in_data.din_real};
+	din_imag_r[in_dly:0] <= {din_imag_r[in_dly-1:0],in_data.din_imag};
+end
 
 //------------------------------------------------
 //------------------ FSM -------------------------
@@ -141,8 +147,8 @@ always@(*)
 begin
 if (fsm==Sink) 
 begin
-	din_real_RAM[i] = { {12{input_real_r[0][17]}},input_real_r[0] };
-	din_imag_RAM[i] = { {12{input_imag_r[0][17]}},input_imag_r[0] };
+	din_real_RAM[i] = { {12{din_real_r[0][17]}},din_real_r[0] };
+	din_imag_RAM[i] = { {12{din_imag_r[0][17]}},din_imag_r[0] };
 end
 else 
 begin
@@ -153,7 +159,7 @@ end
 
 assign wraddr_RAM[i]= (fsm==Sink)? bank_addr_sink[7:0] 
                       : wraddr_wr[i];
-assign wren[i] = (fsm==Sink)? (wren_sink[i] & input_valid_r[0])
+assign wren[i] = (fsm==Sink)? (wren_sink[i] & valid_r[0])
                   : wren_wr[i] ; 
 
 assign rdaddr_RAM[i]= (fsm==Rd)? rdaddr_rd[i] : bank_addr_source;
@@ -202,19 +208,7 @@ begin
 	end
 end
 
-always@(posedge clk)
-begin
-	// If in_dly >= 1
-	input_valid_r[in_dly:0] <= {input_valid_r[in_dly-1:0],
-	                              in_data.valid} ;
-	input_real_r[in_dly:0] <= {input_real_r[in_dly-1:0],in_data.din_real};
-	input_imag_r[in_dly:0] <= {input_imag_r[in_dly-1:0],in_data.din_imag};
 
-	// If in_dly == 0
-	// input_valid_r[0] <= in_data.valid;
-	// input_real_r[0] <= in_data.din_real;
-	// input_imag_r[0] <= in_data.din_imag;
-end
 
 always@(posedge clk)
 begin
@@ -347,10 +341,10 @@ endgenerate
 	always@(*)
 	begin
 		out_rdx2345_data.d_real[3] = (fsm==Rd && cnt_stage==3'd0)?
-		        {{(30-18){input_real_r[5][17]}}, input_real_r[5]} : 
+		        {{(30-18){din_real_r[5][17]}}, din_real_r[5]} : 
 		        d_real_rd[(bank_index_rd_rr[3])]; 
 		out_rdx2345_data.d_imag[3] = (fsm==Rd && cnt_stage==3'd0)?
-		        {{(30-18){input_imag_r[5][17]}}, input_imag_r[5]} : 
+		        {{(30-18){din_imag_r[5][17]}}, din_imag_r[5]} : 
 		        d_imag_rd[(bank_index_rd_rr[3])]; 
 		out_rdx2345_data.d_real[4] = d_real_rd[(bank_index_rd_rr[4])]; 
 		out_rdx2345_data.d_imag[4] = d_imag_rd[(bank_index_rd_rr[4])]; 

@@ -37,11 +37,11 @@ interface mrd_ctrl_if ();
 	logic [0:5][11:0] twdl_demontr; 
 endinterface
 
-//mrd_stat_if :  State signals from mrd_mem_top to mrd_ctrl_fsm.
-interface mrd_stat_if ();
-	logic sink_sop;
-	logic [11:0]  dftpts;
+// //mrd_stat_if :  State signals from mrd_mem_top to mrd_ctrl_fsm.
+// interface mrd_stat_if ();
+// 	logic sink_sop;
+// 	logic [11:0]  dftpts;
 
-	logic source_start;
-	logic source_end; 
-endinterface
+// 	logic source_start;
+// 	logic source_end; 
+// endinterface
