@@ -40,16 +40,16 @@ logic [0:6]  wren_sink;
 
 logic [0:6] rden, wren;
 logic [0:6] rden_rd;
-logic [0:6][7:0]  rdaddr_rd;
+logic [0:6][mrd_mem_pkt::wADDR-1:0]  rdaddr_rd;
 logic [0:4][11:0]  addrs_butterfly, addrs_butterfly_mux, addrs_butterfly_src;
-logic [0:4][7:0]  bank_addr_rd, bank_addr_rd_r, bank_addr_rd_rr;
+logic [0:4][mrd_mem_pkt::wADDR-1:0]  bank_addr_rd, bank_addr_rd_r, bank_addr_rd_rr;
 logic [0:4][2:0]  bank_index_rd, bank_index_rd_r, bank_index_rd_rr, 
                   div7_rmdr_rd;
-logic [0:6][29:0] d_real_rd, d_imag_rd;
+logic [0:6][mrd_mem_pkt::wDATA-1:0] d_real_rd, d_imag_rd;
 logic [0:6][mrd_mem_pkt::wDATA-1:0] din_real_RAM, din_imag_RAM;
 
-logic [0:6][29:0] wrdin_real, wrdin_imag;
-logic [0:6][7:0]  wraddr_RAM, wraddr_wr;
+logic [0:6][mrd_mem_pkt::wDATA-1:0] wrdin_real, wrdin_imag;
+logic [0:6][mrd_mem_pkt::wADDR-1:0]  wraddr_RAM, wraddr_wr;
 logic [0:6]  wren_wr;
 
 logic [11:0] cnt_rd_ongoing, cnt_rd_stop, cnt_source_ongoing;
@@ -57,8 +57,8 @@ logic [11:0] cnt_rd_ongoing, cnt_rd_stop, cnt_source_ongoing;
 logic [0:6]  rden_source;
 logic [11:0]  bank_addr_source;
 logic [2:0] bank_index_source, bank_index_source_r;
-logic [0:6][29:0] dout_real_RAM, dout_imag_RAM;
-logic [0:6][7:0]  rdaddr_RAM;
+logic [0:6][mrd_mem_pkt::wDATA-1:0] dout_real_RAM, dout_imag_RAM;
+logic [0:6][mrd_mem_pkt::wADDR-1:0]  rdaddr_RAM;
 
 logic [11:0]  addr_sink_CTA;
 logic [0:4][11:0]  twdl_numrtr;
@@ -74,6 +74,12 @@ logic [11:0]  cnt_sink;
 logic source_ongoing, rd_ongoing, wr_ongoing, wr_ongoing_r;
 logic [3:0] rd_ongoing_r;
 logic fsm_lastRd_source;
+
+mrd_mem_wr wrRAM();
+mrd_mem_rd rdRAM();
+mrd_mem_wr wrRAM_FSMrd();
+mrd_mem_rd rdRAM_FSMrd();
+mrd_mem_wr wrRAM_FSMsink();
 
 //----------------  Input (Sink) registers -------------
 localparam  in_dly = 5;
@@ -98,7 +104,7 @@ begin
 	else begin
 		case (fsm)
 		Idle : fsm <= (in_data.sop)? Sink : Idle;
-		// Sink : fsm <= (sink_3_4)? Wait_to_rd : Sink;
+
 		Sink : fsm <= (sink_3_4)? Rd : Sink;
 
 		Rd : fsm <= (rd_ongoing_r[2:1]==2'b10)? Wait_wr_end : Rd;
@@ -123,20 +129,43 @@ end
 //-------------------------------------------
 //--------------  7 RAMs --------------------
 //-------------------------------------------
+// genvar i;
+// generate
+// 	for (i=0; i<7; i++) begin : RAM_banks
+// 	mrd_RAM_fake RAM_fake(
+// 		.clk (clk),
+// 		.wren (wrwren[i]),
+// 		.wraddr (wraddr_RAM[i]),
+// 		.din_real (din_real_RAM[i]),
+// 		.din_imag (din_imag_RAM[i]),
+
+// 		.rden (rden[i]),
+// 		.rdaddr (rdaddr_RAM[i]),
+// 		.dout_real (dout_real_RAM[i]),
+// 		.dout_imag (dout_imag_RAM[i])
+// 		);
+// 	end
+// endgenerate
+
 genvar i;
 generate
 	for (i=0; i<7; i++) begin : RAM_banks
 	mrd_RAM_fake RAM_fake(
 		.clk (clk),
-		.wren (wren[i]),
-		.wraddr (wraddr_RAM[i]),
-		.din_real (din_real_RAM[i]),
-		.din_imag (din_imag_RAM[i]),
+		.wren (wrRAM.wren[i]),
+		.wraddr (wrRAM.wraddr[i]),
+		.din_real (wrRAM.din_real[i]),
+		.din_imag (wrRAM.din_imag[i]),
 
-		.rden (rden[i]),
-		.rdaddr (rdaddr_RAM[i]),
-		.dout_real (dout_real_RAM[i]),
-		.dout_imag (dout_imag_RAM[i])
+		// .rden (rdRAM.rden[i]),
+		// .rdaddr (rdRAM.rdaddr[i]),
+		// .dout_real (rdRAM.dout_real[i]),
+		// .dout_imag (rdRAM.dout_imag[i])
+
+				.rden (rden[i]),
+				.rdaddr (rdaddr_RAM[i]),
+				.dout_real (dout_real_RAM[i]),
+				.dout_imag (dout_imag_RAM[i])
 		);
 	end
 endgenerate
@@ -147,20 +176,21 @@ always@(*)
 begin
 if (fsm==Sink) 
 begin
-	din_real_RAM[i] = { {12{din_real_r[0][17]}},din_real_r[0] };
-	din_imag_RAM[i] = { {12{din_imag_r[0][17]}},din_imag_r[0] };
+	wrRAM.din_real[i] = { {12{din_real_r[0][17]}},din_real_r[0] };
+	wrRAM.din_imag[i] = { {12{din_imag_r[0][17]}},din_imag_r[0] };
 end
 else 
 begin
-	din_real_RAM[i] = wrdin_real[i];
-	din_imag_RAM[i] = wrdin_imag[i];
+	wrRAM.din_real[i] = wrRAM_FSMrd.din_real[i];
+	wrRAM.din_imag[i] = wrRAM_FSMrd.din_imag[i];
 end		
 end	
 
-assign wraddr_RAM[i]= (fsm==Sink)? bank_addr_sink[7:0] 
-                      : wraddr_wr[i];
-assign wren[i] = (fsm==Sink)? (wren_sink[i] & valid_r[0])
-                  : wren_wr[i] ; 
+assign wrRAM.wraddr[i]= (fsm==Sink)? bank_addr_sink[7:0] 
+                      : wrRAM_FSMrd.wraddr[i];
+
+assign wrRAM.wren[i] = (fsm==Sink)? (wrRAM_FSMsink.wren[i] & valid_r[0])
+                  : wrRAM_FSMrd.wren[i] ; 
 
 assign rdaddr_RAM[i]= (fsm==Rd)? rdaddr_rd[i] : bank_addr_source;
 assign rden[i] = (fsm==Rd)? rden_rd[i] : 
@@ -182,87 +212,107 @@ end
 //------------------------------------------------
 //------------------ 1st stage: Sink -------------
 //------------------------------------------------
-always@(posedge clk)
-begin
-	if (!rst_n)
-	begin
-		dftpts <= 0;
-		Nf <= 0;
-		dftpts_div_Nf <= 0;   //  dftpts/Nf
-		twdl_demontr <= 0;
-	end
-	else
-	begin
-		if ( fsm == Rd && fsm_r != Rd)
-		begin
-			Nf <= ctrl.Nf;
-			dftpts_div_Nf <= ctrl.dftpts_div_Nf;
-			twdl_demontr <= ctrl.twdl_demontr;
-		end
-		else begin
-			Nf <= Nf;
-			dftpts_div_Nf <= dftpts_div_Nf;
-			twdl_demontr <= twdl_demontr;
-		end
-		dftpts <= (in_data.sop)? in_data.dftpts : dftpts;
-	end
-end
+// always@(posedge clk)
+// begin
+// 	if (!rst_n)
+// 	begin
+// 		dftpts <= 0;
+// 		Nf <= 0;
+// 		dftpts_div_Nf <= 0;   //  dftpts/Nf
+// 		twdl_demontr <= 0;
+// 	end
+// 	else
+// 	begin
+// 		if ( fsm == Rd && fsm_r != Rd)
+// 		begin
+// 			Nf <= ctrl.Nf;
+// 			dftpts_div_Nf <= ctrl.dftpts_div_Nf;
+// 			twdl_demontr <= ctrl.twdl_demontr;
+// 		end
+// 		else begin
+// 			Nf <= Nf;
+// 			dftpts_div_Nf <= dftpts_div_Nf;
+// 			twdl_demontr <= twdl_demontr;
+// 		end
+// 		dftpts <= (in_data.sop)? in_data.dftpts : dftpts;
+// 	end
+// end
 
 
 
-always@(posedge clk)
-begin
-	if (!rst_n)
-		addr_sink_CTA <= 0;
-	else begin
-		if (in_data.valid)
-			addr_sink_CTA <= addr_sink_CTA + 12'd1;
-		else
-			addr_sink_CTA <= 0;
-	end
-end
+// always@(posedge clk)
+// begin
+// 	if (!rst_n)
+// 		addr_sink_CTA <= 0;
+// 	else begin
+// 		if (in_data.valid)
+// 			addr_sink_CTA <= addr_sink_CTA + 12'd1;
+// 		else
+// 			addr_sink_CTA <= 0;
+// 	end
+// end
 
-divider_7 divider_7_inst0 (
-	.dividend 	(addr_sink_CTA),  
+// divider_7 divider_7_inst0 (
+// 	.dividend 	(addr_sink_CTA),  
 
-	.quotient 	(bank_addr_sink_pre),
-	.remainder 	(bank_index_sink_pre)
+// 	.quotient 	(bank_addr_sink_pre),
+// 	.remainder 	(bank_index_sink_pre)
+// );
+
+// always@(posedge clk) begin
+// 	bank_addr_sink <= bank_addr_sink_pre;
+// 	bank_index_sink <= bank_index_sink_pre;
+// end
+
+// always@(*)
+// begin
+// 	case (bank_index_sink)
+// 	3'd0:  wren_sink = 7'b1000000;
+// 	3'd1:  wren_sink = 7'b0100000;
+// 	3'd2:  wren_sink = 7'b0010000;
+// 	3'd3:  wren_sink = 7'b0001000;
+// 	3'd4:  wren_sink = 7'b0000100;
+// 	3'd5:  wren_sink = 7'b0000010;
+// 	3'd6:  wren_sink = 7'b0000001;
+// 	default: wren_sink = 7'd0;
+// 	endcase
+// end
+
+// always@(posedge clk)
+// begin 
+// 	if(!rst_n)  begin
+// 		sink_3_4 <= 0;
+// 		cnt_sink <= 0;
+// 	end
+// 	else begin
+// 		cnt_sink <= (in_data.valid)? cnt_sink+12'd1 : 0;
+// 		if (cnt_sink != 12'd0 && cnt_sink==
+// 			(ctrl.twdl_demontr[0] - ctrl.twdl_demontr[1] - 12'd1))
+// 			sink_3_4 <= 1'b1;
+// 		else sink_3_4 <= 1'b0;
+// 	end
+// end
+
+mrd_FSMsink 
+mrd_FSMsink_inst (
+	clk,
+	rst_n,
+
+	fsm,
+	fsm_r,
+
+	ctrl,
+	in_data,
+	wrRAM_FSMsink,
+
+	bank_addr_sink,  //!!!???  7:0
+	sink_3_4,
+
+	dftpts,
+	Nf,
+	dftpts_div_Nf,
+	twdl_demontr
 );
-
-always@(posedge clk) begin
-	bank_addr_sink <= bank_addr_sink_pre;
-	bank_index_sink <= bank_index_sink_pre;
-end
-
-always@(*)
-begin
-	case (bank_index_sink)
-	3'd0:  wren_sink = 7'b1000000;
-	3'd1:  wren_sink = 7'b0100000;
-	3'd2:  wren_sink = 7'b0010000;
-	3'd3:  wren_sink = 7'b0001000;
-	3'd4:  wren_sink = 7'b0000100;
-	3'd5:  wren_sink = 7'b0000010;
-	3'd6:  wren_sink = 7'b0000001;
-	default: wren_sink = 7'd0;
-	endcase
-end
-
-always@(posedge clk)
-begin 
-	if(!rst_n)  begin
-		sink_3_4 <= 0;
-		cnt_sink <= 0;
-	end
-	else begin
-		cnt_sink <= (in_data.valid)? cnt_sink+12'd1 : 0;
-		if (cnt_sink != 12'd0 && cnt_sink==
-			(ctrl.twdl_demontr[0] - ctrl.twdl_demontr[1] - 12'd1))
-			sink_3_4 <= 1'b1;
-		else sink_3_4 <= 1'b0;
-	end
-end
-
 
 //------------------------------------------------
 //------------------ 2nd stage: Read -------------
@@ -438,83 +488,96 @@ CTA_twdl_numrtr_inst	(
 //------------------ 3rd stage: Write ------------
 //------------------------------------------------
 
+// generate
+// for (k=3'd0; k <= 3'd6; k=k+3'd1) begin : wren_wr_gen
+// always@(posedge clk)
+// begin
+// 	if (!rst_n)
+// 	begin
+// 		wrRAM_FSMrd.wren[k] <= 0;
+// 		wrRAM_FSMrd.wraddr[k] <= 0;
+// 		wrRAM_FSMrd.din_real[k] <= 0;
+// 		wrRAM_FSMrd.din_imag[k] <= 0;
+// 	end
+// 	else
+// 	begin
+// 		if (in_rdx2345_data.bank_index[0]== k || 
+// 			in_rdx2345_data.bank_index[1]== k ||
+// 			in_rdx2345_data.bank_index[2]== k || 
+// 			in_rdx2345_data.bank_index[3]== k ||
+// 			in_rdx2345_data.bank_index[4]== k )
+// 				wrRAM_FSMrd.wren[k] <= 1'b1 & in_rdx2345_data.valid;
+// 		else wrRAM_FSMrd.wren[k] <= 1'b0;
 
-generate
-for (k=3'd0; k <= 3'd6; k=k+3'd1) begin : wren_wr_gen
-always@(posedge clk)
-begin
-	if (!rst_n)
-	begin
-		wren_wr[k] <= 0;
-		wraddr_wr[k] <= 0;
-		wrdin_real[k] <= 0;
-		wrdin_imag[k] <= 0;
-	end
-	else
-	begin
-		if (in_rdx2345_data.bank_index[0]== k || 
-			in_rdx2345_data.bank_index[1]== k ||
-			in_rdx2345_data.bank_index[2]== k || 
-			in_rdx2345_data.bank_index[3]== k ||
-			in_rdx2345_data.bank_index[4]== k )
-				wren_wr[k] <= 1'b1 & in_rdx2345_data.valid;
-		else wren_wr[k] <= 1'b0;
+// 		if (in_rdx2345_data.bank_index[0]==k) 
+// 		begin
+// 			wrRAM_FSMrd.wraddr[k] <= in_rdx2345_data.bank_addr[0];
+// 			wrRAM_FSMrd.din_real[k] <= in_rdx2345_data.d_real[0]; 
+// 			wrRAM_FSMrd.din_imag[k] <= in_rdx2345_data.d_imag[0]; 
+// 		end
+// 		else if (in_rdx2345_data.bank_index[1]==k) 
+// 		begin
+// 			wrRAM_FSMrd.wraddr[k] <= in_rdx2345_data.bank_addr[1];
+// 			wrRAM_FSMrd.din_real[k] <= in_rdx2345_data.d_real[1]; 
+// 			wrRAM_FSMrd.din_imag[k] <= in_rdx2345_data.d_imag[1]; 
+// 		end 
+// 		else if (in_rdx2345_data.bank_index[2]==k) 
+// 		begin
+// 			wrRAM_FSMrd.wraddr[k] <= in_rdx2345_data.bank_addr[2]; 
+// 			wrRAM_FSMrd.din_real[k] <= in_rdx2345_data.d_real[2]; 
+// 			wrRAM_FSMrd.din_imag[k] <= in_rdx2345_data.d_imag[2]; 
+// 		end
+// 		else if (in_rdx2345_data.bank_index[3]==k) 
+// 		begin
+// 			wrRAM_FSMrd.wraddr[k] <= in_rdx2345_data.bank_addr[3];
+// 			wrRAM_FSMrd.din_real[k] <= in_rdx2345_data.d_real[3]; 
+// 			wrRAM_FSMrd.din_imag[k] <= in_rdx2345_data.d_imag[3]; 
+// 		end 
+// 		else if (in_rdx2345_data.bank_index[4]==k) 
+// 		begin
+// 			wrRAM_FSMrd.wraddr[k] <= in_rdx2345_data.bank_addr[4];
+// 			wrRAM_FSMrd.din_real[k] <= in_rdx2345_data.d_real[4]; 
+// 			wrRAM_FSMrd.din_imag[k] <= in_rdx2345_data.d_imag[4]; 
+// 		end
+// 		else
+// 		begin
+// 			wrRAM_FSMrd.wraddr[k] <= 0;
+// 			wrRAM_FSMrd.din_real[k] <= 0; 
+// 			wrRAM_FSMrd.din_imag[k] <= 0;
+// 		end 
+// 	end
+// end
+// end
+// endgenerate
 
-		if (in_rdx2345_data.bank_index[0]==k) 
-		begin
-			wraddr_wr[k] <= in_rdx2345_data.bank_addr[0];
-			wrdin_real[k] <= in_rdx2345_data.d_real[0]; 
-			wrdin_imag[k] <= in_rdx2345_data.d_imag[0]; 
-		end
-		else if (in_rdx2345_data.bank_index[1]==k) 
-		begin
-			wraddr_wr[k] <= in_rdx2345_data.bank_addr[1];
-			wrdin_real[k] <= in_rdx2345_data.d_real[1]; 
-			wrdin_imag[k] <= in_rdx2345_data.d_imag[1]; 
-		end 
-		else if (in_rdx2345_data.bank_index[2]==k) 
-		begin
-			wraddr_wr[k] <= in_rdx2345_data.bank_addr[2]; 
-			wrdin_real[k] <= in_rdx2345_data.d_real[2]; 
-			wrdin_imag[k] <= in_rdx2345_data.d_imag[2]; 
-		end
-		else if (in_rdx2345_data.bank_index[3]==k) 
-		begin
-			wraddr_wr[k] <= in_rdx2345_data.bank_addr[3];
-			wrdin_real[k] <= in_rdx2345_data.d_real[3]; 
-			wrdin_imag[k] <= in_rdx2345_data.d_imag[3]; 
-		end 
-		else if (in_rdx2345_data.bank_index[4]==k) 
-		begin
-			wraddr_wr[k] <= in_rdx2345_data.bank_addr[4];
-			wrdin_real[k] <= in_rdx2345_data.d_real[4]; 
-			wrdin_imag[k] <= in_rdx2345_data.d_imag[4]; 
-		end
-		else
-		begin
-			wraddr_wr[k] <= 0;
-			wrdin_real[k] <= 0; 
-			wrdin_imag[k] <= 0;
-		end 
-	end
-end
-end
-endgenerate
+// always@(posedge clk)
+// begin
+// 	if (!rst_n)
+// 	begin
+// 		wr_ongoing <= 0;
+// 		wr_ongoing_r <= 0;
+// 	end
+// 	else
+// 	begin
+// 		wr_ongoing <= (fsm==Rd || fsm==Wait_wr_end) ? 
+// 		                           in_rdx2345_data.valid : 1'b0;
+// 		wr_ongoing_r <= wr_ongoing;
+// 	end
+// end
 
-always@(posedge clk)
-begin
-	if (!rst_n)
-	begin
-		wr_ongoing <= 0;
-		wr_ongoing_r <= 0;
-	end
-	else
-	begin
-		wr_ongoing <= (fsm==Rd || fsm==Wait_wr_end) ? 
-		                           in_rdx2345_data.valid : 1'b0;
-		wr_ongoing_r <= wr_ongoing;
-	end
-end
+mrd_FSMrd_wr 
+mrd_FSMrd_wr_inst (
+	clk,
+	rst_n,
+	fsm,
+
+	wrRAM_FSMrd,
+	in_rdx2345_data,
+
+	wr_ongoing,
+	wr_ongoing_r
+);
+
 
 //------------------------------------------------
 //------------------ 4th stage: Source -----------
@@ -620,16 +683,6 @@ begin
 	end
 	else
 	begin
-		// out_data.sop <= (cnt_source_ongoing==12'd3)? 1'b1 : 1'b0;
-		// out_data.eop <= (cnt_source_ongoing==dftpts+12'd2)? 1'b1 : 1'b0;
-		// if (cnt_source_ongoing==12'd3)
-		// 	out_data.valid <= 1'b1;
-		// else if (out_data.eop)
-		// 	out_data.valid <= 1'b0;
-		// else
-		// 	out_data.valid <= out_data.valid;
-		// stat_to_ctrl.source_start <= (fsm == Source && fsm_r != Source);
-		// stat_to_ctrl.source_end <= (fsm != Source && fsm_r == Source);
 
 		in_rdx2345_valid_r <= in_rdx2345_data.valid;
 		if (fsm_lastRd_source) begin
