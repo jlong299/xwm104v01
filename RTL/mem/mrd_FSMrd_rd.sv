@@ -10,13 +10,15 @@ module mrd_FSMrd_rd (
 	input [0:5][2:0] Nf,
 	input [0:5][11:0] dftpts_div_Nf,
 	input [0:4][11:0] addrs_butterfly_src,
+	input [0:5][11:0]  twdl_demontr,
 
 	mrd_ctrl_if ctrl,
 	mrd_mem_rd rdRAM_FSMrd,
 	mrd_rdx2345_if out_rdx2345_data,
 
 	output logic [2:0] rd_ongoing_r,
-	output logic [2:0]  cnt_stage
+	output logic [2:0]  cnt_stage,
+	output [0:4][11:0]  twdl_numrtr
 );
 // parameter Idle = 3'd0, Sink = 3'd1, Wait_to_rd = 3'd2,
 //   			Rd = 3'd3,  Wait_wr_end = 3'd4,  Source = 3'd5;
@@ -28,8 +30,7 @@ logic [0:4][2:0]  bank_index_rd, bank_index_rd_r, bank_index_rd_rr,
 logic [0:4][11:0]  addrs_butterfly, addrs_butterfly_mux;
 logic [11:0] cnt_rd_ongoing, cnt_rd_stop;
 logic rd_ongoing;
-logic [0:4][11:0]  twdl_numrtr;
-logic [0:5][11:0]  twdl_demontr;
+
 
 
 always@(posedge clk)
