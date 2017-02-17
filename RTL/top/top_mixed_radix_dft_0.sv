@@ -73,8 +73,6 @@ mrd_rdx2345_if mem_to_rdx2345();
 
 mrd_ctrl_if ctrl_to_mem();
 
-mrd_stat_if stat_from_mem();
-
 
 mrd_mem_top_v2
 mem0 (
@@ -87,8 +85,7 @@ mem0 (
 	.ctrl (ctrl_to_mem),
 
 	.out_data ( source_st ),
-	.out_rdx2345_data ( mem_to_rdx2345 ),
-	.stat_to_ctrl (stat_from_mem)
+	.out_rdx2345_data ( mem_to_rdx2345 )
 	);
 
 //Radix 2/3/4/5 core  &  twiddle CORDIC

@@ -12,12 +12,12 @@ module mrd_FSMsource (
 	mrd_ctrl_if ctrl,
 	mrd_mem_rd rdRAM_FSMsource,
 	mrd_st_if  out_data,
-	mrd_stat_if  stat_to_ctrl,
 
 	output logic [0:4][11:0] addrs_butterfly_src,
 	output logic [11:0]  bank_addr_source,
 	output logic [2:0] bank_index_source_r,
-	output logic fsm_lastRd_source
+	output logic fsm_lastRd_source,
+	output logic source_end
 	
 );
 // parameter Idle = 3'd0, Sink = 3'd1, Wait_to_rd = 3'd2,
@@ -83,8 +83,6 @@ begin
 	end
 	else
 	begin
-		// N_PFA_out <= (stat_to_ctrl.source_ongoing)? N_PFA_out+12'd1 
-		//                  : 12'd0 ;
 		bank_index_source_r <= bank_index_source;
 	end
 end
@@ -119,8 +117,7 @@ begin
 		out_data.sop <= 0;
 		out_data.eop <= 0;
 		out_data.valid <= 0;
-		stat_to_ctrl.source_start <= 0;
-		stat_to_ctrl.source_end <= 0;
+		source_end <= 0;
 		cnt_source <= 0;
 		in_rdx2345_valid_r <= 0;
 	end
@@ -151,8 +148,7 @@ begin
 			out_data.eop <= 0;
 			out_data.valid <= 0;
 		end
-		stat_to_ctrl.source_start <= (fsm == Source && fsm_r != Source);
-		stat_to_ctrl.source_end <=  (fsm == Source && cnt_source==dftpts);
+		source_end <=  (fsm == Source && cnt_source==dftpts);
 	end
 end
 

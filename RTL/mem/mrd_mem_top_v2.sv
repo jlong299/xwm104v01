@@ -23,7 +23,7 @@
 //     3/4*Sink   Read     Read                 Read
 //               |----|   |----|      ...     |------| 
 //                 Write    Write                Write
-//                |----|   |----|     ...      |------| 
+//                |----|   |----|     ...       |------| 
 //                                                   Source    
 //                                             |-----------------|
 //                                              1/3*
@@ -46,8 +46,7 @@ module mrd_mem_top_v2 (
 	mrd_ctrl_if  ctrl,
 
 	mrd_st_if  out_data,
-	mrd_rdx2345_if  out_rdx2345_data,
-	mrd_stat_if  stat_to_ctrl
+	mrd_rdx2345_if  out_rdx2345_data
 );
 
 logic [11:0]  dftpts;
@@ -63,7 +62,7 @@ logic [2:0]  cnt_stage;
 logic sink_3_4;
 logic wr_ongoing, wr_ongoing_r;
 logic [2:0] rd_ongoing_r;
-logic fsm_lastRd_source;
+logic fsm_lastRd_source,  source_end;
 
 mrd_mem_wr wrRAM();
 mrd_mem_rd rdRAM();
@@ -75,9 +74,7 @@ mrd_mem_rd rdRAM_FSMsource();
 logic [2:0] fsm, fsm_r;
 parameter Idle = 3'd0, Sink = 3'd1, Wait_to_rd = 3'd2,
   			Rd = 3'd3,  Wait_wr_end = 3'd4,  Source = 3'd5;
-
-assign stat_to_ctrl.sink_sop = in_data.sop;
-assign stat_to_ctrl.dftpts = in_data.dftpts;
+  			
 
 //----------------  Input (Sink) registers -------------
 localparam  in_dly = 5;
@@ -115,7 +112,7 @@ begin
 			else fsm <= Wait_wr_end;
 		end
 
-		Source : fsm <= (stat_to_ctrl.source_end)? Idle : Source;
+		Source : fsm <= (source_end)? Idle : Source;
 		default : fsm <= Idle;
 		endcase
 
@@ -273,12 +270,12 @@ mrd_FSMsource_inst (
 	ctrl,
 	rdRAM_FSMsource,
 	out_data,
-	stat_to_ctrl,
 
 	addrs_butterfly_src,
 	bank_addr_source,
 	bank_index_source_r,
-	fsm_lastRd_source
+	fsm_lastRd_source,
+	source_end
 );
 
 
