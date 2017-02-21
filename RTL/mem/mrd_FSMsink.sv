@@ -1,80 +1,51 @@
-module mrd_FSMsink (
+module mrd_FSMsink #(parameter
+	wADDR = 8 
+	)
+	(
 	input clk,
 	input rst_n,
 
 	input [2:0] fsm,
 	input [2:0] fsm_r,
-
+	
 	mrd_ctrl_if  ctrl,
 	mrd_st_if  in_data,
 	mrd_mem_wr wrRAM_FSMsink,
 
-	output logic [11:0] bank_addr_sink,  //!!!???  7:0
-	output logic sink_3_4,
-
-	output logic [11:0]  dftpts,
-	output logic [0:5][2:0] Nf,
-	output logic [0:5][11:0] dftpts_div_Nf, 
-	output logic [0:5][11:0]  twdl_demontr
+	output logic sink_3_4
 );
 // parameter Idle = 3'd0, Sink = 3'd1, Wait_to_rd = 3'd2,
 //   			Rd = 3'd3,  Wait_wr_end = 3'd4,  Source = 3'd5;
 parameter Rd = 3'd3;
-logic [11:0]  bank_addr_sink_pre;
+logic [wADDR-1:0]  bank_addr_sink_pre;
 logic [2:0]  bank_index_sink, bank_index_sink_pre;
 logic [11:0]  addr_sink_CTA;
 
 logic [11:0]  cnt_sink;
 
+always@(posedge clk) begin
+	wrRAM_FSMsink.wraddr <= bank_addr_sink_pre;
+	bank_index_sink <= bank_index_sink_pre;
+end
+
 always@(posedge clk)
 begin
-	if (!rst_n)
-	begin
-		dftpts <= 0;
-		Nf <= 0;
-		dftpts_div_Nf <= 0;   //  dftpts/Nf
-		twdl_demontr <= 0;
+	if (!rst_n) begin
+		bank_addr_sink_pre <= 0;
+		bank_index_sink_pre  <= 0;
 	end
-	else
-	begin
-		if ( fsm == Rd && fsm_r != Rd)
-		begin
-			Nf <= ctrl.Nf;
-			dftpts_div_Nf <= ctrl.dftpts_div_Nf;
-			twdl_demontr <= ctrl.twdl_demontr;
+	else begin
+		if (in_data.valid) begin
+			bank_index_sink_pre <= (bank_index_sink_pre==3'd6) ?
+			                       3'd0 : bank_index_sink_pre + 3'd1;
+			bank_addr_sink_pre <= (bank_index_sink_pre==3'd6) ?
+			                   bank_addr_sink_pre + 1'd1 : bank_addr_sink_pre;
 		end
 		else begin
-			Nf <= Nf;
-			dftpts_div_Nf <= dftpts_div_Nf;
-			twdl_demontr <= twdl_demontr;
+			bank_addr_sink_pre <= 0;
+			bank_index_sink_pre  <= 0;
 		end
-		dftpts <= (in_data.sop)? in_data.dftpts : dftpts;
 	end
-end
-
-
-always@(posedge clk)
-begin
-	if (!rst_n)
-		addr_sink_CTA <= 0;
-	else begin
-		if (in_data.valid)
-			addr_sink_CTA <= addr_sink_CTA + 12'd1;
-		else
-			addr_sink_CTA <= 0;
-	end
-end
-
-divider_7 divider_7_inst0 (
-	.dividend 	(addr_sink_CTA),  
-
-	.quotient 	(bank_addr_sink_pre),
-	.remainder 	(bank_index_sink_pre)
-);
-
-always@(posedge clk) begin
-	bank_addr_sink <= bank_addr_sink_pre;
-	bank_index_sink <= bank_index_sink_pre;
 end
 
 always@(*)

@@ -52,7 +52,7 @@ module mrd_mem_top_v2 (
 logic [11:0]  dftpts;
 logic [0:5][2:0] Nf;
 logic [0:5][11:0] dftpts_div_Nf; 
-logic [11:0]  bank_addr_sink;
+logic [mrd_mem_pkt::wADDR-1:0]  bank_addr_sink;
 logic [0:4][11:0]  addrs_butterfly_src;
 logic [11:0]  bank_addr_source;
 logic [2:0] bank_index_source_r;
@@ -74,7 +74,33 @@ mrd_mem_rd rdRAM_FSMsource();
 logic [2:0] fsm, fsm_r;
 parameter Idle = 3'd0, Sink = 3'd1, Wait_to_rd = 3'd2,
   			Rd = 3'd3,  Wait_wr_end = 3'd4,  Source = 3'd5;
-  			
+
+//------------ Obtain parameters from ctrl -------------
+always@(posedge clk)
+begin
+	if (!rst_n)
+	begin
+		dftpts <= 0;
+		Nf <= 0;
+		dftpts_div_Nf <= 0;   //  dftpts/Nf
+		twdl_demontr <= 0;
+	end
+	else
+	begin
+		if ( fsm == Rd && fsm_r != Rd)
+		begin
+			Nf <= ctrl.Nf;
+			dftpts_div_Nf <= ctrl.dftpts_div_Nf;
+			twdl_demontr <= ctrl.twdl_demontr;
+		end
+		else begin
+			Nf <= Nf;
+			dftpts_div_Nf <= dftpts_div_Nf;
+			twdl_demontr <= twdl_demontr;
+		end
+		dftpts <= (in_data.sop)? in_data.dftpts : dftpts;
+	end
+end
 
 //----------------  Input (Sink) registers -------------
 localparam  in_dly = 5;
@@ -161,7 +187,7 @@ begin
 	wrRAM.din_imag[i] = wrRAM_FSMrd.din_imag[i];
 end		
 end	
-assign wrRAM.wraddr[i]= (fsm==Sink)? bank_addr_sink[7:0] 
+assign wrRAM.wraddr[i]= (fsm==Sink)? wrRAM_FSMsink.wraddr
                       : wrRAM_FSMrd.wraddr[i];
 assign wrRAM.wren[i] = (fsm==Sink)? (wrRAM_FSMsink.wren[i] & valid_r[0])
                   : wrRAM_FSMrd.wren[i] ; 
@@ -186,7 +212,9 @@ end
 //------------------------------------------------
 //------------------ 1st stage: Sink -------------
 //------------------------------------------------
-mrd_FSMsink 
+mrd_FSMsink #(
+	mrd_mem_pkt::wADDR
+	)
 mrd_FSMsink_inst (
 	clk,
 	rst_n,
@@ -198,13 +226,7 @@ mrd_FSMsink_inst (
 	in_data,
 	wrRAM_FSMsink,
 
-	bank_addr_sink,  //!!!???  7:0
-	sink_3_4,
-
-	dftpts,
-	Nf,
-	dftpts_div_Nf,
-	twdl_demontr
+	sink_3_4
 );
 
 //------------------------------------------------
@@ -213,7 +235,7 @@ mrd_FSMsink_inst (
 
 mrd_FSMrd_rd 
 mrd_FSMrd_rd_inst (
-	clk,
+	clk, 
 	rst_n,
 
 	fsm,
