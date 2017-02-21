@@ -7,9 +7,10 @@ module mrd_FSMrd_wr (
 	mrd_mem_wr wrRAM_FSMrd,
 	mrd_rdx2345_if in_rdx2345_data,
 
-	output logic wr_ongoing,
-	output logic wr_ongoing_r
+	output logic wr_end
 );
+
+logic wr_ongoing;
 // parameter Idle = 3'd0, Sink = 3'd1, Wait_to_rd = 3'd2,
 //   			Rd = 3'd3,  Wait_wr_end = 3'd4,  Source = 3'd5;
 parameter Rd = 3'd3,  Wait_wr_end = 3'd4;
@@ -81,13 +82,13 @@ begin
 	if (!rst_n)
 	begin
 		wr_ongoing <= 0;
-		wr_ongoing_r <= 0;
+		wr_end <= 0;
 	end
 	else
 	begin
 		wr_ongoing <= (fsm==Rd || fsm==Wait_wr_end) ? 
 		                           in_rdx2345_data.valid : 1'b0;
-		wr_ongoing_r <= wr_ongoing;
+		wr_end <= wr_ongoing & (~in_rdx2345_data.valid) ;
 	end
 end
 

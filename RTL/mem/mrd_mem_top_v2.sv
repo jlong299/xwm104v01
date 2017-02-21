@@ -60,7 +60,7 @@ logic [0:4][11:0]  twdl_numrtr;
 logic [0:5][11:0]  twdl_demontr;
 logic [2:0]  cnt_stage;
 logic sink_3_4;
-logic wr_ongoing, wr_ongoing_r;
+logic wr_end;
 logic [2:0] rd_ongoing_r;
 logic fsm_lastRd_source,  source_end;
 
@@ -130,7 +130,7 @@ begin
 
 		Rd : fsm <= (rd_ongoing_r[2:1]==2'b10)? Wait_wr_end : Rd;
 		Wait_wr_end : begin
-			if (!wr_ongoing && wr_ongoing_r)
+			if (wr_end)
 				if (cnt_stage == ctrl.NumOfFactors-3'd1)
 					fsm <= Source;
 				else
@@ -270,8 +270,7 @@ mrd_FSMrd_wr_inst (
 	wrRAM_FSMrd,
 	in_rdx2345_data,
 
-	wr_ongoing,
-	wr_ongoing_r
+	wr_end
 );
 
 //------------------------------------------------
