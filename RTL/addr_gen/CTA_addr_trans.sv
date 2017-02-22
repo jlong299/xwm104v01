@@ -14,6 +14,7 @@ module CTA_addr_trans #(parameter
 	//param
 	input [0:5][2:0] 	Nf,  //N1,N2,...,N6
 	input [2:0] current_stage,
+	input [0:5][11:0]  twdl_demontr,
 
 	output reg [0:4][wDataInOut-1:0] addrs_butterfly
 	
@@ -141,61 +142,58 @@ always@(*)
 begin
 	case (current_stage)
 	3'd0:
-		coeff_stage = Nf[1]*Nf[2]*Nf[3]*Nf[4]*Nf[5];
+		coeff_stage = twdl_demontr[1];
 	3'd1:
-		coeff_stage = Nf[2]*Nf[3]*Nf[4]*Nf[5];
+		coeff_stage = twdl_demontr[2];
 	3'd2:
-		coeff_stage = Nf[3]*Nf[4]*Nf[5];
+		coeff_stage = twdl_demontr[3];
 	3'd3:
-		coeff_stage = Nf[4]*Nf[5];
+		coeff_stage = twdl_demontr[4];
 	3'd4:
-		coeff_stage = Nf[5];
+		coeff_stage = twdl_demontr[5];
 	3'd5:
 		coeff_stage = 'd1;
 	endcase
 end
 
-// always@(*)
-// begin
-// 	case (current_stage)
-// 	3'd0:
-// 		num_radix = Nf[0];
-// 	3'd1:
-// 		num_radix = Nf[1];
-// 	3'd2:
-// 		num_radix = Nf[2];
-// 	3'd3:
-// 		num_radix = Nf[3];
-// 	3'd4:
-// 		num_radix = Nf[4];
-// 	3'd5:
-// 		num_radix = Nf[5];
-// 	endcase
-// end
 
 always@(posedge clk)
 begin
 	if (!rst_n)
 		addrs_all <= 0;
 	else
-		addrs_all <= n[0]*Nf[1]*Nf[2]*Nf[3]*Nf[4]*Nf[5]
-		             + n[1]*Nf[2]*Nf[3]*Nf[4]*Nf[5]
-		             + n[2]*Nf[3]*Nf[4]*Nf[5]
-		             + n[3]*Nf[4]*Nf[5]
-		             + n[4]*Nf[5]
+
+		addrs_all <=   n[0]*twdl_demontr[1]
+		             + n[1]*twdl_demontr[2]
+		             + n[2]*twdl_demontr[3]
+		             + n[3]*twdl_demontr[4]
+		             + n[4]*twdl_demontr[5]
 		             + n[5] ;
 end
-assign addrs_butterfly[0] = addrs_all; 
-assign addrs_butterfly[1] = addrs_all + coeff_stage; 
-// assign addrs_butterfly[2] = (num_radix < 3'd3)? 'd0 : 
-//                               addrs_all + 3'd2*coeff_stage; 
-// assign addrs_butterfly[3] = (num_radix < 3'd4)? 'd0 : 
-//                               addrs_all + 3'd3*coeff_stage; 
-// assign addrs_butterfly[4] = (num_radix < 3'd5)? 'd0 : 
-//                               addrs_all + 3'd4*coeff_stage; 
+// assign addrs_butterfly[0] = addrs_all; 
+// assign addrs_butterfly[1] = addrs_all + coeff_stage; 
+// assign addrs_butterfly[2] = addrs_all + 3'd2*coeff_stage; 
+// assign addrs_butterfly[3] = addrs_all + 3'd3*coeff_stage; 
+// assign addrs_butterfly[4] = addrs_all + 3'd4*coeff_stage; 
 
-assign addrs_butterfly[2] = addrs_all + 3'd2*coeff_stage; 
-assign addrs_butterfly[3] = addrs_all + 3'd3*coeff_stage; 
-assign addrs_butterfly[4] = addrs_all + 3'd4*coeff_stage; 
+reg [0:4][wDataInOut-1:0] addrs_butterfly_r;
+reg [0:4][wDataInOut-1:0] addrs_butterfly_rr;
+reg [0:4][wDataInOut-1:0] addrs_butterfly_rrr;
+reg [0:4][wDataInOut-1:0] addrs_butterfly_rrrr;
+
+assign addrs_butterfly_r[0] = addrs_all; 
+assign addrs_butterfly_r[1] = addrs_all + coeff_stage; 
+assign addrs_butterfly_r[2] = addrs_all + 3'd2*coeff_stage; 
+assign addrs_butterfly_r[3] = addrs_all + 3'd3*coeff_stage; 
+assign addrs_butterfly_r[4] = addrs_all + 3'd4*coeff_stage; 
+
+always@(posedge clk)
+begin
+	// addrs_butterfly <= addrs_butterfly_rrrr;
+	// addrs_butterfly_rrrr <= addrs_butterfly_rrr;
+	// addrs_butterfly_rrr <= addrs_butterfly_rr;
+	// addrs_butterfly_rr <= addrs_butterfly_r;
+	addrs_butterfly <= addrs_butterfly_r;
+end
 
 endmodule

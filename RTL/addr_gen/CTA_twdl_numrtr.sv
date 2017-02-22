@@ -143,27 +143,6 @@ begin
 		twdl_numrtr_base <= 0;
 	else begin
 		case (current_stage)
-		// 3'd0 :
-		// twdl_numrtr_base <= n[1]*Nf[2]*Nf[3]*Nf[4]*Nf[5]
-		//              + n[2]*Nf[3]*Nf[4]*Nf[5]
-		//              + n[3]*Nf[4]*Nf[5]
-		//              + n[4]*Nf[5]
-		//              + n[5] ;
-		// 3'd1 :
-		// twdl_numrtr_base <= n[2]*Nf[3]*Nf[4]*Nf[5]
-		//              + n[3]*Nf[4]*Nf[5]
-		//              + n[4]*Nf[5]
-		//              + n[5] ;
-		// 3'd2 :
-		// twdl_numrtr_base <= n[3]*Nf[4]*Nf[5]
-		//              + n[4]*Nf[5]
-		//              + n[5] ;
-		// 3'd3 :
-		// twdl_numrtr_base <= n[4]*Nf[5]
-		//              + n[5] ;
-		// 3'd4 :
-		// twdl_numrtr_base <= n[5] ;
-
 		3'd0 :
 		twdl_numrtr_base <= n[1]*twdl_demontr[2]
 		                  + n[2]*twdl_demontr[3]
@@ -192,12 +171,24 @@ begin
 	end
 end
 
+// always@(posedge clk) begin
+// 	twdl_numrtr[0] <= 0; 
+// 	twdl_numrtr[1] <= twdl_numrtr_base; 
+// 	twdl_numrtr[2] <= 3'd2*twdl_numrtr_base; 
+// 	twdl_numrtr[3] <= 3'd3*twdl_numrtr_base; 
+// 	twdl_numrtr[4] <= 3'd4*twdl_numrtr_base; 
+// end
+
+reg [0:4][wDataInOut-1:0] twdl_numrtr_r;
 always@(posedge clk) begin
-	twdl_numrtr[0] <= 0; 
-	twdl_numrtr[1] <= twdl_numrtr_base; 
-	twdl_numrtr[2] <= 3'd2*twdl_numrtr_base; 
-	twdl_numrtr[3] <= 3'd3*twdl_numrtr_base; 
-	twdl_numrtr[4] <= 3'd4*twdl_numrtr_base; 
+	twdl_numrtr_r[0] <= 0; 
+	twdl_numrtr_r[1] <= twdl_numrtr_base; 
+	twdl_numrtr_r[2] <= 3'd2*twdl_numrtr_base; 
+	twdl_numrtr_r[3] <= 3'd3*twdl_numrtr_base; 
+	twdl_numrtr_r[4] <= 3'd4*twdl_numrtr_base; 
+end
+always@(posedge clk) begin
+	twdl_numrtr <= twdl_numrtr_r;
 end
 
 endmodule

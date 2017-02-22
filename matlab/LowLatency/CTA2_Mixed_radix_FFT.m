@@ -71,7 +71,7 @@ NumOfLen = 0;
 outf = fopen('../../modelsim/dft_src.dat','w');
 outf_FFT = fopen('../../modelsim/matlab_result.dat','w');
 %  Loop  from  12*1  to  12*100
-for m_len = 1:100   % The end of loop body is at the end of this file
+for m_len = 1:40   % The end of loop body is at the end of this file
     % factorize  N 
     [Nf_temp, err] = factor_2345(m_len);
     if err==1   % m_len can not be factorized to 2,3,4,5
@@ -252,7 +252,7 @@ for m=1:NumOfFactors
                             fft_out_int32 = int32(fft_tw_out);
                         
                             cnt_debug = cnt_debug+1;
-                            if ( (cnt_debug<=2 || cnt_debug >= 11) && m==2 )
+                            if ( (cnt_debug<=3 || cnt_debug >= 11) && m==2 )
                                 cnt_debug = cnt_debug;
                             end
                             

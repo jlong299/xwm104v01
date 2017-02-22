@@ -60,7 +60,7 @@ logic [0:4][11:0]  twdl_numrtr;
 logic [0:5][11:0]  twdl_demontr;
 logic [2:0]  cnt_stage;
 logic sink_3_4;
-logic wr_end;
+logic wr_end, rd_end;
 logic [2:0] rd_ongoing_r;
 logic fsm_lastRd_source,  source_end;
 
@@ -103,7 +103,7 @@ begin
 end
 
 //----------------  Input (Sink) registers -------------
-localparam  in_dly = 5;
+localparam  in_dly = 6;
 logic [in_dly:0]  valid_r;
 logic [in_dly:0][17:0]  din_real_r, din_imag_r;
 always@(posedge clk)
@@ -128,7 +128,7 @@ begin
 
 		Sink : fsm <= (sink_3_4)? Rd : Sink;
 
-		Rd : fsm <= (rd_ongoing_r[2:1]==2'b10)? Wait_wr_end : Rd;
+		Rd : fsm <= (rd_end)? Wait_wr_end : Rd;
 		Wait_wr_end : begin
 			if (wr_end)
 				if (cnt_stage == ctrl.NumOfFactors-3'd1)
@@ -233,7 +233,9 @@ mrd_FSMsink_inst (
 //------------------ 2nd stage: Read -------------
 //------------------------------------------------
 
-mrd_FSMrd_rd 
+mrd_FSMrd_rd #(
+	in_dly
+	)
 mrd_FSMrd_rd_inst (
 	clk, 
 	rst_n,
@@ -252,9 +254,8 @@ mrd_FSMrd_rd_inst (
 	rdRAM_FSMrd,
 	out_rdx2345_data,
 
-	rd_ongoing_r,
-	cnt_stage,
-	twdl_numrtr
+	rd_end,
+	cnt_stage
 );
 
 
