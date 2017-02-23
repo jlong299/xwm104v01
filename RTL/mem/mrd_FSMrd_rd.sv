@@ -30,10 +30,7 @@ logic [0:4][mrd_mem_pkt::wADDR-1:0]  bank_addr_rd, bank_addr_rd_r, bank_addr_rd_
 logic [0:4][2:0]  bank_index_rd, bank_index_rd_r, bank_index_rd_rr,
                   div7_rmdr_rd;
 logic [0:4][11:0]  addrs_butterfly, addrs_butterfly_mux;
-logic [11:0] cnt_rd_ongoing, cnt_rd_stop;
-logic rd_ongoing;
-// logic [2:0] rd_ongoing_r;
-logic [3:0] rd_ongoing_r;
+logic [11:0]  cnt_rd_stop;
 logic [0:4][11:0]  twdl_numrtr;
 
 logic [11:0] cnt_FSMrd;
@@ -49,9 +46,6 @@ always@(posedge clk)
 begin
 	if (!rst_n)
 	begin
-		rd_ongoing <= 0;
-		cnt_rd_ongoing <= 0;
-		rd_ongoing_r <= 0;
 		cnt_stage <= 0;
 		rden_r <= 0;
 	end
@@ -64,19 +58,6 @@ begin
 		                       12'd0 : cnt_FSMrd + 12'd1;
 		else
 			cnt_FSMrd <= 0;
-
-		if (fsm == Rd && fsm_r != Rd)
-			cnt_rd_ongoing <= 12'd1;
-		else if (cnt_rd_ongoing != 12'd0)
-			cnt_rd_ongoing <= (cnt_rd_ongoing==cnt_rd_stop) ? 
-		                       12'd0 : cnt_rd_ongoing + 12'd1;
-		else
-			cnt_rd_ongoing <= 0;
-
-		rd_ongoing <= (cnt_rd_ongoing != 12'd0);
-		rd_ongoing_r[0] <= rd_ongoing;
-		////// rd_ongoing_r[2:1] <= rd_ongoing_r[1:0];
-		rd_ongoing_r[3:1] <= rd_ongoing_r[2:0];
 
 		rden_r[5:1] <= {rden_r[4:1], rden_r0};
 
@@ -95,8 +76,7 @@ CTA_addr_trans #(
 CTA_addr_trans_inst	(
 	.clk  (clk),    
 	.rst_n  (rst_n),  
-	// .clr_n  (rd_ongoing),
-	.clr_n  (rden_r[1]),
+	.clr_n  (rden_r0), //////
 	.Nf  (Nf),
 	.current_stage  (cnt_stage),
 	.twdl_demontr  (twdl_demontr),
@@ -118,8 +98,7 @@ CTA_twdl_numrtr #(
 CTA_twdl_numrtr_inst	(
 	.clk  (clk),    
 	.rst_n  (rst_n),  
-	// .clr_n  (rd_ongoing),
-	.clr_n  (rden_r[1]),
+	.clr_n  (rden_r0), //////
 	.Nf  (Nf),
 	.current_stage  (cnt_stage),
 	.twdl_demontr  (twdl_demontr),
@@ -128,14 +107,16 @@ CTA_twdl_numrtr_inst	(
 	);
 
 //-----------------------------------------------------
+wire [0:4][11:0] tt_quotient;
 generate
 	for (k=3'd0; k < 3'd5; k=k+3'd1) begin : addr_banks
 	divider_7 divider_7_inst1 (
 		.dividend 	(addrs_butterfly_mux[k]),  
 
-		.quotient 	(bank_addr_rd[k]),
+		.quotient 	(tt_quotient[k]),
 		.remainder 	(div7_rmdr_rd[k])
 	);
+	assign bank_addr_rd[k] = tt_quotient[k][mrd_mem_pkt::wADDR-1:0];
 	// index 3'd7 means the index is not valid
 	assign bank_index_rd[k] = (k >= Nf[cnt_stage]) ?
 	                          3'd7 : div7_rmdr_rd[k];
@@ -156,9 +137,8 @@ begin
 		if (bank_index_rd[0]== k || bank_index_rd[1]== k ||
 			bank_index_rd[2]== k || bank_index_rd[3]== k ||
 			bank_index_rd[4]== k )
-				////// rdRAM_FSMrd.rden[k] <= 1'b1 & rd_ongoing_r[0];
-				// rdRAM_FSMrd.rden[k] <= 1'b1 & rd_ongoing_r[1];
-				rdRAM_FSMrd.rden[k] <= rden_r[3];
+			//////
+				rdRAM_FSMrd.rden[k] <= rden_r[2];
 		else rdRAM_FSMrd.rden[k] <= 1'b0;
 
 		if (bank_index_rd[0]==k) rdRAM_FSMrd.rdaddr[k] <= bank_addr_rd[0]; 
@@ -203,13 +183,6 @@ endgenerate
 
 always@(*)
 begin
-	////// out_rdx2345_data.d_real[3] = (fsm==Rd && cnt_stage==3'd0)?
-	//////         {{(30-18){din_real_r[5][17]}}, din_real_r[5]} : 
-	//////         rdRAM_FSMrd.dout_real[(bank_index_rd_rr[3])]; 
-	////// out_rdx2345_data.d_imag[3] = (fsm==Rd && cnt_stage==3'd0)?
-	//////         {{(30-18){din_imag_r[5][17]}}, din_imag_r[5]} : 
-	//////         rdRAM_FSMrd.dout_imag[(bank_index_rd_rr[3])]; 
-
 	out_rdx2345_data.d_real[3] = (fsm==Rd && cnt_stage==3'd0)?
 	        {{(30-18){din_real_r[in_dly][17]}}, din_real_r[in_dly]} : 
 	        rdRAM_FSMrd.dout_real[(bank_index_rd_rr[3])]; 
@@ -220,10 +193,8 @@ begin
 	out_rdx2345_data.d_real[4] = rdRAM_FSMrd.dout_real[(bank_index_rd_rr[4])]; 
 	out_rdx2345_data.d_imag[4] = rdRAM_FSMrd.dout_imag[(bank_index_rd_rr[4])]; 
 end
-
-// assign out_rdx2345_data.valid = rd_ongoing_r[2];
-// assign out_rdx2345_data.valid = rd_ongoing_r[3];
-assign out_rdx2345_data.valid = rden_r[5];
+//////
+assign out_rdx2345_data.valid = rden_r[4];
 assign out_rdx2345_data.bank_index = bank_index_rd_rr;
 assign out_rdx2345_data.bank_addr = bank_addr_rd_rr;
 always@(posedge clk) out_rdx2345_data.twdl_numrtr <= twdl_numrtr;
@@ -231,10 +202,7 @@ always@(posedge clk) out_rdx2345_data.twdl_demontr <=
                          twdl_demontr[cnt_stage];
 assign out_rdx2345_data.factor = (fsm==Rd || fsm==Wait_wr_end)?
                                       Nf[cnt_stage] : 3'd1 ;
-
-
-////// assign  rd_end =  (rd_ongoing_r[2:1]==2'b10);            
-// assign  rd_end =  (rd_ongoing_r[3:2]==2'b10);  
-assign  rd_end =  (rden_r[5:4]==2'b10);  
+//////
+assign  rd_end =  (rden_r[4:3]==2'b10);  
 
 endmodule

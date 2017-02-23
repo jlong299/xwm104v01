@@ -61,7 +61,6 @@ logic [0:5][11:0]  twdl_demontr;
 logic [2:0]  cnt_stage;
 logic sink_3_4;
 logic wr_end, rd_end;
-logic [2:0] rd_ongoing_r;
 logic fsm_lastRd_source,  source_end;
 
 mrd_mem_wr wrRAM();
@@ -103,7 +102,7 @@ begin
 end
 
 //----------------  Input (Sink) registers -------------
-localparam  in_dly = 6;
+localparam  in_dly = 5;
 logic [in_dly:0]  valid_r;
 logic [in_dly:0][17:0]  din_real_r, din_imag_r;
 always@(posedge clk)

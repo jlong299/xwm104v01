@@ -25,7 +25,7 @@ logic [0:5][2:0] n;
 
 // Acc n6
 acc_type1 #(
-		.wDataInOut (wDataInOut)
+		.wDataInOut (3)
 	)
 acc_n6 (
 	.clk 	(clk),    // Clock
@@ -34,8 +34,8 @@ acc_n6 (
 	.clr_n 	(clr_n & (!(current_stage==3'd5))),
 	.ena_top 	(1'b1),
 	.in_carry 	(1'b1),
-	.max_acc 	({{wDataInOut-3{1'b0}}, Nf[5]-3'd1}),
-	.inc 	({{wDataInOut-1{1'b0}},1'b1}),
+	.max_acc 	(Nf[5]-3'd1),
+	.inc 	(3'b1),
 
 	.out_acc 	(n[5]),
 	.out_carry 	(carry_out[5])
@@ -44,7 +44,7 @@ acc_n6 (
 // Acc n5
 assign carry_in[4] = (current_stage==3'd5)? 1'b1 : carry_out[5];
 acc_type1 #(
-		.wDataInOut (wDataInOut)
+		.wDataInOut (3)
 	)
 acc_n5 (
 	.clk 	(clk),    // Clock
@@ -53,8 +53,8 @@ acc_n5 (
 	.clr_n 	(clr_n & (!(current_stage==3'd4))),
 	.ena_top 	(1'b1),
 	.in_carry 	(carry_in[4]),
-	.max_acc 	({{wDataInOut-3{1'b0}}, Nf[4]-3'd1}),
-	.inc 	({{wDataInOut-1{1'b0}},1'b1}),
+	.max_acc 	(Nf[4]-3'd1),
+	.inc 	(3'b1),
 
 	.out_acc 	(n[4]),
 	.out_carry 	(carry_out[4])
@@ -63,7 +63,7 @@ acc_n5 (
 // Acc n4
 assign carry_in[3] = (current_stage==3'd4)? carry_out[5] : carry_out[4];
 acc_type1 #(
-		.wDataInOut (wDataInOut)
+		.wDataInOut (3)
 	)
 acc_n4 (
 	.clk 	(clk),    // Clock
@@ -72,8 +72,8 @@ acc_n4 (
 	.clr_n 	(clr_n & (!(current_stage==3'd3))),
 	.ena_top 	(1'b1),
 	.in_carry 	(carry_in[3]),
-	.max_acc 	({{wDataInOut-3{1'b0}}, Nf[3]-3'd1}),
-	.inc 	({{wDataInOut-1{1'b0}},1'b1}),
+	.max_acc 	(Nf[3]-3'd1),
+	.inc 	(3'b1),
 
 	.out_acc 	(n[3]),
 	.out_carry 	(carry_out[3])
@@ -82,7 +82,7 @@ acc_n4 (
 // Acc n3
 assign carry_in[2] = (current_stage==3'd3)? carry_out[4] : carry_out[3];
 acc_type1 #(
-		.wDataInOut (wDataInOut)
+		.wDataInOut (3)
 	)
 acc_n3 (
 	.clk 	(clk),    // Clock
@@ -91,8 +91,8 @@ acc_n3 (
 	.clr_n 	(clr_n & (!(current_stage==3'd2))),
 	.ena_top 	(1'b1),
 	.in_carry 	(carry_in[2]),
-	.max_acc 	({{wDataInOut-3{1'b0}}, Nf[2]-3'd1}),
-	.inc 	({{wDataInOut-1{1'b0}},1'b1}),
+	.max_acc 	(Nf[2]-3'd1),
+	.inc 	(3'b1),
 
 	.out_acc 	(n[2]),
 	.out_carry 	(carry_out[2])
@@ -101,7 +101,7 @@ acc_n3 (
 // Acc n2
 assign carry_in[1] = (current_stage==3'd2)? carry_out[3] : carry_out[2];
 acc_type1 #(
-		.wDataInOut (wDataInOut)
+		.wDataInOut (3)
 	)
 acc_n2 (
 	.clk 	(clk),    // Clock
@@ -110,8 +110,8 @@ acc_n2 (
 	.clr_n 	(clr_n & (!(current_stage==3'd1))),
 	.ena_top 	(1'b1),
 	.in_carry 	(carry_in[1]),
-	.max_acc 	({{wDataInOut-3{1'b0}}, Nf[1]-3'd1}),
-	.inc 	({{wDataInOut-1{1'b0}},1'b1}),
+	.max_acc 	(Nf[1]-3'd1),
+	.inc 	(3'b1),
 
 	.out_acc 	(n[1]),
 	.out_carry 	(carry_out[1])
@@ -120,7 +120,7 @@ acc_n2 (
 // Acc n1
 assign carry_in[0] = (current_stage==3'd1)? carry_out[2] : carry_out[1];
 acc_type1 #(
-		.wDataInOut (wDataInOut)
+		.wDataInOut (3)
 	)
 acc_n1 (
 	.clk 	(clk),    // Clock
@@ -129,8 +129,8 @@ acc_n1 (
 	.clr_n 	(clr_n & (!(current_stage==3'd0))),
 	.ena_top 	(1'b1),
 	.in_carry 	(carry_in[0]),
-	.max_acc 	({{wDataInOut-3{1'b0}}, Nf[0]-3'd1}),
-	.inc 	({{wDataInOut-1{1'b0}},1'b1}),
+	.max_acc 	(Nf[0]-3'd1),
+	.inc 	(3'b1),
 
 	.out_acc 	(n[0]),
 	.out_carry 	(carry_out[0])

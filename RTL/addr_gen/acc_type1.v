@@ -44,7 +44,7 @@ always@(*)
 	ena_acc = in_carry & ena_top;
 
 always@(*)
-	out_carry = (acc == max_acc) & in_carry;
+	out_carry = (acc == max_acc) & in_carry & clr_n;
 
 
 endmodule
