@@ -287,6 +287,7 @@ mrd_FSMsource_inst (
 	Nf,
 	cnt_stage,
 	dftpts,
+	twdl_demontr,
 
 	ctrl,
 	rdRAM_FSMsource,

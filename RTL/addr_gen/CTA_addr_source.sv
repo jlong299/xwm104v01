@@ -13,9 +13,9 @@ module CTA_addr_source #(parameter
 
 	//param
 	input [0:5][2:0] 	Nf,  //N1,N2,...,N6
+	input [0:5][11:0]  twdl_demontr,
 
 	output logic [wDataInOut-1:0] addr_source_CTA 
-	
 );
 
 logic [0:5]  carry_out, carry_in;
@@ -132,35 +132,88 @@ acc_k6 (
 logic [wDataInOut-1:0]  addrs_all, coeff_stage;
 logic [2:0]  num_radix;
 
+// logic [wDataInOut-1:0] addr_source_CTA_r; 
+// // always@(posedge clk)
+// // begin
+// // 	if (!rst_n)
+// // 		addr_source_CTA_r <= 0;
+// // 	else
+// // 		addr_source_CTA_r <= k[0]*Nf[1]*Nf[2]*Nf[3]*Nf[4]*Nf[5]
+// // 		             + k[1]*Nf[2]*Nf[3]*Nf[4]*Nf[5]
+// // 		             + k[2]*Nf[3]*Nf[4]*Nf[5]
+// // 		             + k[3]*Nf[4]*Nf[5]
+// // 		             + k[4]*Nf[5]
+// // 		             + k[5] ;
+// // end
+
 // always@(posedge clk)
 // begin
 // 	if (!rst_n)
-// 		addr_source_CTA <= 0;
+// 		addr_source_CTA_r <= 0;
 // 	else
-// 		addr_source_CTA <= k[0]*Nf[1]*Nf[2]*Nf[3]*Nf[4]*Nf[5]
-// 		             + k[1]*Nf[2]*Nf[3]*Nf[4]*Nf[5]
-// 		             + k[2]*Nf[3]*Nf[4]*Nf[5]
-// 		             + k[3]*Nf[4]*Nf[5]
-// 		             + k[4]*Nf[5]
+// 		addr_source_CTA_r <= k[0]*twdl_demontr[1]
+// 		             + k[1]*twdl_demontr[2]
+// 		             + k[2]*twdl_demontr[3]
+// 		             + k[3]*twdl_demontr[4]
+// 		             + k[4]*twdl_demontr[5]
 // 		             + k[5] ;
 // end
 
-logic [wDataInOut-1:0] addr_source_CTA_r; 
+logic [wDataInOut-1:0] k0_x_twdl_dem1, k1_x_twdl_dem2, k2_x_twdl_dem3,
+                       k3_x_twdl_dem4, k4_x_twdl_dem5;
 always@(posedge clk)
 begin
-	if (!rst_n)
-		addr_source_CTA_r <= 0;
-	else
-		addr_source_CTA_r <= k[0]*Nf[1]*Nf[2]*Nf[3]*Nf[4]*Nf[5]
-		             + k[1]*Nf[2]*Nf[3]*Nf[4]*Nf[5]
-		             + k[2]*Nf[3]*Nf[4]*Nf[5]
-		             + k[3]*Nf[4]*Nf[5]
-		             + k[4]*Nf[5]
-		             + k[5] ;
+	if (!rst_n || !clr_n) begin
+		k0_x_twdl_dem1 <= 0;
+		k1_x_twdl_dem2 <= 0;
+		k2_x_twdl_dem3 <= 0;
+		k3_x_twdl_dem4 <= 0;
+		k4_x_twdl_dem5 <= 0;
+	end
+	else begin
+		if (carry_out[0]) 
+			k0_x_twdl_dem1 <= 0;
+		else if (1'b1)
+			k0_x_twdl_dem1 <= k0_x_twdl_dem1 + twdl_demontr[1];
+		else
+			k0_x_twdl_dem1 <= k0_x_twdl_dem1;
+
+		if (carry_out[1]) 
+			k1_x_twdl_dem2 <= 0;
+		else if (carry_out[0])
+			k1_x_twdl_dem2 <= k1_x_twdl_dem2 + twdl_demontr[2];
+		else
+			k1_x_twdl_dem2 <= k1_x_twdl_dem2;
+
+		if (carry_out[2]) 
+			k2_x_twdl_dem3 <= 0;
+		else if (carry_out[1])
+			k2_x_twdl_dem3 <= k2_x_twdl_dem3 + twdl_demontr[3];
+		else
+			k2_x_twdl_dem3 <= k2_x_twdl_dem3;
+
+		if (carry_out[3]) 
+			k3_x_twdl_dem4 <= 0;
+		else if (carry_out[2])
+			k3_x_twdl_dem4 <= k3_x_twdl_dem4 + twdl_demontr[4];
+		else
+			k3_x_twdl_dem4 <= k3_x_twdl_dem4;
+
+		if (carry_out[4]) 
+			k4_x_twdl_dem5 <= 0;
+		else if (carry_out[3])
+			k4_x_twdl_dem5 <= k4_x_twdl_dem5 + twdl_demontr[5];
+		else
+			k4_x_twdl_dem5 <= k4_x_twdl_dem5;
+	end		                  
 end
+
+logic [wDataInOut-1:0]  tt0, tt1;
 always@(posedge clk)
 begin
-	addr_source_CTA <= addr_source_CTA_r;
+	tt0 <= k0_x_twdl_dem1 + k1_x_twdl_dem2 + k2_x_twdl_dem3;
+	tt1 <= k3_x_twdl_dem4 + k4_x_twdl_dem5 + k[5];
+	addr_source_CTA <= tt0 + tt1;
 end
 
 endmodule

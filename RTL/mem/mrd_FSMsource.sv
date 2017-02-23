@@ -8,6 +8,7 @@ module mrd_FSMsource (
 	input [0:5][2:0] Nf,
 	input [2:0]  cnt_stage,
 	input [11:0] dftpts,
+	input [0:5][11:0]  twdl_demontr,
 
 	mrd_ctrl_if ctrl,
 	mrd_mem_rd rdRAM_FSMsource,
@@ -61,6 +62,7 @@ CTA_addr_source_inst (
 	fsm_lastRd_source,
 
 	Nf,  //N1,N2,...,N6
+	twdl_demontr,
 
 	addr_source_CTA 
 );
