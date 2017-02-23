@@ -81,7 +81,8 @@ CTA_addr_trans_inst	(
 	.current_stage  (cnt_stage),
 	.twdl_demontr  (twdl_demontr),
 
-	.addrs_butterfly  (addrs_butterfly)
+	.addrs_butterfly  (addrs_butterfly),
+	.twdl_numrtr  (twdl_numrtr)
 	);
 
 genvar  k;
@@ -92,19 +93,19 @@ assign addrs_butterfly_mux[k]=(fsm==Rd && cnt_stage < ctrl.NumOfFactors-3'd1)?
 end
 endgenerate
 
-CTA_twdl_numrtr #(
-		.wDataInOut (12)
-	)
-CTA_twdl_numrtr_inst	(
-	.clk  (clk),    
-	.rst_n  (rst_n),  
-	.clr_n  (rden_r0), //////
-	.Nf  (Nf),
-	.current_stage  (cnt_stage),
-	.twdl_demontr  (twdl_demontr),
+// CTA_twdl_numrtr #(
+// 		.wDataInOut (12)
+// 	)
+// CTA_twdl_numrtr_inst	(
+// 	.clk  (clk),    
+// 	.rst_n  (rst_n),  
+// 	.clr_n  (rden_r0), //////
+// 	.Nf  (Nf),
+// 	.current_stage  (cnt_stage),
+// 	.twdl_demontr  (twdl_demontr),
 
-	.twdl_numrtr  (twdl_numrtr)
-	);
+// 	.twdl_numrtr  (twdl_numrtr)
+// 	);
 
 //-----------------------------------------------------
 wire [0:4][11:0] tt_quotient;

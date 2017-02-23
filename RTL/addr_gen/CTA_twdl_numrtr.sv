@@ -23,6 +23,15 @@ module CTA_twdl_numrtr #(parameter
 logic [0:5]  carry_out, carry_in;
 logic [0:5][2:0] n;
 
+logic [0:5][2:0] max_acc;
+
+assign max_acc[5] = (current_stage==3'd5)? 3'd0 : Nf[5]-3'd1;
+assign max_acc[4] = (current_stage==3'd4)? 3'd0 : Nf[4]-3'd1;
+assign max_acc[3] = (current_stage==3'd3)? 3'd0 : Nf[3]-3'd1;
+assign max_acc[2] = (current_stage==3'd2)? 3'd0 : Nf[2]-3'd1;
+assign max_acc[1] = (current_stage==3'd1)? 3'd0 : Nf[1]-3'd1;
+assign max_acc[0] = (current_stage==3'd0)? 3'd0 : Nf[0]-3'd1;
+
 // Acc n6
 acc_type1 #(
 		.wDataInOut (3)
@@ -31,10 +40,12 @@ acc_n6 (
 	.clk 	(clk),    // Clock
 	.rst_n 	(rst_n),  // Asynchronous reset active low
 
-	.clr_n 	(clr_n & (!(current_stage==3'd5))),
+	// .clr_n 	(clr_n & (!(current_stage==3'd5))),
+	.clr_n 	(clr_n),
 	.ena_top 	(1'b1),
 	.in_carry 	(1'b1),
-	.max_acc 	(Nf[5]-3'd1),
+	// .max_acc 	(Nf[5]-3'd1),
+	.max_acc 	(max_acc[5]),
 	.inc 	(3'b1),
 
 	.out_acc 	(n[5]),
@@ -50,10 +61,12 @@ acc_n5 (
 	.clk 	(clk),    // Clock
 	.rst_n 	(rst_n),  // Asynchronous reset active low
 
-	.clr_n 	(clr_n & (!(current_stage==3'd4))),
+	// .clr_n 	(clr_n & (!(current_stage==3'd4))),
+	.clr_n 	(clr_n),
 	.ena_top 	(1'b1),
 	.in_carry 	(carry_in[4]),
-	.max_acc 	(Nf[4]-3'd1),
+	// .max_acc 	(Nf[4]-3'd1),
+	.max_acc 	(max_acc[4]),
 	.inc 	(3'b1),
 
 	.out_acc 	(n[4]),
@@ -69,10 +82,12 @@ acc_n4 (
 	.clk 	(clk),    // Clock
 	.rst_n 	(rst_n),  // Asynchronous reset active low
 
-	.clr_n 	(clr_n & (!(current_stage==3'd3))),
+	// .clr_n 	(clr_n & (!(current_stage==3'd3))),
+	.clr_n 	(clr_n),
 	.ena_top 	(1'b1),
 	.in_carry 	(carry_in[3]),
-	.max_acc 	(Nf[3]-3'd1),
+	// .max_acc 	(Nf[3]-3'd1),
+	.max_acc 	(max_acc[3]),
 	.inc 	(3'b1),
 
 	.out_acc 	(n[3]),
@@ -88,10 +103,12 @@ acc_n3 (
 	.clk 	(clk),    // Clock
 	.rst_n 	(rst_n),  // Asynchronous reset active low
 
-	.clr_n 	(clr_n & (!(current_stage==3'd2))),
+	// .clr_n 	(clr_n & (!(current_stage==3'd2))),
+	.clr_n 	(clr_n),
 	.ena_top 	(1'b1),
 	.in_carry 	(carry_in[2]),
-	.max_acc 	(Nf[2]-3'd1),
+	// .max_acc 	(Nf[2]-3'd1),
+	.max_acc 	(max_acc[2]),
 	.inc 	(3'b1),
 
 	.out_acc 	(n[2]),
@@ -107,10 +124,12 @@ acc_n2 (
 	.clk 	(clk),    // Clock
 	.rst_n 	(rst_n),  // Asynchronous reset active low
 
-	.clr_n 	(clr_n & (!(current_stage==3'd1))),
+	// .clr_n 	(clr_n & (!(current_stage==3'd1))),
+	.clr_n 	(clr_n),
 	.ena_top 	(1'b1),
 	.in_carry 	(carry_in[1]),
-	.max_acc 	(Nf[1]-3'd1),
+	// .max_acc 	(Nf[1]-3'd1),
+	.max_acc 	(max_acc[1]),
 	.inc 	(3'b1),
 
 	.out_acc 	(n[1]),
@@ -126,10 +145,12 @@ acc_n1 (
 	.clk 	(clk),    // Clock
 	.rst_n 	(rst_n),  // Asynchronous reset active low
 
-	.clr_n 	(clr_n & (!(current_stage==3'd0))),
+	// .clr_n 	(clr_n & (!(current_stage==3'd0))),
+	.clr_n 	(clr_n),
 	.ena_top 	(1'b1),
 	.in_carry 	(carry_in[0]),
-	.max_acc 	(Nf[0]-3'd1),
+	// .max_acc 	(Nf[0]-3'd1),
+	.max_acc 	(max_acc[0]),
 	.inc 	(3'b1),
 
 	.out_acc 	(n[0]),
@@ -171,13 +192,49 @@ begin
 	end
 end
 
-// always@(posedge clk) begin
-// 	twdl_numrtr[0] <= 0; 
-// 	twdl_numrtr[1] <= twdl_numrtr_base; 
-// 	twdl_numrtr[2] <= 3'd2*twdl_numrtr_base; 
-// 	twdl_numrtr[3] <= 3'd3*twdl_numrtr_base; 
-// 	twdl_numrtr[4] <= 3'd4*twdl_numrtr_base; 
+// logic [wDataInOut-1:0] n0_x_twdl_dem1, n1_x_twdl_dem2, n2_x_twdl_dem3,
+//                        n3_x_twdl_dem4, n4_x_twdl_dem5;
+// always@(posedge clk)
+// begin
+// 	if (!rst_n || !clr_n) begin
+// 		n0_x_twdl_dem1 <= 0;
+// 		n1_x_twdl_dem2 <= 0;
+// 		n2_x_twdl_dem3 <= 0;
+// 		n3_x_twdl_dem4 <= 0;
+// 		n4_x_twdl_dem5 <= 0;
+// 	end
+// 	else begin
+
+// 		if (carry_out[1]) 
+// 			n1_x_twdl_dem2 <= 0;
+// 		else if (carry_out[2])
+// 			n1_x_twdl_dem2 <= n1_x_twdl_dem2 + twdl_demontr[2];
+// 		else
+// 			n1_x_twdl_dem2 <= n1_x_twdl_dem2;
+
+// 		if (carry_out[2]) 
+// 			n2_x_twdl_dem3 <= 0;
+// 		else if (carry_out[3])
+// 			n2_x_twdl_dem3 <= n2_x_twdl_dem3 + twdl_demontr[3];
+// 		else
+// 			n2_x_twdl_dem3 <= n2_x_twdl_dem3;
+
+// 		if (carry_out[3]) 
+// 			n3_x_twdl_dem4 <= 0;
+// 		else if (carry_out[4])
+// 			n3_x_twdl_dem4 <= n3_x_twdl_dem4 + twdl_demontr[4];
+// 		else
+// 			n3_x_twdl_dem4 <= n3_x_twdl_dem4;
+
+// 		if (carry_out[4]) 
+// 			n4_x_twdl_dem5 <= 0;
+// 		else if (carry_out[5])
+// 			n4_x_twdl_dem5 <= n4_x_twdl_dem5 + twdl_demontr[5];
+// 		else
+// 			n4_x_twdl_dem5 <= n4_x_twdl_dem5;
+// 	end		                  
 // end
+
 
 reg [0:4][wDataInOut-1:0] twdl_numrtr_r;
 reg [0:4][wDataInOut-1:0] twdl_numrtr_rr;

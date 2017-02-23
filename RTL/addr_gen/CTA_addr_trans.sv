@@ -16,8 +16,8 @@ module CTA_addr_trans #(parameter
 	input [2:0] current_stage,
 	input [0:5][11:0]  twdl_demontr,
 
-	output reg [0:4][wDataInOut-1:0] addrs_butterfly
-	
+	output reg [0:4][wDataInOut-1:0] addrs_butterfly,
+	output reg [0:4][wDataInOut-1:0] twdl_numrtr
 );
 
 logic [0:5]  carry_out, carry_in;
@@ -257,5 +257,102 @@ always@(posedge clk) begin
 	addrs_butterfly[3] <= addrs_all + coeff_stage_x3; 
 	addrs_butterfly[4] <= addrs_all + coeff_stage_x4; 
 end
+
+//---------------------------------------
+//---------------------------------------
+
+
+// logic [wDataInOut-1:0]  twdl_numrtr_base;
+// always@(posedge clk)
+// begin
+// 	if (!rst_n)
+// 		twdl_numrtr_base <= 0;
+// 	else begin
+// 		case (current_stage)
+// 		3'd0 :
+// 		twdl_numrtr_base <= n[1]*twdl_demontr[2]
+// 		                  + n[2]*twdl_demontr[3]
+// 		                  + n[3]*twdl_demontr[4]
+// 		                  + n[4]*twdl_demontr[5]
+// 		                  + n[5] ;
+// 		3'd1 :
+// 		twdl_numrtr_base <= n[2]*twdl_demontr[3]
+// 		                  + n[3]*twdl_demontr[4]
+// 		                  + n[4]*twdl_demontr[5]
+// 		                  + n[5] ;
+// 		3'd2 :
+// 		twdl_numrtr_base <= n[3]*twdl_demontr[4]
+// 		                  + n[4]*twdl_demontr[5]
+// 		                  + n[5] ;
+// 		3'd3 :
+// 		twdl_numrtr_base <= n[4]*twdl_demontr[5]
+// 		                  + n[5] ;
+// 		3'd4 :
+// 		twdl_numrtr_base <= n[5] ;
+// 		3'd5 :
+// 		twdl_numrtr_base <= 0 ;
+// 		default :
+// 		twdl_numrtr_base <= 0;
+// 		endcase
+// 	end
+// end
+
+logic [wDataInOut-1:0]  twdl_numrtr_base;
+logic [wDataInOut-1:0]  tt12, tt34, tt2, tt4, tt5;
+logic [wDataInOut-1:0]  tb0, tb1, tb2, tb3, tb4;
+
+always@(posedge clk) begin
+	tt12 <= n1_x_twdl_dem2 + n2_x_twdl_dem3;
+	tt34 <= n3_x_twdl_dem4 + n4_x_twdl_dem5;
+	tt2  <= n2_x_twdl_dem3;
+	tt4  <= n4_x_twdl_dem5;
+	tt5  <= n[5];
+
+	tb0 <= tt12 + tt34 + tt5;
+	tb1 <= tt2 + tt34 + tt5;
+	tb2 <= tt34 + tt5;
+	tb3 <= tt4 + tt5;
+	tb4 <= tt5;
+end
+
+always@(posedge clk)
+begin
+	if (!rst_n)
+		twdl_numrtr_base <= 0;
+	else begin
+		case (current_stage)
+		3'd0 :
+		twdl_numrtr_base <= tb0;
+		3'd1 :
+		twdl_numrtr_base <= tb1;
+		3'd2 :
+		twdl_numrtr_base <= tb2;
+		3'd3 :
+		twdl_numrtr_base <= tb3;
+		3'd4 :
+		twdl_numrtr_base <= tb4 ;
+		3'd5 :
+		twdl_numrtr_base <= 0 ;
+		default :
+		twdl_numrtr_base <= 0;
+		endcase
+	end
+end
+
+// always@(posedge clk) begin
+// 	twdl_numrtr[0] <= 0; 
+// 	twdl_numrtr[1] <= twdl_numrtr_base; 
+// 	twdl_numrtr[2] <= 3'd2*twdl_numrtr_base; 
+// 	twdl_numrtr[3] <= 3'd3*twdl_numrtr_base; 
+// 	twdl_numrtr[4] <= 3'd4*twdl_numrtr_base; 
+// end
+always@(posedge clk) begin
+	twdl_numrtr[0] <= 0; 
+	twdl_numrtr[1] <= twdl_numrtr_base; 
+	twdl_numrtr[2] <= twdl_numrtr_base << 1; 
+	twdl_numrtr[3] <= twdl_numrtr_base + (twdl_numrtr_base << 1);
+	twdl_numrtr[4] <= twdl_numrtr_base << 2; 
+end
+
 
 endmodule
