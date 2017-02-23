@@ -138,7 +138,7 @@ begin
 			bank_index_rd[2]== k || bank_index_rd[3]== k ||
 			bank_index_rd[4]== k )
 			//////
-				rdRAM_FSMrd.rden[k] <= rden_r[2];
+				rdRAM_FSMrd.rden[k] <= rden_r[3];
 		else rdRAM_FSMrd.rden[k] <= 1'b0;
 
 		if (bank_index_rd[0]==k) rdRAM_FSMrd.rdaddr[k] <= bank_addr_rd[0]; 
@@ -183,6 +183,7 @@ endgenerate
 
 always@(*)
 begin
+	////// change in_dly in mrd_mem_top_v2.sv
 	out_rdx2345_data.d_real[3] = (fsm==Rd && cnt_stage==3'd0)?
 	        {{(30-18){din_real_r[in_dly][17]}}, din_real_r[in_dly]} : 
 	        rdRAM_FSMrd.dout_real[(bank_index_rd_rr[3])]; 
@@ -194,7 +195,7 @@ begin
 	out_rdx2345_data.d_imag[4] = rdRAM_FSMrd.dout_imag[(bank_index_rd_rr[4])]; 
 end
 //////
-assign out_rdx2345_data.valid = rden_r[4];
+assign out_rdx2345_data.valid = rden_r[5];
 assign out_rdx2345_data.bank_index = bank_index_rd_rr;
 assign out_rdx2345_data.bank_addr = bank_addr_rd_rr;
 always@(posedge clk) out_rdx2345_data.twdl_numrtr <= twdl_numrtr;
@@ -203,6 +204,6 @@ always@(posedge clk) out_rdx2345_data.twdl_demontr <=
 assign out_rdx2345_data.factor = (fsm==Rd || fsm==Wait_wr_end)?
                                       Nf[cnt_stage] : 3'd1 ;
 //////
-assign  rd_end =  (rden_r[4:3]==2'b10);  
+assign  rd_end =  (rden_r[5:4]==2'b10);  
 
 endmodule

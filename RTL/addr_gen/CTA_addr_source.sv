@@ -149,18 +149,18 @@ logic [wDataInOut-1:0] addr_source_CTA_r;
 always@(posedge clk)
 begin
 	if (!rst_n)
-		addr_source_CTA <= 0;
+		addr_source_CTA_r <= 0;
 	else
-		addr_source_CTA <= k[0]*Nf[1]*Nf[2]*Nf[3]*Nf[4]*Nf[5]
+		addr_source_CTA_r <= k[0]*Nf[1]*Nf[2]*Nf[3]*Nf[4]*Nf[5]
 		             + k[1]*Nf[2]*Nf[3]*Nf[4]*Nf[5]
 		             + k[2]*Nf[3]*Nf[4]*Nf[5]
 		             + k[3]*Nf[4]*Nf[5]
 		             + k[4]*Nf[5]
 		             + k[5] ;
 end
-// always@(posedge clk)
-// begin
-// 	addr_source_CTA <= addr_source_CTA_r;
-// end
+always@(posedge clk)
+begin
+	addr_source_CTA <= addr_source_CTA_r;
+end
 
 endmodule

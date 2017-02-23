@@ -23,6 +23,15 @@ module CTA_addr_trans #(parameter
 logic [0:5]  carry_out, carry_in;
 logic [0:5][2:0] n;
 
+logic [0:5][2:0] max_acc;
+
+assign max_acc[5] = (current_stage==3'd5)? 3'd0 : Nf[5]-3'd1;
+assign max_acc[4] = (current_stage==3'd4)? 3'd0 : Nf[4]-3'd1;
+assign max_acc[3] = (current_stage==3'd3)? 3'd0 : Nf[3]-3'd1;
+assign max_acc[2] = (current_stage==3'd2)? 3'd0 : Nf[2]-3'd1;
+assign max_acc[1] = (current_stage==3'd1)? 3'd0 : Nf[1]-3'd1;
+assign max_acc[0] = (current_stage==3'd0)? 3'd0 : Nf[0]-3'd1;
+
 // Acc n6
 acc_type1 #(
 		.wDataInOut (3)
@@ -31,10 +40,12 @@ acc_n6 (
 	.clk 	(clk),    // Clock
 	.rst_n 	(rst_n),  // Asynchronous reset active low
 
-	.clr_n 	(clr_n & (!(current_stage==3'd5))),
+	// .clr_n 	(clr_n & (!(current_stage==3'd5))),
+	.clr_n 	(clr_n),
 	.ena_top 	(1'b1),
 	.in_carry 	(1'b1),
-	.max_acc 	(Nf[5]-3'd1),
+	// .max_acc 	(Nf[5]-3'd1),
+	.max_acc 	(max_acc[5]),
 	.inc 	(3'b1),
 
 	.out_acc 	(n[5]),
@@ -50,10 +61,12 @@ acc_n5 (
 	.clk 	(clk),    // Clock
 	.rst_n 	(rst_n),  // Asynchronous reset active low
 
-	.clr_n 	(clr_n & (!(current_stage==3'd4))),
+	// .clr_n 	(clr_n & (!(current_stage==3'd4))),
+	.clr_n 	(clr_n),
 	.ena_top 	(1'b1),
 	.in_carry 	(carry_in[4]),
-	.max_acc 	(Nf[4]-3'd1),
+	// .max_acc 	(Nf[4]-3'd1),
+	.max_acc 	(max_acc[4]),
 	.inc 	(3'b1),
 
 	.out_acc 	(n[4]),
@@ -69,10 +82,12 @@ acc_n4 (
 	.clk 	(clk),    // Clock
 	.rst_n 	(rst_n),  // Asynchronous reset active low
 
-	.clr_n 	(clr_n & (!(current_stage==3'd3))),
+	// .clr_n 	(clr_n & (!(current_stage==3'd3))),
+	.clr_n 	(clr_n),
 	.ena_top 	(1'b1),
 	.in_carry 	(carry_in[3]),
-	.max_acc 	(Nf[3]-3'd1),
+	// .max_acc 	(Nf[3]-3'd1),
+	.max_acc 	(max_acc[3]),
 	.inc 	(3'b1),
 
 	.out_acc 	(n[3]),
@@ -88,10 +103,12 @@ acc_n3 (
 	.clk 	(clk),    // Clock
 	.rst_n 	(rst_n),  // Asynchronous reset active low
 
-	.clr_n 	(clr_n & (!(current_stage==3'd2))),
+	// .clr_n 	(clr_n & (!(current_stage==3'd2))),
+	.clr_n 	(clr_n),
 	.ena_top 	(1'b1),
 	.in_carry 	(carry_in[2]),
-	.max_acc 	(Nf[2]-3'd1),
+	// .max_acc 	(Nf[2]-3'd1),
+	.max_acc 	(max_acc[2]),
 	.inc 	(3'b1),
 
 	.out_acc 	(n[2]),
@@ -107,10 +124,12 @@ acc_n2 (
 	.clk 	(clk),    // Clock
 	.rst_n 	(rst_n),  // Asynchronous reset active low
 
-	.clr_n 	(clr_n & (!(current_stage==3'd1))),
+	// .clr_n 	(clr_n & (!(current_stage==3'd1))),
+	.clr_n 	(clr_n),
 	.ena_top 	(1'b1),
 	.in_carry 	(carry_in[1]),
-	.max_acc 	(Nf[1]-3'd1),
+	// .max_acc 	(Nf[1]-3'd1),
+	.max_acc 	(max_acc[1]),
 	.inc 	(3'b1),
 
 	.out_acc 	(n[1]),
@@ -126,10 +145,12 @@ acc_n1 (
 	.clk 	(clk),    // Clock
 	.rst_n 	(rst_n),  // Asynchronous reset active low
 
-	.clr_n 	(clr_n & (!(current_stage==3'd0))),
+	// .clr_n 	(clr_n & (!(current_stage==3'd0))),
+	.clr_n 	(clr_n),
 	.ena_top 	(1'b1),
 	.in_carry 	(carry_in[0]),
-	.max_acc 	(Nf[0]-3'd1),
+	// .max_acc 	(Nf[0]-3'd1),
+	.max_acc 	(max_acc[0]),
 	.inc 	(3'b1),
 
 	.out_acc 	(n[0]),
@@ -137,24 +158,6 @@ acc_n1 (
 );
 
 logic [wDataInOut-1:0]  addrs_all, coeff_stage;
-logic [2:0]  num_radix;
-always@(*)
-begin
-	case (current_stage)
-	3'd0:
-		coeff_stage = twdl_demontr[1];
-	3'd1:
-		coeff_stage = twdl_demontr[2];
-	3'd2:
-		coeff_stage = twdl_demontr[3];
-	3'd3:
-		coeff_stage = twdl_demontr[4];
-	3'd4:
-		coeff_stage = twdl_demontr[5];
-	3'd5:
-		coeff_stage = 'd1;
-	endcase
-end
 
 // always@(posedge clk)
 // begin
@@ -218,27 +221,41 @@ begin
 	end		                  
 end
 
-always@(posedge clk) addrs_all <= n0_x_twdl_dem1 + n1_x_twdl_dem2 + n2_x_twdl_dem3 
-                   + n3_x_twdl_dem4 + n4_x_twdl_dem5 + n[5]; 
+logic [wDataInOut-1:0] addrs_all_pt0, addrs_all_pt1;
+always@(posedge clk) begin
+	addrs_all_pt0 <= n0_x_twdl_dem1 + n1_x_twdl_dem2 + n2_x_twdl_dem3 ;
+    addrs_all_pt1 <= n3_x_twdl_dem4 + n4_x_twdl_dem5 + n[5]; 
+    addrs_all <= addrs_all_pt0 + addrs_all_pt1;
+end
 
-reg [0:4][wDataInOut-1:0] addrs_butterfly_r;
-reg [0:4][wDataInOut-1:0] addrs_butterfly_rr;
-reg [0:4][wDataInOut-1:0] addrs_butterfly_rrr;
-reg [0:4][wDataInOut-1:0] addrs_butterfly_rrrr;
-
-assign addrs_butterfly_r[0] = addrs_all; 
-assign addrs_butterfly_r[1] = addrs_all + coeff_stage; 
-assign addrs_butterfly_r[2] = addrs_all + 3'd2*coeff_stage; 
-assign addrs_butterfly_r[3] = addrs_all + 3'd3*coeff_stage; 
-assign addrs_butterfly_r[4] = addrs_all + 3'd4*coeff_stage; 
-
-always@(posedge clk)
+logic [wDataInOut-1:0]  coeff_stage_x2, coeff_stage_x3, coeff_stage_x4;
+always@(*)
 begin
-	// addrs_butterfly <= addrs_butterfly_rrrr;
-	// addrs_butterfly_rrrr <= addrs_butterfly_rrr;
-	// addrs_butterfly_rrr <= addrs_butterfly_rr;
-	// addrs_butterfly_rr <= addrs_butterfly_r;
-	addrs_butterfly <= addrs_butterfly_r;
+	case (current_stage)
+	3'd0:
+		coeff_stage = twdl_demontr[1];
+	3'd1:
+		coeff_stage = twdl_demontr[2];
+	3'd2:
+		coeff_stage = twdl_demontr[3];
+	3'd3:
+		coeff_stage = twdl_demontr[4];
+	3'd4:
+		coeff_stage = twdl_demontr[5];
+	3'd5:
+		coeff_stage = 'd1;
+	endcase
+end
+always@(posedge clk) begin
+	coeff_stage_x2 <= coeff_stage + coeff_stage;
+	coeff_stage_x3 <= coeff_stage_x2 + coeff_stage;
+	coeff_stage_x4 <= coeff_stage_x2 + coeff_stage_x2;
+
+	addrs_butterfly[0] <= addrs_all; 
+	addrs_butterfly[1] <= addrs_all + coeff_stage; 
+	addrs_butterfly[2] <= addrs_all + coeff_stage_x2; 
+	addrs_butterfly[3] <= addrs_all + coeff_stage_x3; 
+	addrs_butterfly[4] <= addrs_all + coeff_stage_x4; 
 end
 
 endmodule

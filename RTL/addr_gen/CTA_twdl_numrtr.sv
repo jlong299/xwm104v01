@@ -180,6 +180,7 @@ end
 // end
 
 reg [0:4][wDataInOut-1:0] twdl_numrtr_r;
+reg [0:4][wDataInOut-1:0] twdl_numrtr_rr;
 always@(posedge clk) begin
 	twdl_numrtr_r[0] <= 0; 
 	twdl_numrtr_r[1] <= twdl_numrtr_base; 
@@ -188,7 +189,8 @@ always@(posedge clk) begin
 	twdl_numrtr_r[4] <= 3'd4*twdl_numrtr_base; 
 end
 always@(posedge clk) begin
-	twdl_numrtr <= twdl_numrtr_r;
+	twdl_numrtr_rr <= twdl_numrtr_r;
+	twdl_numrtr <= twdl_numrtr_rr;
 end
 
 endmodule
