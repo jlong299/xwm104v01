@@ -76,7 +76,7 @@ begin
 		end
 
 		if (dftpts_in < 180)
-			cnt0 <= (cnt0 == dftpts_in + 2*180)? 16'd0 : cnt0+1'b1;
+			cnt0 <= (cnt0 == dftpts_in + 400)? 16'd0 : cnt0+1'b1;
 		else
 			cnt0 <= (cnt0 == dftpts_in + 4*dftpts_in)? 16'd0 : cnt0+1'b1;
 
