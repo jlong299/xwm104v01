@@ -51,8 +51,7 @@ end
 // cnt_stage changes at the same time of rden_r0   (rden_r0 in mrd_FSMrd_rd.v)
 assign fsm_lastRd_source = (fsm==Source || cnt_stage==ctrl.NumOfFactors-3'd1);
 
-// Make sure the latency of CTA_addr_source and CTA_addr_trans 
-// are the same !!
+// If you change the latency of mrd_FSMrd_rd.sv, you should change this file as well
 CTA_addr_source #(
 		12
 	)
@@ -92,7 +91,7 @@ begin
 end
 
 divider_7 divider_7_inst2 (
-	.dividend 	(addr_source_CTA_r[26]),  
+	.dividend 	(addr_source_CTA_r[27]),  
 
 	.quotient 	(bank_addr_source),
 	.remainder 	(bank_index_source)
