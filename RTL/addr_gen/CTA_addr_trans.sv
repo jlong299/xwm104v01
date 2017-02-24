@@ -35,6 +35,20 @@ assign max_acc[2] = (current_stage==3'd2)? 3'd0 : Nf[2]-3'd1;
 assign max_acc[1] = (current_stage==3'd1)? 3'd0 : Nf[1]-3'd1;
 assign max_acc[0] = (current_stage==3'd0)? 3'd0 : Nf[0]-3'd1;
 
+always@(*) begin
+	if (current_stage==stage_of_rdx2) begin
+		inc[0] = (current_stage==3'd1)? 3'd2 : 3'd1;
+		inc[1] = (current_stage==3'd2)? 3'd2 : 3'd1;
+		inc[2] = (current_stage==3'd3)? 3'd2 : 3'd1;
+		inc[3] = (current_stage==3'd4)? 3'd2 : 3'd1;
+		inc[4] = (current_stage==3'd5)? 3'd2 : 3'd1;
+	end
+	else begin
+		inc <= {3'd1, 3'd1, 3'd1, 3'd1, 3'd1};
+	end
+end
+
+
 // Acc n6
 acc_type1 #(
 		.wDataInOut (3)
@@ -70,7 +84,7 @@ acc_n5 (
 	.in_carry 	(carry_in[4]),
 	// .max_acc 	(Nf[4]-3'd1),
 	.max_acc 	(max_acc[4]),
-	.inc 	(3'b1),
+	.inc 	(inc[4]),
 
 	.out_acc 	(n[4]),
 	.out_carry 	(carry_out[4])
@@ -91,7 +105,7 @@ acc_n4 (
 	.in_carry 	(carry_in[3]),
 	// .max_acc 	(Nf[3]-3'd1),
 	.max_acc 	(max_acc[3]),
-	.inc 	(3'b1),
+	.inc 	(inc[3]),
 
 	.out_acc 	(n[3]),
 	.out_carry 	(carry_out[3])
@@ -112,7 +126,7 @@ acc_n3 (
 	.in_carry 	(carry_in[2]),
 	// .max_acc 	(Nf[2]-3'd1),
 	.max_acc 	(max_acc[2]),
-	.inc 	(3'b1),
+	.inc 	(inc[2]),
 
 	.out_acc 	(n[2]),
 	.out_carry 	(carry_out[2])
@@ -133,7 +147,7 @@ acc_n2 (
 	.in_carry 	(carry_in[1]),
 	// .max_acc 	(Nf[1]-3'd1),
 	.max_acc 	(max_acc[1]),
-	.inc 	(3'b1),
+	.inc 	(inc[1]),
 
 	.out_acc 	(n[1]),
 	.out_carry 	(carry_out[1])
@@ -141,7 +155,6 @@ acc_n2 (
 
 // Acc n1
 assign carry_in[0] = (current_stage==3'd1)? carry_out[2] : carry_out[1];
-assign inc[0] = (current_stage==stage_of_rdx2)? 3'd2 : 3'd1;
 acc_type1 #(
 		.wDataInOut (3)
 	)
@@ -199,29 +212,37 @@ begin
 
 		if (carry_out[1]) 
 			n1_x_twdl_dem2 <= 0;
-		else if (carry_out[2])
+		else if (carry_out[2] && inc[1]==3'd1)
 			n1_x_twdl_dem2 <= n1_x_twdl_dem2 + twdl_demontr[2];
+		else if (carry_out[2] && inc[1]==3'd2)
+			n1_x_twdl_dem2 <= n1_x_twdl_dem2 + (twdl_demontr[2] << 1);
 		else
 			n1_x_twdl_dem2 <= n1_x_twdl_dem2;
 
 		if (carry_out[2]) 
 			n2_x_twdl_dem3 <= 0;
-		else if (carry_out[3])
+		else if (carry_out[3] && inc[2]==3'd1)
 			n2_x_twdl_dem3 <= n2_x_twdl_dem3 + twdl_demontr[3];
+		else if (carry_out[3] && inc[2]==3'd2)
+			n2_x_twdl_dem3 <= n2_x_twdl_dem3 + (twdl_demontr[3] << 1);
 		else
 			n2_x_twdl_dem3 <= n2_x_twdl_dem3;
 
 		if (carry_out[3]) 
 			n3_x_twdl_dem4 <= 0;
-		else if (carry_out[4])
+		else if (carry_out[4] && inc[3]==3'd1)
 			n3_x_twdl_dem4 <= n3_x_twdl_dem4 + twdl_demontr[4];
+		else if (carry_out[4] && inc[3]==3'd2)
+			n3_x_twdl_dem4 <= n3_x_twdl_dem4 + (twdl_demontr[4] << 1);
 		else
 			n3_x_twdl_dem4 <= n3_x_twdl_dem4;
 
 		if (carry_out[4]) 
 			n4_x_twdl_dem5 <= 0;
-		else if (carry_out[5])
+		else if (carry_out[5] && inc[4]==3'd1)
 			n4_x_twdl_dem5 <= n4_x_twdl_dem5 + twdl_demontr[5];
+		else if (carry_out[5] && inc[4]==3'd2)
+			n4_x_twdl_dem5 <= n4_x_twdl_dem5 + (twdl_demontr[5] << 1);
 		else
 			n4_x_twdl_dem5 <= n4_x_twdl_dem5;
 	end		                  

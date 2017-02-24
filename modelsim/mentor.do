@@ -89,4 +89,4 @@ add wave -radix unsigned {sim:/top_tb/top_inst/mem0/mrd_FSMrd_rd_inst/CTA_addr_t
 view structure
 view signals
 
-run 40us
+run 300us

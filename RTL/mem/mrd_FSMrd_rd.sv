@@ -14,6 +14,7 @@ module mrd_FSMrd_rd #(parameter
 	input [0:5][11:0] dftpts_div_Nf,
 	input [0:4][11:0] addrs_butterfly_src,
 	input [0:5][11:0]  twdl_demontr,
+	input [2:0]  stage_of_rdx2,
 
 	mrd_ctrl_if ctrl,
 	mrd_mem_rd rdRAM_FSMrd,
@@ -37,7 +38,6 @@ logic [11:0] cnt_FSMrd;
 logic [in_dly-1:1] rden_r; //////
 logic rden_r0;
 
-logic [2:0] stage_of_rdx2 = 3'd1;
 //-------------------------------------------
 always@(posedge clk) begin
 	if (cnt_stage == stage_of_rdx2)

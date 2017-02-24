@@ -52,6 +52,7 @@ module mrd_mem_top_v2 (
 logic [11:0]  dftpts;
 logic [0:5][2:0] Nf;
 logic [0:5][11:0] dftpts_div_Nf; 
+logic [2:0]  stage_of_rdx2;
 logic [mrd_mem_pkt::wADDR-1:0]  bank_addr_sink;
 logic [0:4][11:0]  addrs_butterfly_src;
 logic [11:0]  bank_addr_source;
@@ -83,6 +84,7 @@ begin
 		Nf <= 0;
 		dftpts_div_Nf <= 0;   //  dftpts/Nf
 		twdl_demontr <= 0;
+		stage_of_rdx2 <= 0;
 	end
 	else
 	begin
@@ -91,11 +93,13 @@ begin
 			Nf <= ctrl.Nf;
 			dftpts_div_Nf <= ctrl.dftpts_div_Nf;
 			twdl_demontr <= ctrl.twdl_demontr;
+			stage_of_rdx2 <= ctrl.stage_of_rdx2;
 		end
 		else begin
 			Nf <= Nf;
 			dftpts_div_Nf <= dftpts_div_Nf;
 			twdl_demontr <= twdl_demontr;
+			stage_of_rdx2 <= stage_of_rdx2;
 		end
 		dftpts <= (in_data.sop)? in_data.dftpts : dftpts;
 	end
@@ -248,6 +252,7 @@ mrd_FSMrd_rd_inst (
 	dftpts_div_Nf,
 	addrs_butterfly_src,
 	twdl_demontr,
+	stage_of_rdx2,
 
 	ctrl,
 	rdRAM_FSMrd,

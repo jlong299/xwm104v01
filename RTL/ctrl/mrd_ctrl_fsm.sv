@@ -71,6 +71,7 @@ logic [0:5][2:0] Nf;
 logic [0:5][11:0] dftpts_div_Nf; 
 logic [0:5][11:0] twdl_demontr;
 logic [2:0] j;
+logic [2:0] stage_of_rdx2;
 
 //-----------  1200 case ----------------
 // assign ctrl_to_mem0.Nf[0:5] = '{3'd4,3'd4,3'd5,3'd5,3'd3,3'd1};
@@ -90,6 +91,7 @@ assign ctrl_to_mem.Nf = Nf;
 assign ctrl_to_mem.dftpts_div_Nf = dftpts_div_Nf;
 // twddle demoninator
 assign ctrl_to_mem.twdl_demontr = twdl_demontr;
+assign ctrl_to_mem.stage_of_rdx2 = stage_of_rdx2;
 
 logic [2:0]  cnt_Nf, next_factor;
 // Compute parameters
@@ -103,6 +105,7 @@ begin
 		cnt_Nf <= 0;
 		N_iter <= 0;
 		NumOfFactors <= 0;
+		stage_of_rdx2 <= 0;
 	end
 	else begin
 		if (sink_sop)
@@ -139,6 +142,13 @@ begin
 			NumOfFactors <= NumOfFactors + 3'd1;
 		else
 			NumOfFactors <= NumOfFactors;
+
+		if (sink_sop)
+			stage_of_rdx2 <= 3'd7;
+		else if (next_factor==3'd2)
+			stage_of_rdx2 <= NumOfFactors;
+		else
+			stage_of_rdx2 <= stage_of_rdx2;
 	end
 end
 

@@ -35,6 +35,7 @@ interface mrd_ctrl_if ();
 	logic [0:5][2:0] Nf;
 	logic [0:5][11:0] dftpts_div_Nf; 
 	logic [0:5][11:0] twdl_demontr; 
+	logic [2:0] stage_of_rdx2;
 endinterface
 
 // //mrd_stat_if :  State signals from mrd_mem_top to mrd_ctrl_fsm.
