@@ -38,11 +38,11 @@ begin
 		dout_real[1] <= din_real[0]-din_real[1]; 
 		dout_imag[1] <= din_imag[0]-din_imag[1]; 
 
-		dout_real[2] <= 0; 
-		dout_imag[2] <= 0; 
+		dout_real[2] <= din_real[2]+din_real[3]; 
+		dout_imag[2] <= din_imag[2]+din_imag[3]; 
 
-		dout_real[3] <= 0; 
-		dout_imag[3] <= 0; 
+		dout_real[3] <= din_real[2]-din_real[3]; 
+		dout_imag[3] <= din_imag[2]-din_imag[3]; 
 
 		dout_real[4] <= 0;
 		dout_imag[4] <= 0;

@@ -36,6 +36,9 @@ add wave -radix unsigned {sim:/top_tb/top_inst/mem0/in_rdx2345_data/*}
 add wave -radix signed {sim:/top_tb/top_inst/mem0/in_rdx2345_data/d_real}
 add wave -radix signed {sim:/top_tb/top_inst/mem0/in_rdx2345_data/d_imag}
 
+add wave -radix unsigned {sim:/top_tb/top_inst/mem0/mrd_FSMrd_rd_inst/CTA_addr_trans_inst/*}
+
+
 # twiddle part
 # add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/from_mem/*}
 # add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/from_mem/d_real}

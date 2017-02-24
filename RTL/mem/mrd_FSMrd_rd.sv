@@ -36,10 +36,14 @@ logic [0:4][11:0]  twdl_numrtr;
 logic [11:0] cnt_FSMrd;
 logic [in_dly-1:1] rden_r; //////
 logic rden_r0;
+
+logic [2:0] stage_of_rdx2 = 3'd1;
 //-------------------------------------------
-always@(*)
-begin
-	cnt_rd_stop = dftpts_div_Nf[cnt_stage];
+always@(posedge clk) begin
+	if (cnt_stage == stage_of_rdx2)
+		cnt_rd_stop <= (dftpts_div_Nf[cnt_stage]) >> 1;
+	else
+		cnt_rd_stop <= dftpts_div_Nf[cnt_stage];
 end
 
 always@(posedge clk)
@@ -80,6 +84,7 @@ CTA_addr_trans_inst	(
 	.Nf  (Nf),
 	.current_stage  (cnt_stage),
 	.twdl_demontr  (twdl_demontr),
+	.stage_of_rdx2  (stage_of_rdx2),
 
 	.addrs_butterfly  (addrs_butterfly),
 	.twdl_numrtr  (twdl_numrtr)
@@ -127,7 +132,11 @@ generate
 		else begin
 			bank_addr_rd[k] <= tt_quotient[k][mrd_mem_pkt::wADDR-1:0];
 			// index 3'd7 means the index is not valid
-			bank_index_rd[k] <= (k >= Nf[cnt_stage]) ?
+			if (cnt_stage == stage_of_rdx2)
+				bank_index_rd[k] <= (k >= 3'd4) ?
+	                          3'd7 : div7_rmdr_rd[k];
+	        else
+				bank_index_rd[k] <= (k >= Nf[cnt_stage]) ?
 	                          3'd7 : div7_rmdr_rd[k];
 	    end
 	end
@@ -212,7 +221,19 @@ assign out_rdx2345_data.bank_addr = bank_addr_rd_rr;
 
 logic [0:4][11:0] twdl_numrtr_r0;
 always@(posedge clk) twdl_numrtr_r0 <= twdl_numrtr;
-always@(posedge clk) out_rdx2345_data.twdl_numrtr <= twdl_numrtr_r0;
+always@(posedge clk) begin
+		out_rdx2345_data.twdl_numrtr[0] <= twdl_numrtr_r0[0];
+		out_rdx2345_data.twdl_numrtr[1] <= twdl_numrtr_r0[1];
+		out_rdx2345_data.twdl_numrtr[4] <= twdl_numrtr_r0[4];
+	if (cnt_stage == stage_of_rdx2) begin
+		out_rdx2345_data.twdl_numrtr[2] <= twdl_numrtr_r0[0];
+		out_rdx2345_data.twdl_numrtr[3] <= twdl_numrtr_r0[1];
+	end
+	else begin
+		out_rdx2345_data.twdl_numrtr[2] <= twdl_numrtr_r0[2];
+		out_rdx2345_data.twdl_numrtr[3] <= twdl_numrtr_r0[3];
+	end
+end
 
 always@(posedge clk) out_rdx2345_data.twdl_demontr <= 
                          twdl_demontr[cnt_stage];

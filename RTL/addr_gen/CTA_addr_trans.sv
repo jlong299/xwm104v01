@@ -15,6 +15,7 @@ module CTA_addr_trans #(parameter
 	input [0:5][2:0] 	Nf,  //N1,N2,...,N6
 	input [2:0] current_stage,
 	input [0:5][11:0]  twdl_demontr,
+	input [2:0]  stage_of_rdx2,
 
 	output reg [0:4][wDataInOut-1:0] addrs_butterfly,
 	output reg [0:4][wDataInOut-1:0] twdl_numrtr
@@ -24,6 +25,8 @@ logic [0:5]  carry_out, carry_in;
 logic [0:5][2:0] n;
 
 logic [0:5][2:0] max_acc;
+
+logic [0:4][2:0] inc;
 
 assign max_acc[5] = (current_stage==3'd5)? 3'd0 : Nf[5]-3'd1;
 assign max_acc[4] = (current_stage==3'd4)? 3'd0 : Nf[4]-3'd1;
@@ -138,6 +141,7 @@ acc_n2 (
 
 // Acc n1
 assign carry_in[0] = (current_stage==3'd1)? carry_out[2] : carry_out[1];
+assign inc[0] = (current_stage==stage_of_rdx2)? 3'd2 : 3'd1;
 acc_type1 #(
 		.wDataInOut (3)
 	)
@@ -151,7 +155,7 @@ acc_n1 (
 	.in_carry 	(carry_in[0]),
 	// .max_acc 	(Nf[0]-3'd1),
 	.max_acc 	(max_acc[0]),
-	.inc 	(3'b1),
+	.inc 	(inc[0]),
 
 	.out_acc 	(n[0]),
 	.out_carry 	(carry_out[0])
@@ -186,8 +190,10 @@ begin
 	else begin
 		if (carry_out[0]) 
 			n0_x_twdl_dem1 <= 0;
-		else if (carry_out[1])
+		else if (carry_out[1] && inc[0]==3'd1)
 			n0_x_twdl_dem1 <= n0_x_twdl_dem1 + twdl_demontr[1];
+		else if (carry_out[1] && inc[0]==3'd2)
+			n0_x_twdl_dem1 <= n0_x_twdl_dem1 + (twdl_demontr[1] << 1);
 		else
 			n0_x_twdl_dem1 <= n0_x_twdl_dem1;
 
