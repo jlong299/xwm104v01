@@ -1,6 +1,6 @@
 module twdl_CTA #(parameter
 	wDataInOut = 30,
-	delay_twdl = 24
+	delay_twdl = 23
 	)
  (
 	input clk,    
@@ -20,14 +20,14 @@ module twdl_CTA #(parameter
 );
 
 parameter  wDataTemp = 49;
-logic [delay_twdl-1:0]  valid_r;
+logic [delay_twdl-4:0]  valid_r;
 logic [0:4][7:0] rdaddr;
 logic signed [15:0] tw_real [0:4]; 
 logic signed [15:0] tw_imag [0:4]; 
 logic signed [wDataTemp-1:0] dout_real_t [0:4];
 logic signed [wDataTemp-1:0] dout_imag_t [0:4];
-logic signed [wDataInOut-1:0]  d_real_r [0:4][delay_twdl-1:0];
-logic signed [wDataInOut-1:0]  d_imag_r [0:4][delay_twdl-1:0];
+logic signed [wDataInOut-1:0]  d_real_r [0:4][delay_twdl-4:0];
+logic signed [wDataInOut-1:0]  d_imag_r [0:4][delay_twdl-4:0];
 
 genvar i;
 integer j;
@@ -36,13 +36,13 @@ for (i=0; i<5; i++) begin
 always@(posedge clk)
 begin
 	if (!rst_n)  begin
-		for (j=0; j<delay_twdl; j++) begin
+		for (j=0; j<=delay_twdl-4; j++) begin
 			d_real_r[i][j] <= 0;
 			d_imag_r[i][j] <= 0;
 		end
 	end
 	else begin
-		for (j=1; j<delay_twdl; j++) begin
+		for (j=1; j<=delay_twdl-4; j++) begin
 			d_real_r[i][j] <= d_real_r[i][j-1];
 			d_imag_r[i][j] <= d_imag_r[i][j-1];
 		end
@@ -53,12 +53,13 @@ end
 end
 endgenerate
 
-always@(posedge clk) out_val <= (factor==3'd4 || factor==3'd2)? 
-                     valid_r[delay_twdl-1] : valid_r[delay_twdl-2-1] ;
+// always@(posedge clk) out_val <= (factor==3'd4 || factor==3'd2)? 
+//                      valid_r[delay_twdl-1] : valid_r[delay_twdl-2-1] ;
+always@(posedge clk) out_val <= valid_r[delay_twdl-4] ;
 always@(posedge clk)
 begin
 	if (!rst_n)  valid_r <= 0;
-	else	valid_r <= {valid_r[delay_twdl-2:0], in_val};
+	else	valid_r <= {valid_r[delay_twdl-5:0], in_val};
 end
 
 generate
@@ -91,30 +92,30 @@ begin
 	end
 	else
 	begin
-		if (factor == 3'd4 || factor==3'd2) begin
-			if (valid_r[delay_twdl-1]) begin
-				dout_real_t[i] <= d_real_r[i][delay_twdl-2]*tw_real[i] 
-				                  - d_imag_r[i][delay_twdl-2]*tw_imag[i];
-				dout_imag_t[i] <= d_real_r[i][delay_twdl-2]*tw_imag[i] 
-				                  + d_imag_r[i][delay_twdl-2]*tw_real[i];
+		// if (factor == 3'd4 || factor==3'd2) begin
+		// 	if (valid_r[delay_twdl-1]) begin
+		// 		dout_real_t[i] <= d_real_r[i][delay_twdl-2]*tw_real[i] 
+		// 		                  - d_imag_r[i][delay_twdl-2]*tw_imag[i];
+		// 		dout_imag_t[i] <= d_real_r[i][delay_twdl-2]*tw_imag[i] 
+		// 		                  + d_imag_r[i][delay_twdl-2]*tw_real[i];
+		// 	end
+		// 	else begin
+		// 		dout_real_t[i] <= 0;
+		// 		dout_imag_t[i] <= 0;
+		// 	end
+		// end
+		// else begin
+			if (valid_r[delay_twdl-4]) begin
+				dout_real_t[i] <= d_real_r[i][delay_twdl-5]*tw_real[i] 
+				                  - d_imag_r[i][delay_twdl-5]*tw_imag[i];
+				dout_imag_t[i] <= d_real_r[i][delay_twdl-5]*tw_imag[i] 
+				                  + d_imag_r[i][delay_twdl-5]*tw_real[i];
 			end
 			else begin
 				dout_real_t[i] <= 0;
 				dout_imag_t[i] <= 0;
 			end
-		end
-		else begin
-			if (valid_r[delay_twdl-2-1]) begin
-				dout_real_t[i] <= d_real_r[i][delay_twdl-2-2]*tw_real[i] 
-				                  - d_imag_r[i][delay_twdl-2-2]*tw_imag[i];
-				dout_imag_t[i] <= d_real_r[i][delay_twdl-2-2]*tw_imag[i] 
-				                  + d_imag_r[i][delay_twdl-2-2]*tw_real[i];
-			end
-			else begin
-				dout_real_t[i] <= 0;
-				dout_imag_t[i] <= 0;
-			end
-		end
+		// end
 	end
 end
 

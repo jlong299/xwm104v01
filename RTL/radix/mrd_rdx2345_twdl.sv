@@ -9,10 +9,10 @@ module mrd_rdx2345_twdl (
 localparam  wDFTout = 30;
 localparam  wDFTin = 30;
 
-localparam  delay_twdl = 23;
+localparam  delay_twdl = 24;
 
-logic [0:4][2:0]  bank_index_r [0 : delay_twdl+2];
-logic [0:4][7:0]  bank_addr_r [0 : delay_twdl+2];
+logic [0:4][2:0]  bank_index_r [0 : delay_twdl-1];
+logic [0:4][7:0]  bank_addr_r [0 : delay_twdl-1];
 logic dft_val;
 logic signed [wDFTout-1:0] dft_real [0:4];
 logic signed [wDFTout-1:0] dft_imag [0:4];
@@ -47,18 +47,18 @@ always@(posedge clk)
 begin
 	bank_index_r[0] <= from_mem.bank_index;
 	bank_addr_r[0] <= from_mem.bank_addr;
-	bank_index_r[1:delay_twdl+2] <= bank_index_r[0:delay_twdl+1];
-	bank_addr_r[1:delay_twdl+2] <= bank_addr_r[0:delay_twdl+1];
+	bank_index_r[1:delay_twdl-1] <= bank_index_r[0:delay_twdl-2];
+	bank_addr_r[1:delay_twdl-1] <= bank_addr_r[0:delay_twdl-2];
 end
 always@(posedge clk)
 begin
 	if (from_mem.factor == 3'd4 || from_mem.factor == 3'd2) begin
-		to_mem.bank_index <= bank_index_r[delay_twdl];
-		to_mem.bank_addr <= bank_addr_r[delay_twdl];
+		to_mem.bank_index <= bank_index_r[delay_twdl-1];
+		to_mem.bank_addr <= bank_addr_r[delay_twdl-1];
 	end
 	else begin
-		to_mem.bank_index <= bank_index_r[delay_twdl+0];
-		to_mem.bank_addr <= bank_addr_r[delay_twdl+0];
+		to_mem.bank_index <= bank_index_r[delay_twdl-1];
+		to_mem.bank_addr <= bank_addr_r[delay_twdl-1];
 	end
 end
 
