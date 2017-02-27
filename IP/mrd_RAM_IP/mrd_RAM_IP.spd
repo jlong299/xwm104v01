@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simPackage>
+ <file
+   path="ram_2port_151/sim/mrd_RAM_IP_ram_2port_151_zwzljpy.v"
+   type="VERILOG"
+   library="ram_2port_151" />
+ <file path="sim/mrd_RAM_IP.v" type="VERILOG" hasInlineConfiguration="true" />
+ <topLevel name="mrd_RAM_IP" />
+ <deviceFamily name="arria10" />
+</simPackage>

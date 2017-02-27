@@ -2,8 +2,22 @@ set TOP_LEVEL_NAME top_tb
 # set TOP_LEVEL_NAME divider_pipe0_tb
 # set TOP_LEVEL_NAME mrd_twdl_tb
 
-vlib work
-#  com
+# ----------------------------------------
+# Auto-generated simulation script msim_setup.tcl
+# ----------------------------------------
+# This script can be used to simulate the following IP:
+#     mrd_RAM_IP
+# To create a top-level simulation script which compiles other
+# IP, and manages other system issues, copy the following template
+# and adapt it to your needs:
+# 
+# Start of template
+# If the copied and modified template file is "mentor.do", run it as:
+#   vsim -c -do mentor.do
+#
+# Source the generated sim script
+source msim_setup.tcl
+
 vlog -sv ../RTL/tb/*
 vlog -sv ../RTL/addr_gen/*
 vlog -sv ../RTL/top/*
@@ -13,9 +27,37 @@ vlog -sv ../RTL/switch/*
 vlog -sv ../RTL/radix/*
 vlog -sv ../RTL/twiddle/*
 
+# Compile eda/sim_lib contents first
+dev_com
+# Override the top-level name (so that elab is useful)
+# set TOP_LEVEL_NAME top
+# Compile the standalone IP.
+com
+# Compile the user top-level
+# vlog -sv ../../top.sv
+# Elaborate the design.
+elab
+# Run the simulation
+# run -a
+# Report success to the shell
+# exit -code 0
+# End of template
+# ----------------------------------------
+
+# vlib work
+#  com
+# vlog -sv ../RTL/tb/*
+# vlog -sv ../RTL/addr_gen/*
+# vlog -sv ../RTL/top/*
+# vlog -sv ../RTL/ctrl/*
+# vlog -sv ../RTL/mem/*
+# vlog -sv ../RTL/switch/*
+# vlog -sv ../RTL/radix/*
+# vlog -sv ../RTL/twiddle/*
+
 # elab
 # vmap       work     ./libraries/work/
-vsim -t ns  -L work $TOP_LEVEL_NAME
+# vsim -t ns  -L work $TOP_LEVEL_NAME
 
 # radix signal sim:/....  unsigned
 

@@ -6,3 +6,5 @@ modelsim/modelsim.ini
 modelsim/vsim.wlf
 matlab/LowLatency/*.dat
 modelsim/*.dat
+Quartus/
+modelsim/libraries/

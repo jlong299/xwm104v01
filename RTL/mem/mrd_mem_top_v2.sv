@@ -156,17 +156,17 @@ end
 genvar i;
 generate
 	for (i=0; i<7; i++) begin : RAM_banks
-	mrd_RAM_fake RAM_fake(
-		.clk (clk),
+	mrd_RAM_IP RAM_IP(
+		.clock (clk),
 		.wren (wrRAM.wren[i]),
-		.wraddr (wrRAM.wraddr[i]),
-		.din_real (wrRAM.din_real[i]),
-		.din_imag (wrRAM.din_imag[i]),
+		.wraddress (wrRAM.wraddr[i]),
+		.data ({wrRAM.din_real[i], wrRAM.din_imag[i]}),
+		// .din_imag (wrRAM.din_imag[i]),
 
 		.rden (rdRAM.rden[i]),
-		.rdaddr (rdRAM.rdaddr[i]),
-		.dout_real (rdRAM.dout_real[i]),
-		.dout_imag (rdRAM.dout_imag[i])
+		.rdaddress (rdRAM.rdaddr[i]),
+		.q ({rdRAM.dout_real[i], rdRAM.dout_imag[i]})
+		// .dout_imag (rdRAM.dout_imag[i])
 		);
 	end
 endgenerate
