@@ -28,6 +28,7 @@ logic signed [wDataTemp-1:0] dout_real_t [0:4];
 logic signed [wDataTemp-1:0] dout_imag_t [0:4];
 logic signed [wDataInOut-1:0]  d_real_r [0:4][delay_twdl-4:0];
 logic signed [wDataInOut-1:0]  d_imag_r [0:4][delay_twdl-4:0];
+logic signed [15:0] tw_real_An;
 
 genvar i;
 integer j;
@@ -55,18 +56,26 @@ endgenerate
 
 // always@(posedge clk) out_val <= (factor==3'd4 || factor==3'd2)? 
 //                      valid_r[delay_twdl-1] : valid_r[delay_twdl-2-1] ;
-always@(posedge clk) out_val <= valid_r[delay_twdl-4] ;
+always@(posedge clk) begin
+	if (twdl_demontr==12'd3)
+		out_val <= valid_r[0];
+	else
+		out_val <= valid_r[delay_twdl-4] ;
+end
 always@(posedge clk)
 begin
 	if (!rst_n)  valid_r <= 0;
 	else	valid_r <= {valid_r[delay_twdl-5:0], in_val};
 end
 
+localparam An = 16384;
+localparam An_adj = 16384/1.647;
 generate
 for (i=0; i<5; i++) begin : ctc
 coeff_twdl_CTA #(
 	.wDataIn (12),
-	.wDataOut (16)
+	.wDataOut (16),
+	.An (An_adj)
 	)
 coeff_twdl_CTA_inst	(
 	.clk (clk),
@@ -81,6 +90,7 @@ coeff_twdl_CTA_inst	(
 end
 endgenerate
 
+assign tw_real_An = An;
 generate
 for (i=0; i<5; i++) begin
 always@(posedge clk)
@@ -92,19 +102,17 @@ begin
 	end
 	else
 	begin
-		// if (factor == 3'd4 || factor==3'd2) begin
-		// 	if (valid_r[delay_twdl-1]) begin
-		// 		dout_real_t[i] <= d_real_r[i][delay_twdl-2]*tw_real[i] 
-		// 		                  - d_imag_r[i][delay_twdl-2]*tw_imag[i];
-		// 		dout_imag_t[i] <= d_real_r[i][delay_twdl-2]*tw_imag[i] 
-		// 		                  + d_imag_r[i][delay_twdl-2]*tw_real[i];
-		// 	end
-		// 	else begin
-		// 		dout_real_t[i] <= 0;
-		// 		dout_imag_t[i] <= 0;
-		// 	end
-		// end
-		// else begin
+		if (twdl_demontr==12'd3) begin
+			if (valid_r[0]) begin
+				dout_real_t[i] <= din_real[i]*tw_real_An; 
+				dout_imag_t[i] <= din_imag[i]*tw_real_An;
+			end
+			else begin
+				dout_real_t[i] <= 0;
+				dout_imag_t[i] <= 0;
+			end
+		end
+		else begin
 			if (valid_r[delay_twdl-4]) begin
 				dout_real_t[i] <= d_real_r[i][delay_twdl-5]*tw_real[i] 
 				                  - d_imag_r[i][delay_twdl-5]*tw_imag[i];
@@ -115,7 +123,7 @@ begin
 				dout_real_t[i] <= 0;
 				dout_imag_t[i] <= 0;
 			end
-		// end
+		end
 	end
 end
 

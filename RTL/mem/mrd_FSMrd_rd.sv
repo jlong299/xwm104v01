@@ -25,7 +25,7 @@ module mrd_FSMrd_rd #(parameter
 );
 // parameter Idle = 3'd0, Sink = 3'd1, Wait_to_rd = 3'd2,
 //   			Rd = 3'd3,  Wait_wr_end = 3'd4,  Source = 3'd5;
-parameter Rd = 3'd3, Wait_wr_end = 3'd4, Source = 3'd5;
+parameter Idle = 3'd0, Rd = 3'd3, Wait_wr_end = 3'd4, Source = 3'd5;
 
 logic [0:4][mrd_mem_pkt::wADDR-1:0]  bank_addr_rd, bank_addr_rd_r, bank_addr_rd_rr;
 logic [0:4][2:0]  bank_index_rd, bank_index_rd_r, bank_index_rd_rr,
@@ -65,7 +65,7 @@ begin
 		//////
 		rden_r[in_dly-1:1] <= {rden_r[in_dly-2:1], rden_r0};
 
-		if (fsm==Source) cnt_stage <= 0;
+		if (fsm==Idle) cnt_stage <= 0;
 		else cnt_stage <= (fsm==Rd && fsm_r==Wait_wr_end)? 
 			               cnt_stage+3'd1 : cnt_stage;
 	end

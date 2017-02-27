@@ -89,3 +89,4 @@ view structure
 view signals
 
 run 800us
+# run 40us

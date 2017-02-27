@@ -41,8 +41,6 @@ logic signed [wDFTout-1:0] imag_rdx2 [0:4];
 	// 	end
 	// end
 
-
-
 always@(posedge clk)
 begin
 	bank_index_r[0] <= from_mem.bank_index;
@@ -52,9 +50,9 @@ begin
 end
 always@(posedge clk)
 begin
-	if (from_mem.factor == 3'd4 || from_mem.factor == 3'd2) begin
-		to_mem.bank_index <= bank_index_r[delay_twdl-1];
-		to_mem.bank_addr <= bank_addr_r[delay_twdl-1];
+	if (from_mem.twdl_demontr == 12'd3) begin
+		to_mem.bank_index <= bank_index_r[delay_twdl-21];
+		to_mem.bank_addr <= bank_addr_r[delay_twdl-21];
 	end
 	else begin
 		to_mem.bank_index <= bank_index_r[delay_twdl-1];
@@ -129,33 +127,37 @@ dft_rdx2 (
 
 always@(*)
 begin
-	if (from_mem.factor == 3'd4)
+ 	case (from_mem.factor)
+	3'd4 :
  		dft_val = val_rdx4;
- 	else if (from_mem.factor == 3'd5)
+ 	3'd5 :
  		dft_val = val_rdx5;
- 	else if (from_mem.factor == 3'd3)
+ 	3'd3 :
  		dft_val = val_rdx3;
- 	else
+ 	default :
  		dft_val = val_rdx2;
+ 	endcase
 end
 always@(posedge clk)
 begin
-	if (from_mem.factor == 3'd4) begin
+	case (from_mem.factor)
+	3'd4 : begin
 		dft_real <= real_rdx4;
 		dft_imag <= imag_rdx4;
 	end
-	else if (from_mem.factor == 3'd5) begin
+	3'd5 : begin
 		dft_real <= real_rdx5;
 		dft_imag <= imag_rdx5;
 	end
-	else if (from_mem.factor == 3'd3) begin
+	3'd3 : begin
 		dft_real <= real_rdx3;
 		dft_imag <= imag_rdx3;
 	end
-	else begin
+	default : begin
 		dft_real <= real_rdx2;
 		dft_imag <= imag_rdx2;
 	end
+	endcase
 end
 
 twdl_CTA #(

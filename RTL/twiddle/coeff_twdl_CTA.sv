@@ -2,7 +2,8 @@
 // Delay :    24 clk cycles    numerator/demoniator --> dout_real/dout_imag
 module coeff_twdl_CTA #(parameter
 	wDataIn = 12,
-	wDataOut = 16
+	wDataOut = 16,
+	An = 16384/1.647
 	)
 	(
 	input clk,
@@ -38,7 +39,7 @@ assign quotient_round = (remainder > (demoninator >>1)) ?
                         quotient + 1'd1 : quotient;
 
 // localparam An = 32000/1.647;
-localparam An = 16384/1.647;
+// localparam An = 16384/1.647;
 logic [wDataOut-1:0]  xin = An;
 CORDIC
 cordic_inst(clk, cosine, sine, xin, 16'd0, quotient_round);

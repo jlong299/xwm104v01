@@ -29,7 +29,7 @@ logic clr_n_PFA_addr_o, source_ongoing;
 logic [11:0] cnt_source_ongoing;
 logic [2:0] bank_index_source;
 logic [11:0]  addr_source_CTA;
-logic [27:0][11:0]  addr_source_CTA_r;
+logic [7:0][11:0]  addr_source_CTA_r;
 
 always@(posedge clk)
 begin
@@ -67,7 +67,7 @@ CTA_addr_source_inst (
 );
 
 always@(posedge clk) 
-	addr_source_CTA_r <= {addr_source_CTA_r[26:0], addr_source_CTA};
+	addr_source_CTA_r <= {addr_source_CTA_r[6:0], addr_source_CTA};
 
 always@(posedge clk)
 begin
@@ -91,7 +91,8 @@ begin
 end
 
 divider_7 divider_7_inst2 (
-	.dividend 	(addr_source_CTA_r[27]),  
+	// .dividend 	(addr_source_CTA_r[27]),  
+	.dividend 	(addr_source_CTA_r[7]),  
 
 	.quotient 	(bank_addr_source),
 	.remainder 	(bank_index_source)
