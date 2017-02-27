@@ -297,6 +297,7 @@ mrd_FSMsource_inst (
 	ctrl,
 	rdRAM_FSMsource,
 	out_data,
+	in_rdx2345_data,
 
 	addrs_butterfly_src,
 	bank_addr_source,

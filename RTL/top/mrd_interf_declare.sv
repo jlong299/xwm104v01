@@ -19,6 +19,8 @@ interface mrd_rdx2345_if ();
 	logic valid;
 	logic signed [29:0] d_real [0:4];
 	logic signed [29:0] d_imag [0:4];
+	// logic signed [0:4][29:0] d_real ;
+	// logic signed [0:4][29:0] d_imag ;
 	logic [0:4][2:0]  bank_index;
 	logic [0:4][7:0]  bank_addr;
 

@@ -13,6 +13,7 @@ module mrd_FSMsource (
 	mrd_ctrl_if ctrl,
 	mrd_mem_rd rdRAM_FSMsource,
 	mrd_st_if  out_data,
+	mrd_rdx2345_if in_rdx2345_data,
 
 	output logic [0:4][11:0] addrs_butterfly_src,
 	output logic [11:0]  bank_addr_source,
