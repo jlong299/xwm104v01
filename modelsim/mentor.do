@@ -18,6 +18,15 @@ set TOP_LEVEL_NAME top_tb
 # Source the generated sim script
 source msim_setup.tcl
 
+vlog -sv ../RTL/tb/*
+vlog -sv ../RTL/addr_gen/*
+vlog -sv ../RTL/top/*
+vlog -sv ../RTL/ctrl/*
+vlog -sv ../RTL/mem/*
+vlog -sv ../RTL/switch/*
+vlog -sv ../RTL/radix/*
+vlog -sv ../RTL/twiddle/*
+
 # Compile eda/sim_lib contents first
 dev_com
 # Override the top-level name (so that elab is useful)
@@ -37,14 +46,14 @@ elab
 
 # vlib work
 #  com
-vlog -sv ../RTL/tb/*
-vlog -sv ../RTL/addr_gen/*
-vlog -sv ../RTL/top/*
-vlog -sv ../RTL/ctrl/*
-vlog -sv ../RTL/mem/*
-vlog -sv ../RTL/switch/*
-vlog -sv ../RTL/radix/*
-vlog -sv ../RTL/twiddle/*
+# vlog -sv ../RTL/tb/*
+# vlog -sv ../RTL/addr_gen/*
+# vlog -sv ../RTL/top/*
+# vlog -sv ../RTL/ctrl/*
+# vlog -sv ../RTL/mem/*
+# vlog -sv ../RTL/switch/*
+# vlog -sv ../RTL/radix/*
+# vlog -sv ../RTL/twiddle/*
 
 # elab
 # vmap       work     ./libraries/work/
@@ -89,12 +98,14 @@ add wave -radix signed {sim:/top_tb/top_inst/mem0/in_rdx2345_data/d_imag}
 
 # add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/din_real}
 # add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/din_imag}
-# add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/d_real_r[0][21]}
-# add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/d_imag_r[0][21]}
-# add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/tw_real}
-# add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/tw_imag}
-# add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/dout_real_t}
-# add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/dout_imag_t}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/d_real_r[1][19]}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/d_imag_r[1][19]}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/tw_real[1]}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/tw_imag[1]}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/dout_real_t_p0[1]}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/dout_imag_t_p0[1]}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/dout_real_t_p1[1]}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/dout_imag_t_p1[1]}
 
 # add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/to_mem/*}
 # add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/to_mem/d_real}
@@ -122,4 +133,4 @@ view structure
 view signals
 
 # run 800us
-run 300us
+run 100us

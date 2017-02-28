@@ -15,8 +15,8 @@ module twdl_CTA #(parameter
 	input  signed [wDataInOut-1:0]  din_imag [0:4],
 
 	output logic out_val,
-	output signed [wDataInOut-1:0]  dout_real [0:4],
-	output signed [wDataInOut-1:0]  dout_imag [0:4]
+	output logic signed [wDataInOut-1:0]  dout_real [0:4],
+	output logic signed [wDataInOut-1:0]  dout_imag [0:4]
 );
 
 parameter  wDataTemp = 49;
@@ -29,6 +29,10 @@ logic signed [wDataTemp-1:0] dout_imag_t [0:4];
 logic signed [wDataInOut-1:0]  d_real_r [0:4][delay_twdl-4:0];
 logic signed [wDataInOut-1:0]  d_imag_r [0:4][delay_twdl-4:0];
 logic signed [15:0] tw_real_An;
+logic signed [wDataTemp-1:0] dout_real_t_p0 [1:4];
+logic signed [wDataTemp-1:0] dout_real_t_p1 [1:4];
+logic signed [wDataTemp-1:0] dout_imag_t_p0 [1:4];
+logic signed [wDataTemp-1:0] dout_imag_t_p1 [1:4];
 
 genvar i;
 integer j;
@@ -71,7 +75,7 @@ end
 localparam An = 16384;
 localparam An_adj = 16384/1.647;
 generate
-for (i=0; i<5; i++) begin : ctc
+for (i=1; i<5; i++) begin : ctc
 coeff_twdl_CTA #(
 	.wDataIn (12),
 	.wDataOut (16),
@@ -92,37 +96,54 @@ endgenerate
 
 assign tw_real_An = An;
 generate
-for (i=0; i<5; i++) begin : gen1
+for (i=1; i<5; i++) begin : gen1
 always@(posedge clk)
 begin
 	if (!rst_n)  
 	begin
 		dout_real_t[i] <= 0;
 		dout_imag_t[i] <= 0;
+		dout_real_t_p0[i] <= 0;
+		dout_real_t_p1[i] <= 0;
+		dout_imag_t_p0[i] <= 0;
+		dout_imag_t_p1[i] <= 0;
 	end
 	else
 	begin
 		if (twdl_demontr==12'd3) begin
 			if (valid_r[0]) begin
-				dout_real_t[i] <= din_real[i]*tw_real_An; 
-				dout_imag_t[i] <= din_imag[i]*tw_real_An;
+				// dout_real_t[i] <= din_real[i]*tw_real_An; 
+				dout_real_t[i] <= din_real[i] <<< 14; 
+				dout_imag_t[i] <= din_imag[i] <<< 14;
 			end
 			else begin
 				dout_real_t[i] <= 0;
 				dout_imag_t[i] <= 0;
 			end
+			dout_real_t_p0[i] <= 0;
+			dout_real_t_p1[i] <= 0;
+			dout_imag_t_p0[i] <= 0;
+			dout_imag_t_p1[i] <= 0;
 		end
 		else begin
-			if (valid_r[delay_twdl-4]) begin
-				dout_real_t[i] <= d_real_r[i][delay_twdl-5]*tw_real[i] 
-				                  - d_imag_r[i][delay_twdl-5]*tw_imag[i];
-				dout_imag_t[i] <= d_real_r[i][delay_twdl-5]*tw_imag[i] 
-				                  + d_imag_r[i][delay_twdl-5]*tw_real[i];
+			if (valid_r[delay_twdl-5]) begin
+				// dout_real_t[i] <= d_real_r[i][delay_twdl-5]*tw_real[i] 
+				//                   - d_imag_r[i][delay_twdl-5]*tw_imag[i];
+				// dout_imag_t[i] <= d_real_r[i][delay_twdl-5]*tw_imag[i] 
+				//                   + d_imag_r[i][delay_twdl-5]*tw_real[i];
+				dout_real_t_p0[i] <= d_real_r[i][delay_twdl-6]*tw_real[i];
+				dout_real_t_p1[i] <= d_imag_r[i][delay_twdl-6]*tw_imag[i];
+				dout_imag_t_p0[i] <= d_real_r[i][delay_twdl-6]*tw_imag[i];
+				dout_imag_t_p1[i] <= d_imag_r[i][delay_twdl-6]*tw_real[i];
 			end
 			else begin
-				dout_real_t[i] <= 0;
-				dout_imag_t[i] <= 0;
+				dout_real_t_p0[i] <= 0;
+				dout_real_t_p1[i] <= 0;
+				dout_imag_t_p0[i] <= 0;
+				dout_imag_t_p1[i] <= 0;
 			end
+			dout_real_t[i] <= dout_real_t_p0[i] - dout_real_t_p1[i];
+			dout_imag_t[i] <= dout_imag_t_p0[i] + dout_imag_t_p1[i];
 		end
 	end
 end
@@ -135,5 +156,39 @@ assign dout_imag[i] = (dout_imag_t[i][13])?
                       : dout_imag_t[i][wDataInOut+14-1:14] ;
 end
 endgenerate
+
+always@(posedge clk)
+begin
+	if (!rst_n)  
+	begin
+		dout_real[0] <= 0;
+		dout_imag[0] <= 0;
+	end
+	else
+	begin
+		if (twdl_demontr==12'd3) begin
+			if (valid_r[0]) begin
+				// dout_real_t[i] <= din_real[i]*tw_real_An; 
+				dout_real[0] <= din_real[0]; 
+				dout_imag[0] <= din_imag[0];
+			end
+			else begin
+				dout_real[0] <= 0;
+				dout_imag[0] <= 0;
+			end
+		end
+		else begin
+			if (valid_r[delay_twdl-4]) begin
+				dout_real[0] <= d_real_r[0][delay_twdl-5]; 
+				dout_imag[0] <= d_imag_r[0][delay_twdl-5];
+			end
+			else begin
+				dout_real[0] <= 0;
+				dout_imag[0] <= 0;
+			end
+		end
+	end
+end
+
 
 endmodule

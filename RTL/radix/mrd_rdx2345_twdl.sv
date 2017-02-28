@@ -9,7 +9,7 @@ module mrd_rdx2345_twdl (
 localparam  wDFTout = 30;
 localparam  wDFTin = 30;
 
-localparam  delay_twdl = 24;
+localparam  delay_twdl = 25;
 
 logic [0:4][2:0]  bank_index_r [0 : delay_twdl-1];
 logic [0:4][7:0]  bank_addr_r [0 : delay_twdl-1];
@@ -51,8 +51,8 @@ end
 always@(posedge clk)
 begin
 	if (from_mem.twdl_demontr == 12'd3) begin
-		to_mem.bank_index <= bank_index_r[delay_twdl-21];
-		to_mem.bank_addr <= bank_addr_r[delay_twdl-21];
+		to_mem.bank_index <= bank_index_r[3];
+		to_mem.bank_addr <= bank_addr_r[3];
 	end
 	else begin
 		to_mem.bank_index <= bank_index_r[delay_twdl-1];
