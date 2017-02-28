@@ -99,10 +99,12 @@ begin
 end
 
 genvar i;
-for (i=3; i<=6; i++) begin
+generate
+for (i=3; i<=6; i++) begin : gen0
 	assign p2_real_tr[i] = (p2_real[i] >>> 14);
 	assign p2_imag_tr[i] = (p2_imag[i] >>> 14);
 end
+endgenerate
 
 assign p2_real_tr[1] = p2_real[1];
 assign p2_imag_tr[1] = p2_imag[1];

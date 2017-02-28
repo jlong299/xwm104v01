@@ -8,3 +8,4 @@ matlab/LowLatency/*.dat
 modelsim/*.dat
 Quartus/
 modelsim/libraries/
+RTL/*/*.bak

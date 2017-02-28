@@ -271,6 +271,8 @@ begin
 		coeff_stage = twdl_demontr[5];
 	3'd5:
 		coeff_stage = 'd1;
+	default :
+		coeff_stage = 'd1;
 	endcase
 end
 always@(posedge clk) begin

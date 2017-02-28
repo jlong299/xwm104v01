@@ -33,7 +33,7 @@ logic signed [15:0] tw_real_An;
 genvar i;
 integer j;
 generate
-for (i=0; i<5; i++) begin
+for (i=0; i<5; i++) begin : gen0
 always@(posedge clk)
 begin
 	if (!rst_n)  begin
@@ -92,7 +92,7 @@ endgenerate
 
 assign tw_real_An = An;
 generate
-for (i=0; i<5; i++) begin
+for (i=0; i<5; i++) begin : gen1
 always@(posedge clk)
 begin
 	if (!rst_n)  

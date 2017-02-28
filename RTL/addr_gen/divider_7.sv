@@ -18,7 +18,7 @@ assign dividend_t[8] = dividend[11:8];
 
 genvar i;
 generate 
-	for ( i = 0; i < 8; i=i+1) begin
+	for ( i = 0; i < 8; i=i+1) begin : gen0
 		assign remainder_t[8-i] = dividend_t[8-i] - 4'd7;
 		assign quotient[8-i] = (remainder_t[8-i][3])? 1'b0 : 1'b1;
 		assign dividend_t[8-i-1] =(remainder_t[8-i][3]) ? 

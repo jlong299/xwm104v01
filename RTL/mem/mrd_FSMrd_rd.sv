@@ -92,7 +92,7 @@ CTA_addr_trans_inst	(
 
 genvar  k;
 generate
-for (k=3'd0; k < 3'd5; k=k+3'd1) begin 
+for (k=3'd0; k < 3'd5; k=k+3'd1) begin : gen0
 assign addrs_butterfly_mux[k]=(fsm==Rd && cnt_stage < ctrl.NumOfFactors-3'd1)?
                               addrs_butterfly[k] : addrs_butterfly_src[k] ;
 end

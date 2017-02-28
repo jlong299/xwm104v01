@@ -22,7 +22,7 @@ logic  [w_divisor:0]  subtr [0 : n_stages-1];
 
 genvar i;
 generate
-	for (i=0; i < n_stages; i++) begin
+	for (i=0; i < n_stages; i++) begin : gen0
 		assign subtr[i] = remd_quot_r[i]
 		            [w_divident-1 : w_divident-w_divisor-w_pipe] - divisor;
 		assign quot[i] = ~(subtr[i][w_divisor]);
@@ -34,7 +34,7 @@ endgenerate
 
 assign remd_quot_r[0] = dividend; 
 generate
-for (i=1; i <= n_stages; i++) begin
+for (i=1; i <= n_stages; i++) begin : gen1
 	assign remd_quot_r[i][w_divident-1:w_divident-w_divisor] = remd[i-1];
 	assign remd_quot_r[i][w_pipe-1:0] = quot[i-1];
 	assign remd_quot_r[i][w_divident-w_divisor-1:w_pipe] =

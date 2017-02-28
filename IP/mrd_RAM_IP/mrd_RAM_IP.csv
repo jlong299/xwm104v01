@@ -1,0 +1,18 @@
+# system info mrd_RAM_IP on 2017.02.27.16:37:40
+system_info:
+name,value
+DEVICE,10AX115U3F45E2SGE3
+DEVICE_FAMILY,Arria 10
+GENERATION_ID,1488184660
+#
+#
+# Files generated for mrd_RAM_IP on 2017.02.27.16:37:40
+files:
+filepath,kind,attributes,module,is_top
+sim/mrd_RAM_IP.v,VERILOG,CONTAINS_INLINE_CONFIGURATION,mrd_RAM_IP,true
+ram_2port_151/sim/mrd_RAM_IP_ram_2port_151_zwzljpy.v,VERILOG,,mrd_RAM_IP_ram_2port_151_zwzljpy,false
+#
+# Map from instance-path to kind of module
+instances:
+instancePath,module
+mrd_RAM_IP.ram_2port_0,mrd_RAM_IP_ram_2port_151_zwzljpy
