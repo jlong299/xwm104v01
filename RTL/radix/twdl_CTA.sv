@@ -93,8 +93,26 @@ end
 
 localparam An = 16384;
 localparam An_adj = 16384/1.647;
-generate
-for (i=1; i<5; i++) begin : ctc
+// generate
+// for (i=1; i<5; i++) begin : ctc
+// coeff_twdl_CTA #(
+// 	.wDataIn (12),
+// 	.wDataOut (16),
+// 	.An (An_adj)
+// 	)
+// coeff_twdl_CTA_inst	(
+// 	.clk (clk),
+// 	.rst_n (rst_n),
+
+// 	.numerator (twdl_numrtr[i]),
+// 	.demoninator (twdl_demontr),
+
+// 	.dout_real (tw_real[i]),
+// 	.dout_imag (tw_imag[i])
+// );
+// end
+// endgenerate
+
 coeff_twdl_CTA #(
 	.wDataIn (12),
 	.wDataOut (16),
@@ -104,14 +122,28 @@ coeff_twdl_CTA_inst	(
 	.clk (clk),
 	.rst_n (rst_n),
 
-	.numerator (twdl_numrtr[i]),
+	.numerator (twdl_numrtr[1]),
 	.demoninator (twdl_demontr),
 
-	.dout_real (tw_real[i]),
-	.dout_imag (tw_imag[i])
+	.dout_real (tw_real[1]),
+	.dout_imag (tw_imag[1])
 );
-end
-endgenerate
+logic signed [29:0] t_r[2:4]; 
+logic signed [29:0] t_i[2:4]; 
+assign t_r[2] = tw_real[1]*tw_real[1]-tw_imag[1]*tw_imag[1];
+assign t_i[2] = tw_real[1]*tw_imag[1];
+assign t_r[3] = tw_real[1]*tw_real[2]-tw_imag[1]*tw_imag[2];
+assign t_i[3] = tw_real[1]*tw_imag[2]+tw_imag[1]*tw_real[2];
+assign t_r[4] = tw_real[2]*tw_real[2]-tw_imag[2]*tw_imag[2];
+assign t_i[4] = tw_real[2]*tw_imag[2];
+
+assign tw_real[2] = t_r[2][29:14];
+assign tw_imag[2] = t_i[2][28:13];
+assign tw_real[3] = t_r[3][29:14];
+assign tw_imag[3] = t_i[3][29:14];
+assign tw_real[4] = t_r[4][29:14];
+assign tw_imag[4] = t_i[4][28:13];
+
 
 assign tw_real_An = An;
 generate
