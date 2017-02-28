@@ -98,14 +98,14 @@ add wave -radix signed {sim:/top_tb/top_inst/mem0/in_rdx2345_data/d_imag}
 
 # add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/din_real}
 # add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/din_imag}
-add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/d_real_r[1][19]}
-add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/d_imag_r[1][19]}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/in_val}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/valid_r[20]}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/sclr}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/d_real_r}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/d_imag_r}
 add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/tw_real[1]}
 add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/tw_imag[1]}
-add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/dout_real_t_p0[1]}
-add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/dout_imag_t_p0[1]}
-add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/dout_real_t_p1[1]}
-add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/dout_imag_t_p1[1]}
+
 
 # add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/to_mem/*}
 # add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/to_mem/d_real}

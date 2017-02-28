@@ -125,37 +125,41 @@ dft_rdx2 (
 	.dout_imag  (imag_rdx2)
 	);
 
-always@(*)
-begin
- 	case (from_mem.factor)
-	3'd4 :
- 		dft_val = val_rdx4;
- 	3'd5 :
- 		dft_val = val_rdx5;
- 	3'd3 :
- 		dft_val = val_rdx3;
- 	default :
- 		dft_val = val_rdx2;
- 	endcase
-end
+// always@(*)
+// begin
+//  	case (from_mem.factor)
+// 	3'd4 :
+//  		dft_val = val_rdx4;
+//  	3'd5 :
+//  		dft_val = val_rdx5;
+//  	3'd3 :
+//  		dft_val = val_rdx3;
+//  	default :
+//  		dft_val = val_rdx2;
+//  	endcase
+// end
 always@(posedge clk)
 begin
 	case (from_mem.factor)
 	3'd4 : begin
 		dft_real <= real_rdx4;
 		dft_imag <= imag_rdx4;
+ 		dft_val <= val_rdx4;
 	end
 	3'd5 : begin
 		dft_real <= real_rdx5;
 		dft_imag <= imag_rdx5;
+ 		dft_val <= val_rdx5;
 	end
 	3'd3 : begin
 		dft_real <= real_rdx3;
 		dft_imag <= imag_rdx3;
+ 		dft_val <= val_rdx3;
 	end
 	default : begin
 		dft_real <= real_rdx2;
 		dft_imag <= imag_rdx2;
+ 		dft_val <= val_rdx2;
 	end
 	endcase
 end
