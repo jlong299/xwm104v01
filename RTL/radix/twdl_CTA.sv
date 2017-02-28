@@ -16,7 +16,10 @@ module twdl_CTA #(parameter
 
 	output logic out_val,
 	output logic signed [wDataInOut-1:0]  dout_real [0:4],
-	output logic signed [wDataInOut-1:0]  dout_imag [0:4]
+	output logic signed [wDataInOut-1:0]  dout_imag [0:4],
+
+	output sclr_ff_addr,
+	output rdreq_ff_addr
 );
 
 parameter  wDataTemp = 49;
@@ -208,5 +211,7 @@ begin
 	end
 end
 
+assign rdreq_ff_addr = (twdl_demontr==12'd3)? in_val : valid_r[delay_twdl-5];
+assign sclr_ff_addr = sclr;
 
 endmodule

@@ -11,8 +11,8 @@ localparam  wDFTin = 30;
 
 localparam  delay_twdl = 25;
 
-logic [0:4][2:0]  bank_index_r [0 : delay_twdl-1];
-logic [0:4][7:0]  bank_addr_r [0 : delay_twdl-1];
+// logic [0:4][2:0]  bank_index_r [0 : delay_twdl-1];
+// logic [0:4][7:0]  bank_addr_r [0 : delay_twdl-1];
 logic dft_val;
 logic signed [wDFTout-1:0] dft_real [0:4];
 logic signed [wDFTout-1:0] dft_imag [0:4];
@@ -41,24 +41,46 @@ logic signed [wDFTout-1:0] imag_rdx2 [0:4];
 	// 	end
 	// end
 
-always@(posedge clk)
-begin
-	bank_index_r[0] <= from_mem.bank_index;
-	bank_addr_r[0] <= from_mem.bank_addr;
-	bank_index_r[1:delay_twdl-1] <= bank_index_r[0:delay_twdl-2];
-	bank_addr_r[1:delay_twdl-1] <= bank_addr_r[0:delay_twdl-2];
-end
-always@(posedge clk)
-begin
-	if (from_mem.twdl_demontr == 12'd3) begin
-		to_mem.bank_index <= bank_index_r[3];
-		to_mem.bank_addr <= bank_addr_r[3];
-	end
-	else begin
-		to_mem.bank_index <= bank_index_r[delay_twdl-1];
-		to_mem.bank_addr <= bank_addr_r[delay_twdl-1];
-	end
-end
+// always@(posedge clk)
+// begin
+// 	bank_index_r[0] <= from_mem.bank_index;
+// 	bank_addr_r[0] <= from_mem.bank_addr;
+// 	bank_index_r[1:delay_twdl-1] <= bank_index_r[0:delay_twdl-2];
+// 	bank_addr_r[1:delay_twdl-1] <= bank_addr_r[0:delay_twdl-2];
+// end
+// always@(posedge clk)
+// begin
+// 	if (from_mem.twdl_demontr == 12'd3) begin
+// 		to_mem.bank_index <= bank_index_r[3];
+// 		to_mem.bank_addr <= bank_addr_r[3];
+// 	end
+// 	else begin
+// 		to_mem.bank_index <= bank_index_r[delay_twdl-1];
+// 		to_mem.bank_addr <= bank_addr_r[delay_twdl-1];
+// 	end
+// end
+
+wire [59:0] ff_data, q;
+wire sclr_ff_addr, rdreq_ff_addr;
+assign ff_data[10:0] = {from_mem.bank_index[0],from_mem.bank_addr[0]};
+assign ff_data[21:11] = {from_mem.bank_index[1],from_mem.bank_addr[1]};
+assign ff_data[32:22] = {from_mem.bank_index[2],from_mem.bank_addr[2]};
+assign ff_data[43:33] = {from_mem.bank_index[3],from_mem.bank_addr[3]};
+assign ff_data[54:44] = {from_mem.bank_index[4],from_mem.bank_addr[4]};
+assign ff_data[59:55] = 0;
+ff_rdx_data ff_addr (
+		.data  (ff_data),  //  fifo_input.datain
+		.wrreq (from_mem.valid), //            .wrreq
+		.rdreq (rdreq_ff_addr), //            .rdreq
+		.clock (clk), //            .clk
+		.sclr  (sclr_ff_addr),  //            .sclr
+		.q     (q)      // fifo_output.dataout
+	);
+assign {to_mem.bank_index[0],to_mem.bank_addr[0]} = q[10:0];
+assign {to_mem.bank_index[1],to_mem.bank_addr[1]} = q[21:11];
+assign {to_mem.bank_index[2],to_mem.bank_addr[2]} = q[32:22];
+assign {to_mem.bank_index[3],to_mem.bank_addr[3]} = q[43:33];
+assign {to_mem.bank_index[4],to_mem.bank_addr[4]} = q[54:44];
 
 
 mrd_dft_rdx4 #(
@@ -182,7 +204,10 @@ twdl (
 
 	.out_val  (to_mem.valid),
 	.dout_real  (to_mem.d_real),
-	.dout_imag  (to_mem.d_imag)
+	.dout_imag  (to_mem.d_imag),
+	
+	.sclr_ff_addr (sclr_ff_addr),
+	.rdreq_ff_addr (rdreq_ff_addr)
 	);
 
 // logic [15:0]  cnt_val_debug;
