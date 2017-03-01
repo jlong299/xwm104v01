@@ -132,5 +132,5 @@ add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/tw_imag[1]}
 view structure
 view signals
 
-# run 800us
-run 100us
+run 800us
+# run 100us
