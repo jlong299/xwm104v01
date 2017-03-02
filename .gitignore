@@ -9,3 +9,4 @@ modelsim/*.dat
 Quartus/
 modelsim/libraries/
 RTL/*/*.bak
+IP/*/synth/*.qicache
