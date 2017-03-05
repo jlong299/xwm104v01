@@ -7,13 +7,13 @@ module mrd_rdx3_v2
 	input signed [18-1:0] din_real [0:4],
 	input signed [18-1:0] din_imag [0:4],
 
-	input unsigned [1:0] margin_in;
-	input unsigned [3:0] exp_in;
+	input unsigned [1:0] margin_in,
+	input unsigned [3:0] exp_in,
 
 	output logic out_val,
 	output logic signed [18-1:0] dout_real [0:4],
 	output logic signed [18-1:0] dout_imag [0:4],  
-	output unsigned [3:0] exp_out
+	output logic unsigned [3:0] exp_out
 );
 
 localparam unsigned [1:0] worst_case_growth = 2'd2;
@@ -53,14 +53,17 @@ end
 logic signed [20-1:0] p2_x0_r, p2_x0_i; //3.17
 logic signed [21-1:0] p2_x1_r, p2_x1_i; //3.18
 logic signed [23-1:0] p2_x2_r, p2_x2_i; //3.20
+wire signed [20-1:0] wir1_p2_x0_r, wir1_p2_x0_i;
 wire signed [20-1:0] wir1_p2_x1_r, wir1_p2_x1_i;
 wire signed [36-1:0] wir1_p2_x2_r, wir1_p2_x2_i;
 
+assign wir1_p2_x0_r = {p1_x0_r[17],p1_x0_r,1'b0};
+assign wir1_p2_x0_i = {p1_x0_i[17],p1_x0_i,1'b0};
 assign wir1_p2_x1_r = {p1_x1_r[18],p1_x1_r};
 assign wir1_p2_x1_i = {p1_x1_i[18],p1_x1_i};
 
-assign wir1_p2_x2_r = wir1_p2_x2_i * -18'sh1BB68 ; //3.33 = 2.16 * 1.17
-assign wir1_p2_x2_i = wir1_p2_x2_r * 18'sh1BB68 ;
+assign wir1_p2_x2_r = p1_x2_i * -18'sh1BB68 ; //3.33 = 2.16 * 1.17
+assign wir1_p2_x2_i = p1_x2_r * 18'sh1BB68 ;
 
 always@(posedge clk)
 begin
@@ -75,8 +78,8 @@ begin
 	else begin
 		p2_x0_r <= p1_x0_r + p1_x1_r;
 		p2_x0_i <= p1_x0_i + p1_x1_i;
-		p2_x1_r <= p1_x0_r - wir1_p2_x1_r;
-		p2_x1_i <= p1_x0_i - wir1_p2_x1_i;
+		p2_x1_r <= wir1_p2_x0_r - wir1_p2_x1_r;
+		p2_x1_i <= wir1_p2_x0_i - wir1_p2_x1_i;
 		p2_x2_r <= wir1_p2_x2_r[35:13];
 		p2_x2_i <= wir1_p2_x2_i[35:13];
 	end
@@ -86,6 +89,9 @@ end
 logic signed [24-1:0] p3_x0_r, p3_x0_i; //4.17
 logic signed [24-1:0] p3_x1_r, p3_x1_i; //4.20
 logic signed [24-1:0] p3_x2_r, p3_x2_i; //4.20
+wire signed [23-1:0] wir1_p3_x1_r, wir1_p3_x1_i;
+assign wir1_p3_x1_r = {p2_x1_r,2'b00};
+assign wir1_p3_x1_i = {p2_x1_i,2'b00};
 always@(posedge clk)
 begin
 	if (!rst_n) begin
@@ -99,10 +105,10 @@ begin
 	else begin
 		p3_x0_r <= {p2_x0_r[19], p2_x0_r, 3'd0};
 		p3_x0_i <= {p2_x0_i[19], p2_x0_i, 3'd0};
-		p3_x1_r <= p2_x1_r + p2_x2_r;
-		p3_x1_i <= p2_x1_i + p2_x2_i;
-		p3_x2_r <= p2_x1_r - p2_x2_r;
-		p3_x2_i <= p2_x1_i - p2_x2_i;
+		p3_x1_r <= wir1_p3_x1_r + p2_x2_r;
+		p3_x1_i <= wir1_p3_x1_i + p2_x2_i;
+		p3_x2_r <= wir1_p3_x1_r - p2_x2_r;
+		p3_x2_i <= wir1_p3_x1_i - p2_x2_i;
 	end
 end
 always@(posedge clk) 
@@ -110,12 +116,12 @@ always@(posedge clk)
 	               worst_case_growth - margin_in : 2'd0;
 
 //-------- 4th pipeline   scaling & margin ------------
-wire [27-1:0] wir1_p4_x0_r, wir1_p4_x0_i;
-wire [27-1:0] wir1_p4_x1_r, wir1_p4_x1_i;
-wire [27-1:0] wir1_p4_x2_r, wir1_p4_x2_i;
-wire [27-1:0] wir2_p4_x0_r, wir2_p4_x0_i;
-wire [27-1:0] wir2_p4_x1_r, wir2_p4_x1_i;
-wire [27-1:0] wir2_p4_x2_r, wir2_p4_x2_i;
+logic signed [27-1:0] wir1_p4_x0_r, wir1_p4_x0_i;
+logic signed [27-1:0] wir1_p4_x1_r, wir1_p4_x1_i;
+logic signed [27-1:0] wir1_p4_x2_r, wir1_p4_x2_i;
+logic signed [27-1:0] wir2_p4_x0_r, wir2_p4_x0_i;
+logic signed [27-1:0] wir2_p4_x1_r, wir2_p4_x1_i;
+logic signed [27-1:0] wir2_p4_x2_r, wir2_p4_x2_i;
 
 assign wir1_p4_x0_r = {p3_x0_r, 3'd0};
 assign wir1_p4_x0_i = {p3_x0_i, 3'd0};
@@ -161,6 +167,7 @@ case (word_growth)
 endcase
 end
 
+integer j;
 always@(posedge clk)
 begin
 	if (!rst_n) begin
