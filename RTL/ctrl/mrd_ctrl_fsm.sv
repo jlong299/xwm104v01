@@ -86,6 +86,18 @@ logic [2:0] stage_of_rdx2;
 // assign ctrl_to_mem1.twdl_demontr[0:5] = 
 //             '{12'd1200,12'd300,12'd75,12'd15,12'd3,12'd1};
 
+
+// //-----------  1200 case ----------------\
+// assign ctrl_to_mem.NumOfFactors = 3'd5;
+// assign ctrl_to_mem.Nf[0:5] = '{3'd4,3'd4,3'd5,3'd5,3'd3,3'd1};
+// assign ctrl_to_mem.dftpts_div_Nf[0:5] = 
+//             '{12'd300,12'd300,12'd240,12'd240,12'd400,12'd1200};
+// assign ctrl_to_mem.twdl_demontr[0:5] = 
+//             '{12'd1200,12'd300,12'd75,12'd15,12'd3,12'd1};
+
+// assign ctrl_to_mem.stage_of_rdx2 = 3'd7;
+
+
 assign ctrl_to_mem.NumOfFactors = NumOfFactors;
 assign ctrl_to_mem.Nf = Nf;
 assign ctrl_to_mem.dftpts_div_Nf = dftpts_div_Nf;
