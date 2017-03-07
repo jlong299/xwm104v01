@@ -19,12 +19,12 @@ module mrd_rdx5_v2
 localparam unsigned [1:0] worst_case_growth = 2'd3;
 logic unsigned [1:0] word_growth;
 logic [2:0] val_r;
-reg [18-1:0] p1_x0_r, p1_x0_i; //1.17
-reg [20-1:0] p1_x1_r, p1_x1_i; //3.17
-wire [19-1:0] wir1_p1_x1_r, wir1_p1_x1_i, wir1_p1_x2_r, wir1_p1_x2_i, wir1_p1_x3_r, wir1_p1_x3_i, wir1_p1_x4_r, wir1_p1_x4_i;
-wire [20-1:0] wir2_p1_x1_r, wir2_p1_x1_i, wir2_p1_x2_r, wir2_p1_x2_i, wir2_p1_x5_r, wir2_p1_x5_i;
-reg [18-1:0] p1_x2_r, p1_x2_i, p1_x5_r, p1_x5_i; //3.15
-reg [18-1:0] p1_x3_r, p1_x3_i, p1_x4_r, p1_x4_i; //2.16
+logic signed [18-1:0] p1_x0_r, p1_x0_i; //1.17
+logic signed [20-1:0] p1_x1_r, p1_x1_i; //3.17
+wire signed [19-1:0] wir1_p1_x1_r, wir1_p1_x1_i, wir1_p1_x2_r, wir1_p1_x2_i, wir1_p1_x3_r, wir1_p1_x3_i, wir1_p1_x4_r, wir1_p1_x4_i;
+wire signed [20-1:0] wir2_p1_x1_r, wir2_p1_x1_i, wir2_p1_x2_r, wir2_p1_x2_i, wir2_p1_x5_r, wir2_p1_x5_i;
+logic signed [18-1:0] p1_x2_r, p1_x2_i, p1_x5_r, p1_x5_i; //3.15
+logic signed [18-1:0] p1_x3_r, p1_x3_i, p1_x4_r, p1_x4_i; //2.16
 
 //---------- 1st pipeline -------------
 assign wir1_p1_x1_r = din_real[1] + din_real[4];
@@ -69,10 +69,10 @@ begin
 		p1_x2_i <= (wir2_p1_x2_i[1])? wir2_p1_x2_i[19:2]+2'sd1 : wir2_p1_x2_i[19:2];
 		p1_x5_r <= (wir2_p1_x5_r[1])? wir2_p1_x5_r[19:2]+2'sd1 : wir2_p1_x5_r[19:2];
 		p1_x5_i <= (wir2_p1_x5_i[1])? wir2_p1_x5_i[19:2]+2'sd1 : wir2_p1_x5_i[19:2];
-		p1_x3_r <= (wir2_p1_x3_r[0])? wir1_p1_x3_r[18:1]+2'sd1 : wir1_p1_x3_r[18:1];
-		p1_x3_i <= (wir2_p1_x3_i[0])? wir1_p1_x3_i[18:1]+2'sd1 : wir1_p1_x3_i[18:1];
-		p1_x4_r <= (wir2_p1_x4_r[0])? wir1_p1_x4_r[18:1]+2'sd1 : wir1_p1_x4_r[18:1];
-		p1_x4_i <= (wir2_p1_x4_i[0])? wir1_p1_x4_i[18:1]+2'sd1 : wir1_p1_x4_i[18:1];
+		p1_x3_r <= (wir1_p1_x3_r[0])? wir1_p1_x3_r[18:1]+2'sd1 : wir1_p1_x3_r[18:1];
+		p1_x3_i <= (wir1_p1_x3_i[0])? wir1_p1_x3_i[18:1]+2'sd1 : wir1_p1_x3_i[18:1];
+		p1_x4_r <= (wir1_p1_x4_r[0])? wir1_p1_x4_r[18:1]+2'sd1 : wir1_p1_x4_r[18:1];
+		p1_x4_i <= (wir1_p1_x4_i[0])? wir1_p1_x4_i[18:1]+2'sd1 : wir1_p1_x4_i[18:1];
 	end
 end
 
@@ -94,8 +94,8 @@ assign wir1_p2_x1_i = {p1_x1_i[19], p1_x1_i[19], p1_x1_i};
 
 assign wir1_p2_x2_r = p1_x2_r * 18'sh11E37 ; //1.17
 assign wir1_p2_x2_i = p1_x2_i * 18'sh11E37 ;
-assign wir1_p2_x3_r = p1_x3_i * -18'sh2EC1D ; //2.16
-assign wir1_p2_x3_i = p1_x3_r * 18'sh2EC1D ;
+assign wir1_p2_x3_r = p1_x3_i * -18'sh2760E ; //2.16
+assign wir1_p2_x3_i = p1_x3_r * 18'sh2760E ;
 assign wir1_p2_x4_r = p1_x4_i * -18'sh34601 ; //1.17
 assign wir1_p2_x4_i = p1_x4_r * 18'sh34601 ;
 assign wir1_p2_x5_r = p1_x5_i * -18'sh1E6F1 ; //1.17
@@ -148,8 +148,8 @@ assign wir1_p3_x1_r = wir0_p3_x1_r + p2_x2_r;
 assign wir1_p3_x1_i = wir0_p3_x1_i + p2_x2_i;
 assign wir1_p3_x2_r = p2_x4_r + p2_x5_r;
 assign wir1_p3_x2_i = p2_x4_i + p2_x5_i;
-assign wir1_p3_x3_r = p2_x1_r - p2_x2_r;
-assign wir1_p3_x3_i = p2_x1_i - p2_x2_i;
+assign wir1_p3_x3_r = wir0_p3_x1_r - p2_x2_r;
+assign wir1_p3_x3_i = wir0_p3_x1_i - p2_x2_i;
 assign wir1_p3_x4_r = p2_x3_r + p2_x5_r;
 assign wir1_p3_x4_i = p2_x3_i + p2_x5_i; 
 
@@ -179,14 +179,14 @@ begin
 	else begin
 		p3_x0_r <= {p2_x0_r, 3'b000};
 		p3_x0_i <= {p2_x0_i, 3'b000};
-		p3_x1_r <= p2_x1_r[23:0];
-		p3_x1_i <= p2_x1_i[23:0];
-		p3_x2_r <= p2_x2_r[23:0];
-		p3_x2_i <= p2_x2_i[23:0];
-		p3_x3_r <= p2_x3_r[23:0];
-		p3_x3_i <= p2_x3_i[23:0];
-		p3_x4_r <= p2_x4_r[23:0];
-		p3_x4_i <= p2_x4_i[23:0];
+		p3_x1_r <= wir2_p3_x1_r[23:0];
+		p3_x1_i <= wir2_p3_x1_i[23:0];
+		p3_x2_r <= wir2_p3_x2_r[23:0];
+		p3_x2_i <= wir2_p3_x2_i[23:0];
+		p3_x3_r <= wir2_p3_x3_r[23:0];
+		p3_x3_i <= wir2_p3_x3_i[23:0];
+		p3_x4_r <= wir2_p3_x4_r[23:0];
+		p3_x4_i <= wir2_p3_x4_i[23:0];
 	end
 end
 always@(posedge clk) 
@@ -269,7 +269,6 @@ case (word_growth)
 endcase
 end
 
-integer j;
 always@(posedge clk)
 begin
 	if (!rst_n) begin
@@ -287,17 +286,17 @@ begin
 		dout_real[0] <= (wir2_p4_x0_r[5])? wir2_p4_x0_r[23:6]+2'sd1 : wir2_p4_x0_r[23:6]; 
 		dout_imag[0] <= (wir2_p4_x0_i[5])? wir2_p4_x0_i[23:6]+2'sd1 : wir2_p4_x0_i[23:6]; 
 
-		dout_real[1] <= (wir2_p4_x1_r[5])? wir2_p4_x1_r[23:6]+2'sd1 : wir2_p4_x1_r[23:6];
-		dout_imag[1] <= (wir2_p4_x1_i[5])? wir2_p4_x1_i[23:6]+2'sd1 : wir2_p4_x1_i[23:6];
+		dout_real[1] <= (wir2_p4_x2_r[5])? wir2_p4_x2_r[23:6]+2'sd1 : wir2_p4_x2_r[23:6];
+		dout_imag[1] <= (wir2_p4_x2_i[5])? wir2_p4_x2_i[23:6]+2'sd1 : wir2_p4_x2_i[23:6];
 
-		dout_real[2] <= (wir2_p4_x2_r[5])? wir2_p4_x2_r[23:6]+2'sd1 : wir2_p4_x2_r[23:6];
-		dout_imag[2] <= (wir2_p4_x2_i[5])? wir2_p4_x2_i[23:6]+2'sd1 : wir2_p4_x2_i[23:6];
+		dout_real[2] <= (wir2_p4_x3_r[5])? wir2_p4_x3_r[23:6]+2'sd1 : wir2_p4_x3_r[23:6];
+		dout_imag[2] <= (wir2_p4_x3_i[5])? wir2_p4_x3_i[23:6]+2'sd1 : wir2_p4_x3_i[23:6];
 
-		dout_real[3] <= (wir2_p4_x3_r[5])? wir2_p4_x3_r[23:6]+2'sd1 : wir2_p4_x3_r[23:6]; 
-		dout_imag[3] <= (wir2_p4_x3_i[5])? wir2_p4_x3_i[23:6]+2'sd1 : wir2_p4_x3_i[23:6]; 
+		dout_real[3] <= (wir2_p4_x4_r[5])? wir2_p4_x4_r[23:6]+2'sd1 : wir2_p4_x4_r[23:6]; 
+		dout_imag[3] <= (wir2_p4_x4_i[5])? wir2_p4_x4_i[23:6]+2'sd1 : wir2_p4_x4_i[23:6]; 
 
-		dout_real[4] <= (wir2_p4_x4_r[5])? wir2_p4_x4_r[23:6]+2'sd1 : wir2_p4_x4_r[23:6];
-		dout_imag[4] <= (wir2_p4_x4_i[5])? wir2_p4_x4_i[23:6]+2'sd1 : wir2_p4_x4_i[23:6];
+		dout_real[4] <= (wir2_p4_x1_r[5])? wir2_p4_x1_r[23:6]+2'sd1 : wir2_p4_x1_r[23:6];
+		dout_imag[4] <= (wir2_p4_x1_i[5])? wir2_p4_x1_i[23:6]+2'sd1 : wir2_p4_x1_i[23:6];
 
 		exp_out <= (val_r[1])? exp_in + word_growth : exp_out; 
 	end

@@ -1,7 +1,7 @@
 # set TOP_LEVEL_NAME top_tb
 # set TOP_LEVEL_NAME divider_pipe0_tb
 # set TOP_LEVEL_NAME mrd_twdl_tb
-set TOP_LEVEL_NAME mrd_rdx3_v2_tb
+set TOP_LEVEL_NAME mrd_rdx5_v2_tb
 
 # ----------------------------------------
 # Auto-generated simulation script msim_setup.tcl
@@ -75,19 +75,44 @@ vsim -t ns  -L work $TOP_LEVEL_NAME
 # add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/tw_real[1]}
 # add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/tw_imag[1]}
 
-add wave -radix signed {sim:/mrd_rdx3_v2_tb/in_val}
-add wave -radix signed {sim:/mrd_rdx3_v2_tb/din_real}
-add wave -radix signed {sim:/mrd_rdx3_v2_tb/din_imag}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/in_val}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/din_real}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/din_imag}
 
-add wave -radix signed {sim:/mrd_rdx3_v2_tb/out_val}
-add wave -radix signed {sim:/mrd_rdx3_v2_tb/dout_real}
-add wave -radix signed {sim:/mrd_rdx3_v2_tb/dout_imag}
-add wave -radix signed {sim:/mrd_rdx3_v2_tb/exp_out}
-add wave -radix signed {sim:/mrd_rdx3_v2_tb/din_real_2}
-add wave -radix signed {sim:/mrd_rdx3_v2_tb/din_imag_2}
-add wave -radix signed {sim:/mrd_rdx3_v2_tb/out_val_2}
-add wave -radix signed {sim:/mrd_rdx3_v2_tb/dout_real_2}
-add wave -radix signed {sim:/mrd_rdx3_v2_tb/dout_imag_2}
+# add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_v2_inst/p1_x0_r}
+# add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_v2_inst/p1_x1_r}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_v2_inst/p2_x1_r}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_v2_inst/p2_x2_r}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_v2_inst/p2_x3_r}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_v2_inst/p2_x4_r}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_v2_inst/p2_x5_r}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_v2_inst/p2_x1_i}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_v2_inst/p2_x2_i}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_v2_inst/p2_x3_i}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_v2_inst/p2_x4_i}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_v2_inst/p2_x5_i}
+
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_v2_inst/wir1_p3_x1_r}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_v2_inst/wir1_p3_x2_r}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_v2_inst/wir1_p3_x3_r}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_v2_inst/wir1_p3_x4_r}
+
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_v2_inst/p3_x0_r}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_v2_inst/p3_x1_r}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_v2_inst/p3_x2_r}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_v2_inst/p3_x3_r}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_v2_inst/p3_x4_r}
+
+
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/out_val}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/dout_real}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/dout_imag}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/exp_out}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/din_real_2}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/din_imag_2}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/out_val_2}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/dout_real_2}
+add wave -radix signed {sim:/mrd_rdx5_v2_tb/dout_imag_2}
 
 
 view structure
