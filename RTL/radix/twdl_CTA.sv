@@ -1,5 +1,5 @@
 module twdl_CTA #(parameter
-	wDataInOut = 30,
+	wDataInOut = 18,
 	delay_twdl = 23
 	)
  (
@@ -22,7 +22,7 @@ module twdl_CTA #(parameter
 	output rdreq_ff_addr
 );
 
-parameter  wDataTemp = 49;
+parameter  wDataTemp = 34;  //18 + 16  (1.17*1.15) 
 logic [delay_twdl-1:0]  valid_r;
 logic [0:4][7:0] rdaddr;
 logic signed [15:0] tw_real [0:4]; 
@@ -39,41 +39,24 @@ logic signed [wDataTemp-1:0] dout_imag_t_p1 [1:4];
 
 genvar i;
 integer j;
-// generate
-// for (i=0; i<5; i++) begin : gen0
-// always@(posedge clk)
-// begin
-// 	if (!rst_n)  begin
-// 		for (j=0; j<=delay_twdl-4; j++) begin
-// 			d_real_r[i][j] <= 0;
-// 			d_imag_r[i][j] <= 0;
-// 		end
-// 	end
-// 	else begin
-// 		for (j=1; j<=delay_twdl-4; j++) begin
-// 			d_real_r[i][j] <= d_real_r[i][j-1];
-// 			d_imag_r[i][j] <= d_imag_r[i][j-1];
-// 		end
-// 			d_real_r[i][0] <= din_real[i];
-// 			d_imag_r[i][0] <= din_imag[i];
-// 	end
-// end
-// end
-// endgenerate
 
 logic sclr;
 assign sclr = valid_r[delay_twdl-1] & (!valid_r[delay_twdl-2]);
+wire [23:0]  wir_whatever;
 generate
 for (i=0; i<5; i++) begin : gen0
 
 	ff_rdx_data ff_inst (
-		.data  ({din_real[i], din_imag[i]}),  //  fifo_input.datain
+		.data  ({24'd0, din_real[i], din_imag[i]}),  //  fifo_input.datain
 		.wrreq (in_val), //            .wrreq
 		.rdreq (valid_r[delay_twdl-7+3]), //            .rdreq
 		.clock (clk), //            .clk
 		.sclr  (sclr),  //            .sclr
-		.q     ({d_real_r[i], d_imag_r[i]})      // fifo_output.dataout
+		// .q     ({wir_whatever, d_real_r[i], d_imag_r[i]})      // fifo_output.dataout
+		.q     ()      // fifo_output.dataout
 	);
+	assign d_real_r[i] = 0;
+	assign d_imag_r[i] = 0;
 
 end
 endgenerate
@@ -92,25 +75,6 @@ end
 
 localparam An = 16384;
 localparam An_adj = 16384/1.647;
-// generate
-// for (i=1; i<5; i++) begin : ctc
-// coeff_twdl_CTA #(
-// 	.wDataIn (12),
-// 	.wDataOut (16),
-// 	.An (An_adj)
-// 	)
-// coeff_twdl_CTA_inst	(
-// 	.clk (clk),
-// 	.rst_n (rst_n),
-
-// 	.numerator (twdl_numrtr[i]),
-// 	.demoninator (twdl_demontr),
-
-// 	.dout_real (tw_real[i]),
-// 	.dout_imag (tw_imag[i])
-// );
-// end
-// endgenerate
 
 coeff_twdl_CTA #(
 	.wDataIn (12),
@@ -253,12 +217,20 @@ begin
 	end
 end
 
-assign dout_real[i] = (dout_real_t[i][13])? 
-                      dout_real_t[i][wDataInOut+14-1:14] + 2'sd1
-                      : dout_real_t[i][wDataInOut+14-1:14] ;
-assign dout_imag[i] = (dout_imag_t[i][13])? 
-                      dout_imag_t[i][wDataInOut+14-1:14] + 2'sd1
-                      : dout_imag_t[i][wDataInOut+14-1:14] ;
+// assign dout_real[i] = (dout_real_t[i][13])? 
+//                       dout_real_t[i][wDataInOut+14-1:14] + 2'sd1
+//                       : dout_real_t[i][wDataInOut+14-1:14] ;
+// assign dout_imag[i] = (dout_imag_t[i][13])? 
+//                       dout_imag_t[i][wDataInOut+14-1:14] + 2'sd1
+//                       : dout_imag_t[i][wDataInOut+14-1:14] ;
+
+assign dout_real[i] = (dout_real_t[i][14])? 
+                      dout_real_t[i][wDataInOut+15-1:15] + 2'sd1
+                      : dout_real_t[i][wDataInOut+15-1:15] ;
+assign dout_imag[i] = (dout_imag_t[i][14])? 
+                      dout_imag_t[i][wDataInOut+15-1:15] + 2'sd1
+                      : dout_imag_t[i][wDataInOut+15-1:15] ;
+
 end
 endgenerate
 

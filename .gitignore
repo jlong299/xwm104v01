@@ -10,3 +10,4 @@ Quartus/
 modelsim/libraries/
 RTL/*/*.bak
 IP/*/synth/*.qicache
+modelsim/*.vstf
