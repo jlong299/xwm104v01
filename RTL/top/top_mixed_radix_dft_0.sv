@@ -18,6 +18,7 @@ module top_mixed_radix_dft_0 (
 	source_eop,
 	source_real,
 	source_imag,
+	source_exp,
 	dftpts_out
 );
 
@@ -38,6 +39,7 @@ output reg source_sop;
 output reg source_eop;
 output reg [29:0] source_real;
 output reg [29:0] source_imag;
+output [3:0] source_exp;
 output reg [11:0] dftpts_out;
 
 reg rst_n_sync, rst_n_r0, rst_n_r1;
@@ -65,6 +67,7 @@ assign source_sop = source_st.sop;
 assign source_eop = source_st.eop;
 assign source_real = source_st.dout_real;
 assign source_imag = source_st.dout_imag;
+assign source_exp = source_st.exp;
 assign dftpts_out = source_st.dftpts;
 assign source_st.ready = source_ready;
 

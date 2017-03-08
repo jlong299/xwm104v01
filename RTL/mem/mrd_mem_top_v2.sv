@@ -210,6 +210,7 @@ always@(posedge clk) begin
 	 out_data.dout_imag <= (fsm_lastRd_source && in_rdx2345_data.valid)? 
             in_rdx2345_data.d_imag[0] : rdRAM.dout_imag[bank_index_source_r] ;
 end
+assign out_data.exp = in_rdx2345_data.exp;
 
 
 //------------------------------------------------

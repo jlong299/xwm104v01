@@ -17,20 +17,20 @@ logic dft_val;
 logic signed [wDFTout-1:0] dft_real [0:4];
 logic signed [wDFTout-1:0] dft_imag [0:4];
 logic val_rdx4;
-logic signed [wDFTout-1:0] real_rdx4 [0:4];
-logic signed [wDFTout-1:0] imag_rdx4 [0:4];
+logic signed [18-1:0] real_rdx4 [0:4];
+logic signed [18-1:0] imag_rdx4 [0:4];
 
 logic val_rdx5;
-logic signed [wDFTout-1:0] real_rdx5 [0:4];
-logic signed [wDFTout-1:0] imag_rdx5 [0:4];
+logic signed [18-1:0] real_rdx5 [0:4];
+logic signed [18-1:0] imag_rdx5 [0:4];
 
 logic val_rdx3;
-logic signed [wDFTout-1:0] real_rdx3 [0:4];
-logic signed [wDFTout-1:0] imag_rdx3 [0:4];
+logic signed [18-1:0] real_rdx3 [0:4];
+logic signed [18-1:0] imag_rdx3 [0:4];
 
 logic val_rdx2;
-logic signed [wDFTout-1:0] real_rdx2 [0:4];
-logic signed [wDFTout-1:0] imag_rdx2 [0:4];
+logic signed [18-1:0] real_rdx2 [0:4];
+logic signed [18-1:0] imag_rdx2 [0:4];
 	
 	// integer wr_file;
 	// initial begin
@@ -40,25 +40,6 @@ logic signed [wDFTout-1:0] imag_rdx2 [0:4];
 	// 		$finish;
 	// 	end
 	// end
-
-// always@(posedge clk)
-// begin
-// 	bank_index_r[0] <= from_mem.bank_index;
-// 	bank_addr_r[0] <= from_mem.bank_addr;
-// 	bank_index_r[1:delay_twdl-1] <= bank_index_r[0:delay_twdl-2];
-// 	bank_addr_r[1:delay_twdl-1] <= bank_addr_r[0:delay_twdl-2];
-// end
-// always@(posedge clk)
-// begin
-// 	if (from_mem.twdl_demontr == 12'd3) begin
-// 		to_mem.bank_index <= bank_index_r[3];
-// 		to_mem.bank_addr <= bank_addr_r[3];
-// 	end
-// 	else begin
-// 		to_mem.bank_index <= bank_index_r[delay_twdl-1];
-// 		to_mem.bank_addr <= bank_addr_r[delay_twdl-1];
-// 	end
-// end
 
 wire [59:0] ff_data, q;
 wire sclr_ff_addr, rdreq_ff_addr;
@@ -83,108 +64,214 @@ assign {to_mem.bank_index[3],to_mem.bank_addr[3]} = q[43:33];
 assign {to_mem.bank_index[4],to_mem.bank_addr[4]} = q[54:44];
 
 
-mrd_dft_rdx4 #(
-	.wDataInOut (30)
-	)
-dft_rdx4 (
+// mrd_dft_rdx4 #(
+// 	.wDataInOut (30)
+// 	)
+// dft_rdx4 (
+// 	.clk  (clk),
+// 	.rst_n  (rst_n),
+
+// 	.in_val  (from_mem.valid),
+// 	.din_real  (from_mem.d_real),
+// 	.din_imag  (from_mem.d_imag),
+
+// 	.out_val  (val_rdx4),
+// 	.dout_real  (real_rdx4),
+// 	.dout_imag  (imag_rdx4)
+// 	);
+
+// mrd_dft_rdx5 #(
+// 	.wDataInOut (30)
+// 	)
+// dft_rdx5 (
+// 	.clk  (clk),
+// 	.rst_n  (rst_n),
+
+// 	.in_val  (from_mem.valid),
+// 	.din_real  (from_mem.d_real),
+// 	.din_imag  (from_mem.d_imag),
+
+// 	.out_val  (val_rdx5),
+// 	.dout_real  (real_rdx5),
+// 	.dout_imag  (imag_rdx5)
+// 	);
+
+// mrd_dft_rdx3 #(
+// 	.wDataInOut (30)
+// 	)
+// dft_rdx3 (
+// 	.clk  (clk),
+// 	.rst_n  (rst_n),
+
+// 	.in_val  (from_mem.valid),
+// 	.din_real  (from_mem.d_real),
+// 	.din_imag  (from_mem.d_imag),
+
+// 	.out_val  (val_rdx3),
+// 	.dout_real  (real_rdx3),
+// 	.dout_imag  (imag_rdx3)
+// 	);
+
+// mrd_dft_rdx2 #(
+// 	.wDataInOut (30)
+// 	)
+// dft_rdx2 (
+// 	.clk  (clk),
+// 	.rst_n  (rst_n),
+
+// 	.in_val  (from_mem.valid),
+// 	.din_real  (from_mem.d_real),
+// 	.din_imag  (from_mem.d_imag),
+
+// 	.out_val  (val_rdx2),
+// 	.dout_real  (real_rdx2),
+// 	.dout_imag  (imag_rdx2)
+// 	);
+
+
+
+genvar i;
+logic signed [18-1:0] from_mem_d_real [0:4];
+logic signed [18-1:0] from_mem_d_imag [0:4];
+generate 
+	for (i=0; i<=4; i++) begin
+		assign from_mem_d_real[i] = from_mem.d_real[i][17:0];
+		assign from_mem_d_imag[i] = from_mem.d_imag[i][17:0];
+	end
+endgenerate
+logic [3:0] exp_out, exp_in;
+logic [3:0] exp_out_rdx4;
+logic [3:0] exp_out_rdx3;
+logic [3:0] exp_out_rdx5;
+
+
+mrd_rdx4_2_v2
+rdx4_2_v2 (
 	.clk  (clk),
 	.rst_n  (rst_n),
 
 	.in_val  (from_mem.valid),
-	.din_real  (from_mem.d_real),
-	.din_imag  (from_mem.d_imag),
+	.din_real  (from_mem_d_real),
+	.din_imag  (from_mem_d_imag),
+	.factor (from_mem.factor),
+
+	.margin_in (2'b00),
+	.exp_in (exp_in),
 
 	.out_val  (val_rdx4),
 	.dout_real  (real_rdx4),
-	.dout_imag  (imag_rdx4)
+	.dout_imag  (imag_rdx4),
+	.exp_out (exp_out_rdx4)
 	);
 
-mrd_dft_rdx5 #(
-	.wDataInOut (30)
-	)
-dft_rdx5 (
+mrd_rdx5_v2 
+rdx5_v2 (
 	.clk  (clk),
 	.rst_n  (rst_n),
 
 	.in_val  (from_mem.valid),
-	.din_real  (from_mem.d_real),
-	.din_imag  (from_mem.d_imag),
+	.din_real  (from_mem_d_real),
+	.din_imag  (from_mem_d_imag),
+
+	.margin_in (2'b00),
+	.exp_in (exp_in),
 
 	.out_val  (val_rdx5),
 	.dout_real  (real_rdx5),
-	.dout_imag  (imag_rdx5)
+	.dout_imag  (imag_rdx5),
+	.exp_out (exp_out_rdx5)
 	);
 
-mrd_dft_rdx3 #(
-	.wDataInOut (30)
-	)
-dft_rdx3 (
+mrd_rdx3_v2 
+rdx3_v2 (
 	.clk  (clk),
 	.rst_n  (rst_n),
 
 	.in_val  (from_mem.valid),
-	.din_real  (from_mem.d_real),
-	.din_imag  (from_mem.d_imag),
+	.din_real  (from_mem_d_real),
+	.din_imag  (from_mem_d_imag),
+
+	.margin_in (2'b00),
+	.exp_in (exp_in),
 
 	.out_val  (val_rdx3),
 	.dout_real  (real_rdx3),
-	.dout_imag  (imag_rdx3)
+	.dout_imag  (imag_rdx3),
+	.exp_out (exp_out_rdx3)
 	);
 
-mrd_dft_rdx2 #(
-	.wDataInOut (30)
-	)
-dft_rdx2 (
-	.clk  (clk),
-	.rst_n  (rst_n),
-
-	.in_val  (from_mem.valid),
-	.din_real  (from_mem.d_real),
-	.din_imag  (from_mem.d_imag),
-
-	.out_val  (val_rdx2),
-	.dout_real  (real_rdx2),
-	.dout_imag  (imag_rdx2)
-	);
-
-// always@(*)
+// always@(posedge clk)
 // begin
-//  	case (from_mem.factor)
-// 	3'd4 :
-//  		dft_val = val_rdx4;
-//  	3'd5 :
-//  		dft_val = val_rdx5;
-//  	3'd3 :
-//  		dft_val = val_rdx3;
-//  	default :
-//  		dft_val = val_rdx2;
-//  	endcase
+// 	case (from_mem.factor)
+// 	3'd4 : begin
+// 		dft_real <= real_rdx4;
+// 		dft_imag <= imag_rdx4;
+//  		dft_val <= val_rdx4;
+// 	end
+// 	3'd5 : begin
+// 		dft_real <= real_rdx5;
+// 		dft_imag <= imag_rdx5;
+//  		dft_val <= val_rdx5;
+// 	end
+// 	3'd3 : begin
+// 		dft_real <= real_rdx3;
+// 		dft_imag <= imag_rdx3;
+//  		dft_val <= val_rdx3;
+// 	end
+// 	default : begin
+// 		dft_real <= real_rdx2;
+// 		dft_imag <= imag_rdx2;
+//  		dft_val <= val_rdx2;
+// 	end
+// 	endcase
 // end
-always@(posedge clk)
+
+integer j;
+always@(*)
 begin
 	case (from_mem.factor)
 	3'd4 : begin
-		dft_real <= real_rdx4;
-		dft_imag <= imag_rdx4;
- 		dft_val <= val_rdx4;
+		for (j=0; j<=4; j++) begin
+		dft_real[j] = {{12{real_rdx4[j][17]}}, real_rdx4[j]};
+		dft_imag[j] = {{12{imag_rdx4[j][17]}}, imag_rdx4[j]};
+		end
+ 		dft_val = val_rdx4;
+ 		exp_out = exp_out_rdx4;
 	end
 	3'd5 : begin
-		dft_real <= real_rdx5;
-		dft_imag <= imag_rdx5;
- 		dft_val <= val_rdx5;
+		for (j=0; j<=4; j++) begin
+		dft_real[j] = {{12{real_rdx5[j][17]}}, real_rdx5[j]};
+		dft_imag[j] = {{12{imag_rdx5[j][17]}}, imag_rdx5[j]};
+		end
+ 		dft_val = val_rdx5;
+ 		exp_out = exp_out_rdx5;
 	end
 	3'd3 : begin
-		dft_real <= real_rdx3;
-		dft_imag <= imag_rdx3;
- 		dft_val <= val_rdx3;
+		for (j=0; j<=4; j++) begin
+		dft_real[j] = {{12{real_rdx3[j][17]}}, real_rdx3[j]};
+		dft_imag[j] = {{12{imag_rdx3[j][17]}}, imag_rdx3[j]};
+		end
+ 		dft_val = val_rdx3;
+ 		exp_out = exp_out_rdx3;
 	end
 	default : begin
-		dft_real <= real_rdx2;
-		dft_imag <= imag_rdx2;
- 		dft_val <= val_rdx2;
+		for (j=0; j<=4; j++) begin
+		dft_real[j] = {{12{real_rdx4[j][17]}}, real_rdx4[j]};
+		dft_imag[j] = {{12{imag_rdx4[j][17]}}, imag_rdx4[j]};
+		end
+ 		dft_val = val_rdx4;
+ 		exp_out = exp_out_rdx4;
 	end
 	endcase
 end
+
+logic dft_val_r;
+always@(posedge clk) begin
+if (!rst_n) exp_in <= 0;
+else exp_in <= ( dft_val & ~dft_val_r)? exp_out : exp_in;
+end
+always@(posedge clk) to_mem.exp <= exp_in;
+always@(posedge clk) dft_val_r <= dft_val;
 
 twdl_CTA #(
 	.wDataInOut (30),

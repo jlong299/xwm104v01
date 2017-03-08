@@ -14,7 +14,8 @@ logic [11:0] dftpts_in;
 logic inverse;
 
 logic source_valid, source_sop, source_eop;
-logic [29:0]  source_real, source_imag;
+logic signed [29:0]  source_real, source_imag;
+logic [3:0] source_exp;
 logic [3:0]  cnt_sink_sop;
 
 integer 	data_file, scan_file, wr_file;
@@ -150,11 +151,13 @@ top_inst(
 	.source_eop  (source_eop),
 	.source_real  (source_real),
 	.source_imag  (source_imag),
+	.source_exp (source_exp),
 	.dftpts_out  ()
 );
 
 
 logic [15:0]  cnt_val_debug, cnt_close_file;
+logic signed [29:0]  real_adj, imag_adj;
 always@(posedge clk)
 begin
 	if (!rst_n) begin
@@ -166,7 +169,9 @@ begin
 			if (source_valid)
 			begin
 				cnt_val_debug <= cnt_val_debug + 16'd1;
-				$fwrite(wr_file, "%d %d\n", $signed(source_real), $signed(source_imag));
+				real_adj = source_real*$signed(2**source_exp);
+				imag_adj = source_imag*$signed(2**source_exp);
+				$fwrite(wr_file, "%d %d\n", $signed(real_adj), $signed(imag_adj));
 			end
 
 			// if (cnt_val_debug==dftpts)  
