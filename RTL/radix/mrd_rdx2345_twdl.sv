@@ -2,6 +2,7 @@ module mrd_rdx2345_twdl (
 	input clk,    
 	input rst_n,  
 
+	input sop,
 	mrd_rdx2345_if from_mem,
 	mrd_rdx2345_if to_mem
 );
@@ -268,7 +269,9 @@ end
 logic dft_val_r;
 always@(posedge clk) begin
 if (!rst_n) exp_in <= 0;
-else exp_in <= ( dft_val & ~dft_val_r)? exp_out : exp_in;
+else
+	if (sop)  exp_in <= 0; 
+	else exp_in <= ( dft_val & ~dft_val_r)? exp_out : exp_in;
 end
 always@(posedge clk) to_mem.exp <= exp_in;
 always@(posedge clk) dft_val_r <= dft_val;

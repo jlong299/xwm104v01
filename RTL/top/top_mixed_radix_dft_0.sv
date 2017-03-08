@@ -97,6 +97,7 @@ rdx2345_twdl(
 	.clk (clk),
 	.rst_n (rst_n_sync), 
 
+	.sop (sink_sop),
 	.from_mem (mem_to_rdx2345),
 	.to_mem (rdx2345_to_mem)
 	);
