@@ -7,8 +7,8 @@ module mrd_rdx2345_twdl (
 	mrd_rdx2345_if to_mem
 );
 
-localparam  wDFTout = 30;
-localparam  wDFTin = 30;
+localparam  wDFTout = 18;
+localparam  wDFTin = 18;
 
 localparam  delay_twdl = 25;
 
@@ -131,20 +131,10 @@ assign {to_mem.bank_index[4],to_mem.bank_addr[4]} = q[54:44];
 
 
 
-genvar i;
-logic signed [18-1:0] from_mem_d_real [0:4];
-logic signed [18-1:0] from_mem_d_imag [0:4];
-generate 
-	for (i=0; i<=4; i++) begin
-		assign from_mem_d_real[i] = from_mem.d_real[i][17:0];
-		assign from_mem_d_imag[i] = from_mem.d_imag[i][17:0];
-	end
-endgenerate
 logic [3:0] exp_out, exp_in;
 logic [3:0] exp_out_rdx4;
 logic [3:0] exp_out_rdx3;
 logic [3:0] exp_out_rdx5;
-
 
 mrd_rdx4_2_v2
 rdx4_2_v2 (
@@ -152,8 +142,8 @@ rdx4_2_v2 (
 	.rst_n  (rst_n),
 
 	.in_val  (from_mem.valid),
-	.din_real  (from_mem_d_real),
-	.din_imag  (from_mem_d_imag),
+	.din_real  (from_mem.d_real),
+	.din_imag  (from_mem.d_imag),
 	.factor (from_mem.factor),
 
 	.margin_in (2'b00),
@@ -171,8 +161,8 @@ rdx5_v2 (
 	.rst_n  (rst_n),
 
 	.in_val  (from_mem.valid),
-	.din_real  (from_mem_d_real),
-	.din_imag  (from_mem_d_imag),
+	.din_real  (from_mem.d_real),
+	.din_imag  (from_mem.d_imag),
 
 	.margin_in (2'b00),
 	.exp_in (exp_in),
@@ -189,8 +179,8 @@ rdx3_v2 (
 	.rst_n  (rst_n),
 
 	.in_val  (from_mem.valid),
-	.din_real  (from_mem_d_real),
-	.din_imag  (from_mem_d_imag),
+	.din_real  (from_mem.d_real),
+	.din_imag  (from_mem.d_imag),
 
 	.margin_in (2'b00),
 	.exp_in (exp_in),
@@ -232,40 +222,24 @@ always@(*)
 begin
 	case (from_mem.factor)
 	3'd4 : begin
-		// for (j=0; j<=4; j++) begin
-		// dft_real[j] = {{12{real_rdx4[j][17]}}, real_rdx4[j]};
-		// dft_imag[j] = {{12{imag_rdx4[j][17]}}, imag_rdx4[j]};
-		// end
 		dft_real = real_rdx4;
 		dft_imag = imag_rdx4;
  		dft_val = val_rdx4;
  		exp_out = exp_out_rdx4;
 	end
 	3'd5 : begin
-		// for (j=0; j<=4; j++) begin
-		// dft_real[j] = {{12{real_rdx5[j][17]}}, real_rdx5[j]};
-		// dft_imag[j] = {{12{imag_rdx5[j][17]}}, imag_rdx5[j]};
-		// end
 		dft_real = real_rdx5;
 		dft_imag = imag_rdx5;
  		dft_val = val_rdx5;
  		exp_out = exp_out_rdx5;
 	end
 	3'd3 : begin
-		// for (j=0; j<=4; j++) begin
-		// dft_real[j] = {{12{real_rdx3[j][17]}}, real_rdx3[j]};
-		// dft_imag[j] = {{12{imag_rdx3[j][17]}}, imag_rdx3[j]};
-		// end
 		dft_real = real_rdx3;
 		dft_imag = imag_rdx3;
  		dft_val = val_rdx3;
  		exp_out = exp_out_rdx3;
 	end
 	default : begin
-		// for (j=0; j<=4; j++) begin
-		// dft_real[j] = {{12{real_rdx4[j][17]}}, real_rdx4[j]};
-		// dft_imag[j] = {{12{imag_rdx4[j][17]}}, imag_rdx4[j]};
-		// end
 		dft_real = real_rdx4;
 		dft_imag = imag_rdx4;
  		dft_val = val_rdx4;
@@ -284,8 +258,6 @@ end
 always@(posedge clk) to_mem.exp <= exp_in;
 always@(posedge clk) dft_val_r <= dft_val;
 
-logic signed [18-1:0] to_mem_d_real [0:4];
-logic signed [18-1:0] to_mem_d_imag [0:4];
 twdl_CTA #(
 	.wDataInOut (18),
 	.delay_twdl (delay_twdl)
@@ -303,14 +275,12 @@ twdl (
 	.din_imag  (dft_imag),
 
 	.out_val  (to_mem.valid),
-	.dout_real  (to_mem_d_real),
-	.dout_imag  (to_mem_d_imag),
+	.dout_real  (to_mem.d_real),
+	.dout_imag  (to_mem.d_imag),
 	
 	.sclr_ff_addr (sclr_ff_addr),
 	.rdreq_ff_addr (rdreq_ff_addr)
 	);
-assign to_mem.d_real = {{12{to_mem_d_real[17]}}, to_mem_d_real};
-assign to_mem.d_imag = {{12{to_mem_d_imag[17]}}, to_mem_d_imag};
 
 // logic [15:0]  cnt_val_debug;
 // always@(posedge clk)

@@ -4,7 +4,7 @@
 interface mrd_st_if ();
 	logic valid, ready, sop, eop;
 	logic [17:0] din_real, din_imag;
-	logic [29:0] dout_real, dout_imag;
+	logic [18-1:0] dout_real, dout_imag;
 	logic [3:0] exp;
 	logic [11:0] dftpts; // Number of DFT points
 	logic inverse;
@@ -18,8 +18,8 @@ endinterface
 interface mrd_rdx2345_if ();
 	logic [2:0]  factor;
 	logic valid;
-	logic signed [29:0] d_real [0:4];
-	logic signed [29:0] d_imag [0:4];
+	logic signed [18-1:0] d_real [0:4];
+	logic signed [18-1:0] d_imag [0:4];
 	logic [3:0] exp;
 	// logic signed [0:4][29:0] d_real ;
 	// logic signed [0:4][29:0] d_imag ;

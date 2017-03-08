@@ -22,7 +22,7 @@ module twdl_CTA #(parameter
 	output rdreq_ff_addr
 );
 
-parameter  wDataTemp = 34;  //18 + 16  (1.17*1.15) 
+parameter  wDataTemp = 34;  //18 + 16  (1.17*2.14) 
 logic [delay_twdl-1:0]  valid_r;
 logic [0:4][7:0] rdaddr;
 logic signed [15:0] tw_real [0:4]; 
@@ -52,12 +52,8 @@ for (i=0; i<5; i++) begin : gen0
 		.rdreq (valid_r[delay_twdl-7+3]), //            .rdreq
 		.clock (clk), //            .clk
 		.sclr  (sclr),  //            .sclr
-		// .q     ({wir_whatever, d_real_r[i], d_imag_r[i]})      // fifo_output.dataout
-		.q     ()      // fifo_output.dataout
+		.q     ({wir_whatever, d_real_r[i], d_imag_r[i]})      // fifo_output.dataout
 	);
-	assign d_real_r[i] = 0;
-	assign d_imag_r[i] = 0;
-
 end
 endgenerate
 
@@ -200,10 +196,10 @@ begin
 				//                   - d_imag_r[i][delay_twdl-5]*tw_imag[i];
 				// dout_imag_t[i] <= d_real_r[i][delay_twdl-5]*tw_imag[i] 
 				//                   + d_imag_r[i][delay_twdl-5]*tw_real[i];
-				dout_real_t_p0[i] <= d_real_r[i]*tw_real_dly[i];
+				dout_real_t_p0[i] <= d_real_r[i]*tw_real_dly[i];  
 				dout_real_t_p1[i] <= d_imag_r[i]*tw_imag_dly[i];
 				dout_imag_t_p0[i] <= d_real_r[i]*tw_imag_dly[i];
-				dout_imag_t_p1[i] <= d_imag_r[i]*tw_real_dly[i];
+				dout_imag_t_p1[i] <= d_imag_r[i]*tw_real_dly[i]; // 1.17*2.14
 			end
 			else begin
 				dout_real_t_p0[i] <= 0;
@@ -217,19 +213,13 @@ begin
 	end
 end
 
-// assign dout_real[i] = (dout_real_t[i][13])? 
-//                       dout_real_t[i][wDataInOut+14-1:14] + 2'sd1
-//                       : dout_real_t[i][wDataInOut+14-1:14] ;
-// assign dout_imag[i] = (dout_imag_t[i][13])? 
-//                       dout_imag_t[i][wDataInOut+14-1:14] + 2'sd1
-//                       : dout_imag_t[i][wDataInOut+14-1:14] ;
-
-assign dout_real[i] = (dout_real_t[i][14])? 
-                      dout_real_t[i][wDataInOut+15-1:15] + 2'sd1
-                      : dout_real_t[i][wDataInOut+15-1:15] ;
-assign dout_imag[i] = (dout_imag_t[i][14])? 
-                      dout_imag_t[i][wDataInOut+15-1:15] + 2'sd1
-                      : dout_imag_t[i][wDataInOut+15-1:15] ;
+// 1.17*2.14   An = 16384 = 2^14
+assign dout_real[i] = (dout_real_t[i][13])? 
+                      dout_real_t[i][wDataInOut+14-1:14] + 2'sd1
+                      : dout_real_t[i][wDataInOut+14-1:14] ;
+assign dout_imag[i] = (dout_imag_t[i][13])? 
+                      dout_imag_t[i][wDataInOut+14-1:14] + 2'sd1
+                      : dout_imag_t[i][wDataInOut+14-1:14] ;
 
 end
 endgenerate

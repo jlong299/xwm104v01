@@ -37,8 +37,8 @@ output reg source_valid;
 input  source_ready;
 output reg source_sop;
 output reg source_eop;
-output reg [29:0] source_real;
-output reg [29:0] source_imag;
+output reg [17:0] source_real;
+output reg [17:0] source_imag;
 output [3:0] source_exp;
 output reg [11:0] dftpts_out;
 

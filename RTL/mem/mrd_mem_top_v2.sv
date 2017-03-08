@@ -153,6 +153,7 @@ end
 //-------------------------------------------
 //--------------  7 RAMs --------------------
 //-------------------------------------------
+wire [23:0] wir_whatever;
 genvar i;
 generate
 	for (i=0; i<7; i++) begin : RAM_banks
@@ -160,12 +161,12 @@ generate
 		.clock (clk),
 		.wren (wrRAM.wren[i]),
 		.wraddress (wrRAM.wraddr[i]),
-		.data ({wrRAM.din_real[i], wrRAM.din_imag[i]}),
+		.data ({24'd0, wrRAM.din_real[i], wrRAM.din_imag[i]}),
 		// .din_imag (wrRAM.din_imag[i]),
 
 		.rden (rdRAM.rden[i]),
 		.rdaddress (rdRAM.rdaddr[i]),
-		.q ({rdRAM.dout_real[i], rdRAM.dout_imag[i]})
+		.q ({wir_whatever, rdRAM.dout_real[i], rdRAM.dout_imag[i]})
 		// .dout_imag (rdRAM.dout_imag[i])
 		);
 	end
@@ -181,8 +182,10 @@ always@(*)
 begin
 if (fsm==Sink) 
 begin
-	wrRAM.din_real[i] = { {12{din_real_r[0][17]}},din_real_r[0] };
-	wrRAM.din_imag[i] = { {12{din_imag_r[0][17]}},din_imag_r[0] };
+	// wrRAM.din_real[i] = { {12{din_real_r[0][17]}},din_real_r[0] };
+	// wrRAM.din_imag[i] = { {12{din_imag_r[0][17]}},din_imag_r[0] };
+	wrRAM.din_real[i] = din_real_r[0];
+	wrRAM.din_imag[i] = din_imag_r[0];
 end
 else 
 begin
@@ -199,8 +202,8 @@ assign wrRAM.wren[i] = (fsm==Sink)? (wrRAM_FSMsink.wren[i] & valid_r[0])
 assign rdRAM.rdaddr[i]= (fsm==Rd)? rdRAM_FSMrd.rdaddr[i] : bank_addr_source;
 assign rdRAM.rden[i] = (fsm==Rd)? rdRAM_FSMrd.rden[i] : 
                  (rdRAM_FSMsource.rden[i] & fsm_lastRd_source);
-assign rdRAM_FSMrd.dout_real[i] = (fsm==Rd)? rdRAM.dout_real[i] : 30'd0;
-assign rdRAM_FSMrd.dout_imag[i] = (fsm==Rd)? rdRAM.dout_imag[i] : 30'd0;
+assign rdRAM_FSMrd.dout_real[i] = (fsm==Rd)? rdRAM.dout_real[i] : 18'd0;
+assign rdRAM_FSMrd.dout_imag[i] = (fsm==Rd)? rdRAM.dout_imag[i] : 18'd0;
 end
 endgenerate 
 

@@ -1,7 +1,7 @@
 // "mrd" refers to "mixed radix dft"
 
 package mrd_mem_pkt;
-	parameter int wDATA = 30;
+	parameter int wDATA = 18;
 	parameter int wADDR = 8;
 endpackage  // globals
 

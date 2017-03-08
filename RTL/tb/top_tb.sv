@@ -14,7 +14,7 @@ logic [11:0] dftpts_in;
 logic inverse;
 
 logic source_valid, source_sop, source_eop;
-logic signed [29:0]  source_real, source_imag;
+logic signed [17:0]  source_real, source_imag;
 logic [3:0] source_exp;
 logic [3:0]  cnt_sink_sop;
 
