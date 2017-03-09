@@ -290,7 +290,7 @@ logic [1:0] valid_r;
 logic signed [18-1:0] abs_real [0:4];
 logic signed [18-1:0] abs_imag [0:4];
 generate
-for (i=0; i<=4; i++) begin
+for (i=0; i<=4; i++) begin : temp0
 	assign abs_real[i] = (to_mem.d_real[i][17])? (-to_mem.d_real[i]) : to_mem.d_real[i];
 	assign abs_imag[i] = (to_mem.d_imag[i][17])? (-to_mem.d_imag[i]) : to_mem.d_imag[i];
 end

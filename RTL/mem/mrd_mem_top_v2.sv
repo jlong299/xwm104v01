@@ -72,7 +72,7 @@ mrd_mem_wr wrRAM_FSMsink();
 mrd_mem_rd rdRAM_FSMsource();
 
 logic [2:0] fsm, fsm_r;
-parameter Idle = 3'd0, Sink = 3'd1, Wait_to_rd = 3'd2,
+localparam Idle = 3'd0, Sink = 3'd1, Wait_to_rd = 3'd2,
   			Rd = 3'd3,  Wait_wr_end = 3'd4,  Source = 3'd5;
 
 //------------ Obtain parameters from ctrl -------------
@@ -193,13 +193,13 @@ begin
 	wrRAM.din_imag[i] = wrRAM_FSMrd.din_imag[i];
 end		
 end	
-assign wrRAM.wraddr[i]= (fsm==Sink)? wrRAM_FSMsink.wraddr
+assign wrRAM.wraddr[i]= (fsm==Sink)? wrRAM_FSMsink.wraddr[i]
                       : wrRAM_FSMrd.wraddr[i];
 assign wrRAM.wren[i] = (fsm==Sink)? (wrRAM_FSMsink.wren[i] & valid_r[0])
                   : wrRAM_FSMrd.wren[i] ; 
 
 
-assign rdRAM.rdaddr[i]= (fsm==Rd)? rdRAM_FSMrd.rdaddr[i] : bank_addr_source;
+assign rdRAM.rdaddr[i]= (fsm==Rd)? rdRAM_FSMrd.rdaddr[i] : bank_addr_source[mrd_mem_pkt::wADDR-1:0];
 assign rdRAM.rden[i] = (fsm==Rd)? rdRAM_FSMrd.rden[i] : 
                  (rdRAM_FSMsource.rden[i] & fsm_lastRd_source);
 assign rdRAM_FSMrd.dout_real[i] = (fsm==Rd)? rdRAM.dout_real[i] : 18'd0;
@@ -213,7 +213,7 @@ always@(posedge clk) begin
 	 out_data.dout_imag <= (fsm_lastRd_source && in_rdx2345_data.valid)? 
             in_rdx2345_data.d_imag[0] : rdRAM.dout_imag[bank_index_source_r] ;
 end
-assign out_data.exp = in_rdx2345_data.exp;
+always@(posedge clk) out_data.exp <= in_rdx2345_data.exp;
 
 
 //------------------------------------------------

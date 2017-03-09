@@ -14,7 +14,8 @@ logic [11:0] dftpts_in;
 logic inverse;
 
 logic source_valid, source_sop, source_eop;
-logic [29:0]  source_real, source_imag;
+logic [17:0]  source_real, source_imag;
+logic [3:0] source_exp;
 
 logic [15:0]  cnt0;
 localparam logic [15:0] gap = 16'd3000;
@@ -82,6 +83,7 @@ top_inst(
 	.source_eop  (source_eop),
 	.source_real  (source_real),
 	.source_imag  (source_imag),
+	.source_exp (source_exp),
 	.dftpts_out  ()
 );
 

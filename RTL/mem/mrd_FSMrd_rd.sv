@@ -25,7 +25,7 @@ module mrd_FSMrd_rd #(parameter
 );
 // parameter Idle = 3'd0, Sink = 3'd1, Wait_to_rd = 3'd2,
 //   			Rd = 3'd3,  Wait_wr_end = 3'd4,  Source = 3'd5;
-parameter Idle = 3'd0, Rd = 3'd3, Wait_wr_end = 3'd4, Source = 3'd5;
+localparam Idle = 3'd0, Rd = 3'd3, Wait_wr_end = 3'd4, Source = 3'd5;
 
 logic [0:4][mrd_mem_pkt::wADDR-1:0]  bank_addr_rd, bank_addr_rd_r, bank_addr_rd_rr;
 logic [0:4][2:0]  bank_index_rd, bank_index_rd_r, bank_index_rd_rr,
@@ -204,11 +204,11 @@ endgenerate
 always@(*)
 begin
 	////// change in_dly in mrd_mem_top_v2.sv
-	out_rdx2345_data.d_real[3] = (fsm==Rd && cnt_stage==3'd0)?
-	        {{(30-18){din_real_r[in_dly][17]}}, din_real_r[in_dly]} : 
+	out_rdx2345_data.d_real[3] = (fsm==Rd && cnt_stage==3'd0)? din_real_r[in_dly] :
+	        // {{(30-18){din_real_r[in_dly][17]}}, din_real_r[in_dly]} : 
 	        rdRAM_FSMrd.dout_real[(bank_index_rd_rr[3])]; 
-	out_rdx2345_data.d_imag[3] = (fsm==Rd && cnt_stage==3'd0)?
-	        {{(30-18){din_imag_r[in_dly][17]}}, din_imag_r[in_dly]} : 
+	out_rdx2345_data.d_imag[3] = (fsm==Rd && cnt_stage==3'd0)? din_imag_r[in_dly] :
+	        // {{(30-18){din_imag_r[in_dly][17]}}, din_imag_r[in_dly]} : 
 	        rdRAM_FSMrd.dout_imag[(bank_index_rd_rr[3])]; 
 
 	out_rdx2345_data.d_real[4] = rdRAM_FSMrd.dout_real[(bank_index_rd_rr[4])]; 

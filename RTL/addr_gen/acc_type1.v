@@ -34,7 +34,7 @@ begin
 		if (!clr_n)
 			acc <= 0;
 		else if (ena_acc)
-			acc <= (acc == max_acc)? 0 : acc + inc;
+			acc <= (acc == max_acc)? 3'd0 : acc + inc;
 		else
 			acc <= acc;
 	end

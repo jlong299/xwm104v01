@@ -113,8 +113,8 @@ module CORDIC(clock, cosine, sine, x_start, y_start, angle, atan_table);
   endgenerate
 
   // assign output
-  assign cosine = x[width-1];
-  assign sine = y[width-1];
+  assign cosine = x[width-1][width-1:0];
+  assign sine = y[width-1][width-1:0];
 
 endmodule
 

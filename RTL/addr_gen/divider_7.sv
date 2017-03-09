@@ -30,6 +30,6 @@ endgenerate
 assign remainder_t[0] = dividend_t[0][3:0] - 4'd7;
 assign quotient[0] = (remainder_t[0][3])? 1'b0 : 1'b1;
 
-assign remainder =(remainder_t[0][3])? dividend_t[0][2:0] : remainder_t[0];
+assign remainder =(remainder_t[0][3])? dividend_t[0][2:0] : remainder_t[0][2:0];
 
 endmodule

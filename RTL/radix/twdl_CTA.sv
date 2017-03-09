@@ -22,7 +22,7 @@ module twdl_CTA #(parameter
 	output rdreq_ff_addr
 );
 
-parameter  wDataTemp = 34;  //18 + 16  (1.17*2.14) 
+localparam  wDataTemp = 34;  //18 + 16  (1.17*2.14) 
 logic [delay_twdl-1:0]  valid_r;
 logic [0:4][7:0] rdaddr;
 logic signed [15:0] tw_real [0:4]; 
@@ -161,7 +161,7 @@ assign tw_imag_dly[3] = tw_imag[3];
 assign tw_real_dly[4] = tw_real[4];
 assign tw_imag_dly[4] = tw_imag[4];
 
-assign tw_real_An = An;
+// assign tw_real_An = An;
 generate
 for (i=1; i<5; i++) begin : gen1
 always@(posedge clk)

@@ -13,7 +13,7 @@ module mrd_FSMrd_wr (
 logic wr_ongoing;
 // parameter Idle = 3'd0, Sink = 3'd1, Wait_to_rd = 3'd2,
 //   			Rd = 3'd3,  Wait_wr_end = 3'd4,  Source = 3'd5;
-parameter Rd = 3'd3,  Wait_wr_end = 3'd4;
+localparam Rd = 3'd3,  Wait_wr_end = 3'd4;
 genvar k;
 generate
 for (k=3'd0; k <= 3'd6; k=k+3'd1) begin : wren_wr_gen

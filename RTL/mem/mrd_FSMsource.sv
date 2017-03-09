@@ -24,7 +24,7 @@ module mrd_FSMsource (
 );
 // parameter Idle = 3'd0, Sink = 3'd1, Wait_to_rd = 3'd2,
 //   			Rd = 3'd3,  Wait_wr_end = 3'd4,  Source = 3'd5;
-parameter Source = 3'd5;
+localparam Source = 3'd5;
 
 logic clr_n_PFA_addr_o, source_ongoing;
 logic [11:0] cnt_source_ongoing;
@@ -162,7 +162,7 @@ always@(posedge clk)
 begin
 	if (!rst_n)
 	begin
-		source_ongoing <= 0;
+		// source_ongoing <= 0;
 		cnt_source_ongoing <= 0;
 	end
 	else
@@ -175,7 +175,7 @@ begin
 		else
 			cnt_source_ongoing <= 0;
 
-		source_ongoing <= (cnt_source_ongoing != 12'd0);
+		// source_ongoing <= (cnt_source_ongoing != 12'd0);
 	end
 end
 
