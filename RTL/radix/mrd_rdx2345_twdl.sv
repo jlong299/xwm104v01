@@ -32,6 +32,8 @@ logic signed [18-1:0] imag_rdx3 [0:4];
 logic val_rdx2;
 logic signed [18-1:0] real_rdx2 [0:4];
 logic signed [18-1:0] imag_rdx2 [0:4];
+
+logic [1:0] margin_in, margin_out;
 	
 	// integer wr_file;
 	// initial begin
@@ -146,7 +148,7 @@ rdx4_2_v2 (
 	.din_imag  (from_mem.d_imag),
 	.factor (from_mem.factor),
 
-	.margin_in (2'b00),
+	.margin_in (margin_in),
 	.exp_in (exp_in),
 
 	.out_val  (val_rdx4),
@@ -164,7 +166,7 @@ rdx5_v2 (
 	.din_real  (from_mem.d_real),
 	.din_imag  (from_mem.d_imag),
 
-	.margin_in (2'b00),
+	.margin_in (margin_in),
 	.exp_in (exp_in),
 
 	.out_val  (val_rdx5),
@@ -182,7 +184,7 @@ rdx3_v2 (
 	.din_real  (from_mem.d_real),
 	.din_imag  (from_mem.d_imag),
 
-	.margin_in (2'b00),
+	.margin_in (margin_in),
 	.exp_in (exp_in),
 
 	.out_val  (val_rdx3),
@@ -217,6 +219,7 @@ rdx3_v2 (
 // 	endcase
 // end
 
+genvar i;
 integer j;
 always@(*)
 begin
@@ -281,6 +284,68 @@ twdl (
 	.sclr_ff_addr (sclr_ff_addr),
 	.rdreq_ff_addr (rdreq_ff_addr)
 	);
+
+//------------- margin_out,  margin_in --------------
+logic [1:0] valid_r;
+logic signed [18-1:0] abs_real [0:4];
+logic signed [18-1:0] abs_imag [0:4];
+generate
+for (i=0; i<=4; i++) begin
+	assign abs_real[i] = (to_mem.d_real[i][17])? (-to_mem.d_real[i]) : to_mem.d_real[i];
+	assign abs_imag[i] = (to_mem.d_imag[i][17])? (-to_mem.d_imag[i]) : to_mem.d_imag[i];
+end
+logic unsigned [1:0] margin_real [0:4];
+logic unsigned [1:0] margin_imag [0:4];
+logic unsigned [1:0] min_margin;
+endgenerate
+always@(posedge clk) begin
+	if (!rst_n) begin
+		margin_in <= 0;
+		margin_out <= 0;
+		valid_r <= 0;
+		for (j=0; j<=4; j++) begin
+			margin_real[j] <= 0;
+			margin_imag[j] <= 0;
+		end
+	end
+	else begin
+		for (j=0; j<=4; j++) begin
+			if (abs_real[j][17:16]==2'b01) margin_real[j] <= 2'd0;
+			else if (abs_real[j][17:15]==3'b001) margin_real[j] <= 2'd1;
+			else if (abs_real[j][17:14]==4'b0001) margin_real[j] <= 2'd2;
+			else margin_real[j] <= 2'd3;
+
+			if (abs_imag[j][17:16]==2'b01) margin_imag[j] <= 2'd0;
+			else if (abs_imag[j][17:15]==3'b001) margin_imag[j] <= 2'd1;
+			else if (abs_imag[j][17:14]==4'b0001) margin_imag[j] <= 2'd2;
+			else margin_imag[j] <= 2'd3;
+		end
+
+		valid_r <= {valid_r[0], to_mem.valid};
+		if (valid_r[0]==1'b0 && to_mem.valid)
+			margin_out <= 2'b11;
+		else if (valid_r[0])
+			margin_out <= (min_margin < margin_out)? min_margin : margin_out;
+		else
+			margin_out <= 0;
+
+		margin_in <= (valid_r==2'b10)? margin_out : margin_in;
+	end
+end
+
+
+logic unsigned [1:0] max_t0 [0:4];
+logic unsigned [1:0] max_t10, max_t11, max_t20;
+always@(*) begin
+	for (j=0; j<=4; j++) 
+		max_t0[j] = (margin_real[j] < margin_imag[j])? margin_real[j] : margin_imag[j];
+
+	max_t10 = (max_t0[0] < max_t0[1])? max_t0[0] : max_t0[1];
+	max_t11 = (max_t0[2] < max_t0[3])? max_t0[2] : max_t0[3];
+	max_t20 = (max_t10 < max_t11)? max_t10 : max_t11;
+	min_margin = (max_t20 < max_t0[4])? max_t20 : max_t0[4];
+end
+
 
 // logic [15:0]  cnt_val_debug;
 // always@(posedge clk)

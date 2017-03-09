@@ -67,9 +67,17 @@ add wave -radix unsigned {sim:/top_tb/top_inst/mem0/in_rdx2345_data/*}
 add wave -radix signed {sim:/top_tb/top_inst/mem0/in_rdx2345_data/d_real}
 add wave -radix signed {sim:/top_tb/top_inst/mem0/in_rdx2345_data/d_imag}
 
-add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/exp_in}
-add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/exp_out}
-add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/dft_val}
+add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/exp_in}
+add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/exp_out}
+add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/dft_val}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/abs_real}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/abs_imag}
+add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/margin_real}
+add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/margin_imag}
+add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/min_margin}
+add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/margin_out}
+add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/margin_in}
+
 # add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/rdx3_v2/*}
 
 
@@ -105,5 +113,5 @@ add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/dft_val}
 view structure
 view signals
 
-# run 800us
-run 300us
+run 800us
+# run 300us
