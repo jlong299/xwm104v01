@@ -258,7 +258,7 @@ else
 	if (sop)  exp_in <= 0; 
 	else exp_in <= ( dft_val & ~dft_val_r)? exp_out : exp_in;
 end
-always@(posedge clk) to_mem.exp <= exp_in;
+assign to_mem.exp = exp_in;
 always@(posedge clk) dft_val_r <= dft_val;
 
 twdl_CTA #(
