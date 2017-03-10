@@ -16,7 +16,8 @@ module divider_pipe0  #(parameter
 	
 );
 
-localparam w_pipe = 4;   // Each pipeline handles 4 bits width
+// localparam w_pipe = 4;   // Each pipeline handles 4 bits width
+localparam w_pipe = 2;   // Each pipeline handles 4 bits width
 localparam n_stages = (w_divident-w_divisor)/w_pipe; // Num of stages
 
 logic [w_divident-1 : 0]  remd_quot_r_0;  

@@ -116,28 +116,33 @@ assign wir1_p2_x1_r = {p1r_x1_r[19], p1r_x1_r[19], p1r_x1_r};
 assign wir1_p2_x1_i = {p1r_x1_i[19], p1r_x1_i[19], p1r_x1_i};
 
 logic signed [18-1:0]  coeff [2:5];
+logic signed [18-1:0]  coeff3_n, coeff4_n, coeff5_n;
 always@(posedge clk) begin
-	if (!rst_n) begin
-		coeff[2] <= 0;
-		coeff[3] <= 0;
-		coeff[4] <= 0;
-		coeff[5] <= 0;
-	end
-	else begin
+	// if (!rst_n) begin
+	// 	coeff[2] <= 0;
+	// 	coeff[3] <= 0;
+	// 	coeff[4] <= 0;
+	// 	coeff[5] <= 0;
+	// end
+	// else begin
 		coeff[2] <= 18'sh11E37 ; //1.17
 		coeff[3] <= 18'sh2760E ; //2.16
+		coeff3_n <= -18'sh2760E;
 		coeff[4] <= 18'sh34601 ; //1.17
+		coeff4_n <= -18'sh34601 ; //1.17
 		coeff[5] <= 18'sh1E6F1 ; //1.17
-	end
+		coeff5_n <= -18'sh1E6F1 ; //1.17
+	// end
 end
 
 assign wir1_p2_x2_r = p1r_x2_r * coeff[2]; //1.17
 assign wir1_p2_x2_i = p1r_x2_i * coeff[2];
-assign wir1_p2_x3_r = p1r_x3_i * -coeff[3]; //2.16
+// assign wir1_p2_x3_r = p1r_x3_i * -18'sh2760E; //2.16
+assign wir1_p2_x3_r = p1r_x3_i * coeff3_n; //2.16
 assign wir1_p2_x3_i = p1r_x3_r * coeff[3];
-assign wir1_p2_x4_r = p1r_x4_i * -coeff[4]; //1.17
+assign wir1_p2_x4_r = p1r_x4_i * coeff4_n; //1.17
 assign wir1_p2_x4_i = p1r_x4_r * coeff[4];
-assign wir1_p2_x5_r = p1r_x5_i * -coeff[5] ; //1.17
+assign wir1_p2_x5_r = p1r_x5_i * coeff5_n ; //1.17
 assign wir1_p2_x5_i = p1r_x5_r * coeff[5] ;
 
 always@(posedge clk)
@@ -147,14 +152,15 @@ begin
 		p2_x0_i <= 0;
 		p2_x1_r <= 0;
 		p2_x1_i <= 0;
-		p2_x2_r <= 0;
-		p2_x2_i <= 0;
-		p2_x3_r <= 0;
-		p2_x3_i <= 0;
-		p2_x4_r <= 0;
-		p2_x4_i <= 0;
-		p2_x5_r <= 0;
-		p2_x5_i <= 0;
+
+		// p2_x2_r <= 0;
+		// p2_x2_i <= 0;
+		// p2_x3_r <= 0;
+		// p2_x3_i <= 0;
+		// p2_x4_r <= 0;
+		// p2_x4_i <= 0;
+		// p2_x5_r <= 0;
+		// p2_x5_i <= 0;
 	end
 	else begin
 		p2_x0_r <= p1r_x0_r + p1r_x1_r;

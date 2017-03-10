@@ -154,7 +154,7 @@ alias com {
   eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/mrd_RAM_IP/sim/mrd_RAM_IP.v"                                                               
   eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/ff_rdx_data/fifo_151/sim/ff_rdx_data_fifo_151_4d3nvky.v" 
   eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/ff_rdx_data/sim/ff_rdx_data.v"                                                            
-  eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/ff_rdx_index/fifo_151/sim/ff_rdx_index_fifo_151_i22ugba.v" 
+  eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/ff_rdx_index/fifo_151/sim/ff_rdx_index_fifo_151_dnln5rq.v" 
   eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/ff_rdx_index/sim/ff_rdx_index.v"                                                            
 }
 
