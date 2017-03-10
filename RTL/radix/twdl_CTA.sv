@@ -150,16 +150,29 @@ always@(posedge clk) begin
 	tw_imag_2_r1 <= tw_imag_2_r0;
 end
 
-wire signed [15:0] tw_real_dly [1:4];
-wire signed [15:0] tw_imag_dly [1:4];
-assign tw_real_dly[1] = tw_real_1_r2;
-assign tw_imag_dly[1] = tw_imag_1_r2;
-assign tw_real_dly[2] = tw_real_2_r1;
-assign tw_imag_dly[2] = tw_imag_2_r1;
-assign tw_real_dly[3] = tw_real[3];
-assign tw_imag_dly[3] = tw_imag[3];
-assign tw_real_dly[4] = tw_real[4];
-assign tw_imag_dly[4] = tw_imag[4];
+// wire signed [15:0] tw_real_dly [1:4];
+// wire signed [15:0] tw_imag_dly [1:4];
+// assign tw_real_dly[1] = tw_real_1_r2;
+// assign tw_imag_dly[1] = tw_imag_1_r2;
+// assign tw_real_dly[2] = tw_real_2_r1;
+// assign tw_imag_dly[2] = tw_imag_2_r1;
+// assign tw_real_dly[3] = tw_real[3];
+// assign tw_imag_dly[3] = tw_imag[3];
+// assign tw_real_dly[4] = tw_real[4];
+// assign tw_imag_dly[4] = tw_imag[4];
+
+logic signed [15:0] tw_real_dly [1:4];
+logic signed [15:0] tw_imag_dly [1:4];
+always@(posedge clk) begin
+	tw_real_dly[1] <= tw_real_1_r2;
+	tw_imag_dly[1] <= tw_imag_1_r2;
+	tw_real_dly[2] <= tw_real_2_r1;
+	tw_imag_dly[2] <= tw_imag_2_r1;
+	tw_real_dly[3] <= tw_real[3];
+	tw_imag_dly[3] <= tw_imag[3];
+	tw_real_dly[4] <= tw_real[4];
+	tw_imag_dly[4] <= tw_imag[4];
+end
 
 // assign tw_real_An = An;
 generate
@@ -178,8 +191,8 @@ begin
 		if (twdl_demontr==12'd3) begin
 			if (in_val) begin
 				// dout_real_t[i] <= din_real[i]*tw_real_An; 
-				dout_real_t[i] <= din_real[i] <<< 14; 
-				dout_imag_t[i] <= din_imag[i] <<< 14;
+				dout_real_t[i] <= { {2{din_real[i][17]}}, din_real[i], 14'b0}; 
+				dout_imag_t[i] <= { {2{din_imag[i][17]}}, din_imag[i], 14'b0};
 			end
 			else begin
 				dout_real_t[i] <= 0;

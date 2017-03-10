@@ -34,6 +34,11 @@ logic signed [18-1:0] real_rdx2 [0:4];
 logic signed [18-1:0] imag_rdx2 [0:4];
 
 logic [1:0] margin_in, margin_out;
+
+logic [3:0] exp_out, exp_in;
+logic [3:0] exp_out_rdx4;
+logic [3:0] exp_out_rdx3;
+logic [3:0] exp_out_rdx5;
 	
 	// integer wr_file;
 	// initial begin
@@ -65,87 +70,26 @@ assign {to_mem.bank_index[2],to_mem.bank_addr[2]} = q[32:22];
 assign {to_mem.bank_index[3],to_mem.bank_addr[3]} = q[43:33];
 assign {to_mem.bank_index[4],to_mem.bank_addr[4]} = q[54:44];
 
-
-// mrd_dft_rdx4 #(
-// 	.wDataInOut (30)
-// 	)
-// dft_rdx4 (
-// 	.clk  (clk),
-// 	.rst_n  (rst_n),
-
-// 	.in_val  (from_mem.valid),
-// 	.din_real  (from_mem.d_real),
-// 	.din_imag  (from_mem.d_imag),
-
-// 	.out_val  (val_rdx4),
-// 	.dout_real  (real_rdx4),
-// 	.dout_imag  (imag_rdx4)
-// 	);
-
-// mrd_dft_rdx5 #(
-// 	.wDataInOut (30)
-// 	)
-// dft_rdx5 (
-// 	.clk  (clk),
-// 	.rst_n  (rst_n),
-
-// 	.in_val  (from_mem.valid),
-// 	.din_real  (from_mem.d_real),
-// 	.din_imag  (from_mem.d_imag),
-
-// 	.out_val  (val_rdx5),
-// 	.dout_real  (real_rdx5),
-// 	.dout_imag  (imag_rdx5)
-// 	);
-
-// mrd_dft_rdx3 #(
-// 	.wDataInOut (30)
-// 	)
-// dft_rdx3 (
-// 	.clk  (clk),
-// 	.rst_n  (rst_n),
-
-// 	.in_val  (from_mem.valid),
-// 	.din_real  (from_mem.d_real),
-// 	.din_imag  (from_mem.d_imag),
-
-// 	.out_val  (val_rdx3),
-// 	.dout_real  (real_rdx3),
-// 	.dout_imag  (imag_rdx3)
-// 	);
-
-// mrd_dft_rdx2 #(
-// 	.wDataInOut (30)
-// 	)
-// dft_rdx2 (
-// 	.clk  (clk),
-// 	.rst_n  (rst_n),
-
-// 	.in_val  (from_mem.valid),
-// 	.din_real  (from_mem.d_real),
-// 	.din_imag  (from_mem.d_imag),
-
-// 	.out_val  (val_rdx2),
-// 	.dout_real  (real_rdx2),
-// 	.dout_imag  (imag_rdx2)
-// 	);
-
-
-
-logic [3:0] exp_out, exp_in;
-logic [3:0] exp_out_rdx4;
-logic [3:0] exp_out_rdx3;
-logic [3:0] exp_out_rdx5;
+logic from_mem_valid;
+logic signed [18-1:0] from_mem_d_real [0:4];
+logic signed [18-1:0] from_mem_d_imag [0:4];
+logic [2:0] from_mem_factor;
+always@(posedge clk) begin
+	from_mem_valid <= from_mem.valid;
+	from_mem_d_real <= from_mem.d_real;
+	from_mem_d_imag <= from_mem.d_imag;
+	from_mem_factor <= from_mem.factor;
+end
 
 mrd_rdx4_2_v2
 rdx4_2_v2 (
 	.clk  (clk),
 	.rst_n  (rst_n),
 
-	.in_val  (from_mem.valid),
-	.din_real  (from_mem.d_real),
-	.din_imag  (from_mem.d_imag),
-	.factor (from_mem.factor),
+	.in_val  (from_mem_valid),
+	.din_real  (from_mem_d_real),
+	.din_imag  (from_mem_d_imag),
+	.factor (from_mem_factor),
 
 	.margin_in (margin_in),
 	.exp_in (exp_in),
@@ -161,9 +105,9 @@ rdx5_v2 (
 	.clk  (clk),
 	.rst_n  (rst_n),
 
-	.in_val  (from_mem.valid),
-	.din_real  (from_mem.d_real),
-	.din_imag  (from_mem.d_imag),
+	.in_val  (from_mem_valid),
+	.din_real  (from_mem_d_real),
+	.din_imag  (from_mem_d_imag),
 
 	.margin_in (margin_in),
 	.exp_in (exp_in),
@@ -179,9 +123,9 @@ rdx3_v2 (
 	.clk  (clk),
 	.rst_n  (rst_n),
 
-	.in_val  (from_mem.valid),
-	.din_real  (from_mem.d_real),
-	.din_imag  (from_mem.d_imag),
+	.in_val  (from_mem_valid),
+	.din_real  (from_mem_d_real),
+	.din_imag  (from_mem_d_imag),
 
 	.margin_in (margin_in),
 	.exp_in (exp_in),
@@ -192,34 +136,10 @@ rdx3_v2 (
 	.exp_out (exp_out_rdx3)
 	);
 
-// always@(posedge clk)
-// begin
-// 	case (from_mem.factor)
-// 	3'd4 : begin
-// 		dft_real <= real_rdx4;
-// 		dft_imag <= imag_rdx4;
-//  		dft_val <= val_rdx4;
-// 	end
-// 	3'd5 : begin
-// 		dft_real <= real_rdx5;
-// 		dft_imag <= imag_rdx5;
-//  		dft_val <= val_rdx5;
-// 	end
-// 	3'd3 : begin
-// 		dft_real <= real_rdx3;
-// 		dft_imag <= imag_rdx3;
-//  		dft_val <= val_rdx3;
-// 	end
-// 	default : begin
-// 		dft_real <= real_rdx2;
-// 		dft_imag <= imag_rdx2;
-//  		dft_val <= val_rdx2;
-// 	end
-// 	endcase
-// end
 
 genvar i;
 integer j;
+
 always@(*)
 begin
 	case (from_mem.factor)

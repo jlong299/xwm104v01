@@ -205,11 +205,14 @@ assign rdRAM_FSMrd.dout_imag[i] = (fsm==Rd)? rdRAM.dout_imag[i] : 18'd0;
 end
 endgenerate 
 
+logic [17:0] out_data_real_r, out_data_imag_r;
 always@(posedge clk) begin
+	 out_data_real_r <= rdRAM.dout_real[bank_index_source_r] ;
+	 out_data_imag_r <= rdRAM.dout_imag[bank_index_source_r] ;
 	 out_data.dout_real <= (fsm_lastRd_source && in_rdx2345_data.valid)? 
-            in_rdx2345_data.d_real[0] : rdRAM.dout_real[bank_index_source_r] ;
+            in_rdx2345_data.d_real[0] : out_data_real_r ;
 	 out_data.dout_imag <= (fsm_lastRd_source && in_rdx2345_data.valid)? 
-            in_rdx2345_data.d_imag[0] : rdRAM.dout_imag[bank_index_source_r] ;
+            in_rdx2345_data.d_imag[0] : out_data_imag_r ;
 end
 always@(posedge clk) out_data.exp <= in_rdx2345_data.exp;
 
