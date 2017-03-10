@@ -4,15 +4,15 @@
 
 `timescale 1 ps / 1 ps
 module ff_rdx_data (
-		input  wire [59:0] data,  //  fifo_input.datain
+		input  wire [35:0] data,  //  fifo_input.datain
 		input  wire        wrreq, //            .wrreq
 		input  wire        rdreq, //            .rdreq
 		input  wire        clock, //            .clk
 		input  wire        sclr,  //            .sclr
-		output wire [59:0] q      // fifo_output.dataout
+		output wire [35:0] q      // fifo_output.dataout
 	);
 
-	ff_rdx_data_fifo_151_ffi73da fifo_0 (
+	ff_rdx_data_fifo_151_4d3nvky fifo_0 (
 		.data  (data),  //  fifo_input.datain
 		.wrreq (wrreq), //            .wrreq
 		.rdreq (rdreq), //            .rdreq

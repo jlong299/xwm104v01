@@ -1,11 +1,11 @@
 	component ff_rdx_data is
 		port (
-			data  : in  std_logic_vector(59 downto 0) := (others => 'X'); -- datain
+			data  : in  std_logic_vector(35 downto 0) := (others => 'X'); -- datain
 			wrreq : in  std_logic                     := 'X';             -- wrreq
 			rdreq : in  std_logic                     := 'X';             -- rdreq
 			clock : in  std_logic                     := 'X';             -- clk
 			sclr  : in  std_logic                     := 'X';             -- sclr
-			q     : out std_logic_vector(59 downto 0)                     -- dataout
+			q     : out std_logic_vector(35 downto 0)                     -- dataout
 		);
 	end component ff_rdx_data;
 

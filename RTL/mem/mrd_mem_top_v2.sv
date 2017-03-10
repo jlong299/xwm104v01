@@ -161,13 +161,11 @@ generate
 		.clock (clk),
 		.wren (wrRAM.wren[i]),
 		.wraddress (wrRAM.wraddr[i]),
-		.data ({24'd0, wrRAM.din_real[i], wrRAM.din_imag[i]}),
-		// .din_imag (wrRAM.din_imag[i]),
+		.data ({wrRAM.din_real[i], wrRAM.din_imag[i]}),
 
 		.rden (rdRAM.rden[i]),
 		.rdaddress (rdRAM.rdaddr[i]),
-		.q ({wir_whatever, rdRAM.dout_real[i], rdRAM.dout_imag[i]})
-		// .dout_imag (rdRAM.dout_imag[i])
+		.q ({rdRAM.dout_real[i], rdRAM.dout_imag[i]})
 		);
 	end
 endgenerate

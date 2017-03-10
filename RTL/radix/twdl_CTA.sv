@@ -47,12 +47,12 @@ generate
 for (i=0; i<5; i++) begin : gen0
 
 	ff_rdx_data ff_inst (
-		.data  ({24'd0, din_real[i], din_imag[i]}),  //  fifo_input.datain
+		.data  ({din_real[i], din_imag[i]}),  //  fifo_input.datain
 		.wrreq (in_val), //            .wrreq
 		.rdreq (valid_r[delay_twdl-7+3]), //            .rdreq
 		.clock (clk), //            .clk
 		.sclr  (sclr),  //            .sclr
-		.q     ({wir_whatever, d_real_r[i], d_imag_r[i]})      // fifo_output.dataout
+		.q     ({d_real_r[i], d_imag_r[i]})      // fifo_output.dataout
 	);
 end
 endgenerate

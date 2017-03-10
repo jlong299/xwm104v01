@@ -1,18 +1,18 @@
-# system info ff_rdx_data on 2017.02.28.15:14:04
+# system info ff_rdx_data on 2017.03.09.17:10:19
 system_info:
 name,value
 DEVICE,10AX115U3F45E2SGE3
 DEVICE_FAMILY,Arria 10
-GENERATION_ID,1488266044
+GENERATION_ID,1489050619
 #
 #
-# Files generated for ff_rdx_data on 2017.02.28.15:14:04
+# Files generated for ff_rdx_data on 2017.03.09.17:10:19
 files:
 filepath,kind,attributes,module,is_top
 sim/ff_rdx_data.v,VERILOG,CONTAINS_INLINE_CONFIGURATION,ff_rdx_data,true
-fifo_151/sim/ff_rdx_data_fifo_151_ffi73da.v,VERILOG,,ff_rdx_data_fifo_151_ffi73da,false
+fifo_151/sim/ff_rdx_data_fifo_151_4d3nvky.v,VERILOG,,ff_rdx_data_fifo_151_4d3nvky,false
 #
 # Map from instance-path to kind of module
 instances:
 instancePath,module
-ff_rdx_data.fifo_0,ff_rdx_data_fifo_151_ffi73da
+ff_rdx_data.fifo_0,ff_rdx_data_fifo_151_4d3nvky

@@ -6,7 +6,7 @@
    version="1.0"
    description=""
    tags="INTERNAL_COMPONENT=true"
-   categories="" />
+   categories="System" />
  <parameter name="bonusData"><![CDATA[bonusData 
 {
    element fifo_0
@@ -79,7 +79,7 @@
   <parameter name="GUI_RAM_BLOCK_TYPE" value="Auto" />
   <parameter name="GUI_UNDERFLOW_CHECKING" value="false" />
   <parameter name="GUI_UsedW" value="false" />
-  <parameter name="GUI_Width" value="60" />
+  <parameter name="GUI_Width" value="36" />
   <parameter name="GUI_dc_aclr" value="false" />
   <parameter name="GUI_delaypipe" value="4" />
   <parameter name="GUI_diff_widths" value="false" />

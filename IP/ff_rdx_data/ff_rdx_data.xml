@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <deploy
- date="2017.02.28.15:14:08"
+ date="2017.03.09.17:10:23"
  outputDirectory="C:/work/pj104/code/1702/Mixed_Radix_DFT/IP/ff_rdx_data/">
  <perimeter>
   <parameter
@@ -36,7 +36,7 @@
   <interface name="fifo_input" kind="conduit" start="0">
    <property name="associatedClock" value="" />
    <property name="associatedReset" value="" />
-   <port name="data" direction="input" role="datain" width="60" />
+   <port name="data" direction="input" role="datain" width="36" />
    <port name="wrreq" direction="input" role="wrreq" width="1" />
    <port name="rdreq" direction="input" role="rdreq" width="1" />
    <port name="clock" direction="input" role="clk" width="1" />
@@ -45,11 +45,11 @@
   <interface name="fifo_output" kind="conduit" start="0">
    <property name="associatedClock" value="" />
    <property name="associatedReset" value="" />
-   <port name="q" direction="output" role="dataout" width="60" />
+   <port name="q" direction="output" role="dataout" width="36" />
   </interface>
  </perimeter>
  <entity kind="ff_rdx_data" version="1.0" name="ff_rdx_data">
-  <parameter name="AUTO_GENERATION_ID" value="1488266048" />
+  <parameter name="AUTO_GENERATION_ID" value="1489050623" />
   <parameter name="AUTO_DEVICE" value="10AX115U3F45E2SGE3" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Arria 10" />
   <parameter name="AUTO_UNIQUE_ID" value="" />
@@ -78,10 +78,10 @@
   </childSourceFiles>
   <messages>
    <message level="Info" culprit="ff_rdx_data">"Generating: ff_rdx_data"</message>
-   <message level="Info" culprit="ff_rdx_data">"Generating: ff_rdx_data_fifo_151_ffi73da"</message>
+   <message level="Info" culprit="ff_rdx_data">"Generating: ff_rdx_data_fifo_151_4d3nvky"</message>
   </messages>
  </entity>
- <entity kind="fifo" version="15.1" name="ff_rdx_data_fifo_151_ffi73da">
+ <entity kind="fifo" version="15.1" name="ff_rdx_data_fifo_151_4d3nvky">
   <parameter name="GUI_Full" value="false" />
   <parameter name="GUI_RdUsedw_width" value="8" />
   <parameter name="GUI_AlmostFullThr" value="1" />
@@ -123,15 +123,15 @@
   <parameter name="GUI_write_aclr_synch" value="false" />
   <parameter name="GUI_sc_aclr" value="false" />
   <parameter name="GUI_DISABLE_DCFIFO_EMBEDDED_TIMING_CONSTRAINT" value="true" />
-  <parameter name="GUI_Width" value="60" />
+  <parameter name="GUI_Width" value="36" />
   <generatedFiles>
    <file
-       path="C:\work\pj104\code\1702\Mixed_Radix_DFT\IP\ff_rdx_data\fifo_151\synth\ff_rdx_data_fifo_151_ffi73da.v"
+       path="C:\work\pj104\code\1702\Mixed_Radix_DFT\IP\ff_rdx_data\fifo_151\synth\ff_rdx_data_fifo_151_4d3nvky.v"
        attributes="" />
   </generatedFiles>
   <childGeneratedFiles>
    <file
-       path="C:\work\pj104\code\1702\Mixed_Radix_DFT\IP\ff_rdx_data\fifo_151\synth\ff_rdx_data_fifo_151_ffi73da.v"
+       path="C:\work\pj104\code\1702\Mixed_Radix_DFT\IP\ff_rdx_data\fifo_151\synth\ff_rdx_data_fifo_151_4d3nvky.v"
        attributes="" />
   </childGeneratedFiles>
   <sourceFiles>
@@ -140,7 +140,7 @@
   <childSourceFiles/>
   <instantiator instantiator="ff_rdx_data" as="fifo_0" />
   <messages>
-   <message level="Info" culprit="ff_rdx_data">"Generating: ff_rdx_data_fifo_151_ffi73da"</message>
+   <message level="Info" culprit="ff_rdx_data">"Generating: ff_rdx_data_fifo_151_4d3nvky"</message>
   </messages>
  </entity>
 </deploy>

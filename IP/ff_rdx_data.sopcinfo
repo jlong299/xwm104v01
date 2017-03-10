@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="ff_rdx_data" kind="ff_rdx_data" version="1.0" fabric="QSYS">
  <!-- Format version 15.1 185 (Future versions may contain additional information.) -->
- <!-- 2017.02.28.15:14:08 -->
+ <!-- 2017.03.09.17:10:23 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1488266048</value>
+  <value>1489050623</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -143,7 +143,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="GUI_Width">
    <type>int</type>
-   <value>60</value>
+   <value>36</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -466,7 +466,7 @@ parameters are a RESULT of the module parameters. -->
    <port>
     <name>data</name>
     <direction>Input</direction>
-    <width>60</width>
+    <width>36</width>
     <role>datain</role>
    </port>
    <port>
@@ -539,7 +539,7 @@ parameters are a RESULT of the module parameters. -->
    <port>
     <name>q</name>
     <direction>Output</direction>
-    <width>60</width>
+    <width>36</width>
     <role>dataout</role>
    </port>
   </interface>

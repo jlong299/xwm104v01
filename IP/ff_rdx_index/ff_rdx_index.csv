@@ -1,0 +1,18 @@
+# system info ff_rdx_index on 2017.03.09.17:52:39
+system_info:
+name,value
+DEVICE,10AX115U3F45E2SGE3
+DEVICE_FAMILY,Arria 10
+GENERATION_ID,1489053159
+#
+#
+# Files generated for ff_rdx_index on 2017.03.09.17:52:39
+files:
+filepath,kind,attributes,module,is_top
+sim/ff_rdx_index.v,VERILOG,CONTAINS_INLINE_CONFIGURATION,ff_rdx_index,true
+fifo_151/sim/ff_rdx_index_fifo_151_i22ugba.v,VERILOG,,ff_rdx_index_fifo_151_i22ugba,false
+#
+# Map from instance-path to kind of module
+instances:
+instancePath,module
+ff_rdx_index.fifo_0,ff_rdx_index_fifo_151_i22ugba

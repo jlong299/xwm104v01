@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simPackage>
+ <file
+   path="fifo_151/sim/ff_rdx_index_fifo_151_i22ugba.v"
+   type="VERILOG"
+   library="ff_rdx_index_fifo_151" />
+ <file
+   path="sim/ff_rdx_index.v"
+   type="VERILOG"
+   hasInlineConfiguration="true" />
+ <topLevel name="ff_rdx_index" />
+ <deviceFamily name="arria10" />
+</simPackage>

@@ -44,15 +44,14 @@ logic [1:0] margin_in, margin_out;
 	// 	end
 	// end
 
-wire [59:0] ff_data, q;
+wire [54:0] ff_data, q;
 wire sclr_ff_addr, rdreq_ff_addr;
 assign ff_data[10:0] = {from_mem.bank_index[0],from_mem.bank_addr[0]};
 assign ff_data[21:11] = {from_mem.bank_index[1],from_mem.bank_addr[1]};
 assign ff_data[32:22] = {from_mem.bank_index[2],from_mem.bank_addr[2]};
 assign ff_data[43:33] = {from_mem.bank_index[3],from_mem.bank_addr[3]};
 assign ff_data[54:44] = {from_mem.bank_index[4],from_mem.bank_addr[4]};
-assign ff_data[59:55] = 0;
-ff_rdx_data ff_addr (
+ff_rdx_index ff_index (
 		.data  (ff_data),  //  fifo_input.datain
 		.wrreq (from_mem.valid), //            .wrreq
 		.rdreq (rdreq_ff_addr), //            .rdreq

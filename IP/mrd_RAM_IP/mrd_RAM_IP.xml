@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <deploy
- date="2017.02.27.16:37:45"
+ date="2017.03.09.17:07:36"
  outputDirectory="C:/work/pj104/code/1702/Mixed_Radix_DFT/IP/mrd_RAM_IP/">
  <perimeter>
   <parameter
@@ -36,7 +36,7 @@
   <interface name="ram_input" kind="conduit" start="0">
    <property name="associatedClock" value="" />
    <property name="associatedReset" value="" />
-   <port name="data" direction="input" role="datain" width="60" />
+   <port name="data" direction="input" role="datain" width="36" />
    <port name="wraddress" direction="input" role="wraddress" width="8" />
    <port name="rdaddress" direction="input" role="rdaddress" width="8" />
    <port name="wren" direction="input" role="wren" width="1" />
@@ -46,11 +46,11 @@
   <interface name="ram_output" kind="conduit" start="0">
    <property name="associatedClock" value="" />
    <property name="associatedReset" value="" />
-   <port name="q" direction="output" role="dataout" width="60" />
+   <port name="q" direction="output" role="dataout" width="36" />
   </interface>
  </perimeter>
  <entity kind="mrd_RAM_IP" version="1.0" name="mrd_RAM_IP">
-  <parameter name="AUTO_GENERATION_ID" value="1488184664" />
+  <parameter name="AUTO_GENERATION_ID" value="1489050456" />
   <parameter name="AUTO_DEVICE" value="10AX115U3F45E2SGE3" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Arria 10" />
   <parameter name="AUTO_UNIQUE_ID" value="" />
@@ -80,13 +80,13 @@
   </childSourceFiles>
   <messages>
    <message level="Info" culprit="mrd_RAM_IP">"Generating: mrd_RAM_IP"</message>
-   <message level="Info" culprit="mrd_RAM_IP">"Generating: mrd_RAM_IP_ram_2port_151_zwzljpy"</message>
+   <message level="Info" culprit="mrd_RAM_IP">"Generating: mrd_RAM_IP_ram_2port_151_hhdwfsy"</message>
   </messages>
  </entity>
  <entity
    kind="ram_2port"
    version="15.1"
-   name="mrd_RAM_IP_ram_2port_151_zwzljpy">
+   name="mrd_RAM_IP_ram_2port_151_hhdwfsy">
   <parameter name="GUI_CLKEN_ADDRESS_STALL_A" value="false" />
   <parameter name="GUI_RDEN_DOUBLE" value="false" />
   <parameter name="GUI_NBE_A" value="true" />
@@ -108,7 +108,7 @@
   <parameter name="GUI_CLKEN_READ_OUTPUT_REG" value="false" />
   <parameter name="GUI_SCLR_READ_OUTPUT_QB" value="false" />
   <parameter name="GUI_SCLR_READ_OUTPUT_QA" value="false" />
-  <parameter name="GUI_QA_WIDTH" value="60" />
+  <parameter name="GUI_QA_WIDTH" value="36" />
   <parameter name="GUI_NBE_B" value="true" />
   <parameter name="GUI_ECCENCBYPASS" value="false" />
   <parameter name="GUI_ECC_PIPELINE" value="false" />
@@ -120,10 +120,10 @@
   <parameter name="GUI_MEM_IN_BITS" value="0" />
   <parameter name="GUI_CLKEN_READ_INPUT_REG" value="false" />
   <parameter name="GUI_DIFFERENT_CLKENS" value="false" />
-  <parameter name="GUI_QB_WIDTH" value="60" />
+  <parameter name="GUI_QB_WIDTH" value="36" />
   <parameter name="GUI_FILE_REFERENCE" value="0" />
   <parameter name="GUI_Q_PORT_MODE" value="2" />
-  <parameter name="GUI_DATA_WIDTH" value="60" />
+  <parameter name="GUI_DATA_WIDTH" value="36" />
   <parameter name="GUI_CLKEN_INPUT_REG_A" value="false" />
   <parameter name="GUI_CLKEN_ADDRESS_STALL_B" value="false" />
   <parameter name="GUI_CLOCK_TYPE" value="0" />
@@ -132,8 +132,8 @@
   <parameter name="GUI_INIT_SIM_TO_X" value="false" />
   <parameter name="GUI_CLKEN_WRADDRESSSTALL" value="false" />
   <parameter name="GUI_INIT_FILE_LAYOUT" value="PORT_B" />
-  <parameter name="GUI_Q_WIDTH" value="60" />
-  <parameter name="GUI_DATAA_WIDTH" value="60" />
+  <parameter name="GUI_Q_WIDTH" value="36" />
+  <parameter name="GUI_DATAA_WIDTH" value="36" />
   <parameter name="GUI_CLKEN_WRITE_INPUT_REG" value="false" />
   <parameter name="GUI_READ_OUTPUT_QB" value="false" />
   <parameter name="GUI_MEMSIZE_BITS" value="256" />
@@ -154,12 +154,12 @@
   <parameter name="GUI_WIDTH_ECCENCPARITY" value="8" />
   <generatedFiles>
    <file
-       path="C:\work\pj104\code\1702\Mixed_Radix_DFT\IP\mrd_RAM_IP\ram_2port_151\synth\mrd_RAM_IP_ram_2port_151_zwzljpy.v"
+       path="C:\work\pj104\code\1702\Mixed_Radix_DFT\IP\mrd_RAM_IP\ram_2port_151\synth\mrd_RAM_IP_ram_2port_151_hhdwfsy.v"
        attributes="" />
   </generatedFiles>
   <childGeneratedFiles>
    <file
-       path="C:\work\pj104\code\1702\Mixed_Radix_DFT\IP\mrd_RAM_IP\ram_2port_151\synth\mrd_RAM_IP_ram_2port_151_zwzljpy.v"
+       path="C:\work\pj104\code\1702\Mixed_Radix_DFT\IP\mrd_RAM_IP\ram_2port_151\synth\mrd_RAM_IP_ram_2port_151_hhdwfsy.v"
        attributes="" />
   </childGeneratedFiles>
   <sourceFiles>
@@ -169,7 +169,7 @@
   <childSourceFiles/>
   <instantiator instantiator="mrd_RAM_IP" as="ram_2port_0" />
   <messages>
-   <message level="Info" culprit="mrd_RAM_IP">"Generating: mrd_RAM_IP_ram_2port_151_zwzljpy"</message>
+   <message level="Info" culprit="mrd_RAM_IP">"Generating: mrd_RAM_IP_ram_2port_151_hhdwfsy"</message>
   </messages>
  </entity>
 </deploy>
