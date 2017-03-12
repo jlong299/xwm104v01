@@ -103,41 +103,56 @@ logic signed [15:0] tw_imag_1_r0, tw_imag_1_r1, tw_imag_1_r2;
 logic signed [15:0] tw_real_2_r0, tw_real_2_r1; 
 logic signed [15:0] tw_imag_2_r0, tw_imag_2_r1;
 
+logic signed [15:0] tw_real_1r, tw_imag_1r;
 //--------  1st pipeline  ------------
 always@(posedge clk) begin
-	t_r_2_p0 <= tw_real[1]*tw_real[1];
-	t_r_2_p1 <= tw_imag[1]*tw_imag[1];
-	t_i_2    <= tw_real[1]*tw_imag[1];
+	tw_real_1r <= tw_real[1];
+	tw_imag_1r <= tw_imag[1];
+end
+//--------  1st+1 pipeline  ------------
+always@(posedge clk) begin
+	t_r_2_p0 <= tw_real_1r * tw_real_1r;
+	t_r_2_p1 <= tw_imag_1r * tw_imag_1r;
+	t_i_2    <= tw_real_1r * tw_imag_1r;
 
-	tw_real_1_r0 <= tw_real[1];
-	tw_imag_1_r0 <= tw_imag[1];
+	tw_real_1_r0 <= tw_real_1r;
+	tw_imag_1_r0 <= tw_imag_1r;
 end
 assign t_r[2] = t_r_2_p0 - t_r_2_p1;
 assign t_i[2] = t_i_2;
 assign tw_real[2] = (factor==3'd2)? 16'sd16384 : t_r[2][29:14];
 assign tw_imag[2] = (factor==3'd2)? 16'sd0     : t_i[2][28:13];
 
-//--------  2nd pipeline  ------------
+//-------- 3rd pipe ---
+logic signed [15:0]  tw_real_2r,  tw_imag_2r;
+logic signed [15:0]  tw_real_1_r0_r, tw_imag_1_r0_r;
 always@(posedge clk) begin
-	t_r_3_p0 <= tw_real_1_r0 * tw_real[2];
-	t_r_3_p1 <= tw_imag_1_r0 * tw_imag[2];
-	t_i_3_p0 <= tw_real_1_r0 * tw_imag[2];
-	t_i_3_p1 <= tw_imag_1_r0 * tw_real[2];
-	t_r_4_p0 <= tw_real[2] * tw_real[2];
-	t_r_4_p1 <= tw_imag[2] * tw_imag[2];
-	t_i_4    <= tw_real[2] * tw_imag[2];
+	tw_real_2r <= tw_real[2];
+	tw_imag_2r <= tw_imag[2];
+	tw_real_1_r0_r <= tw_real_1_r0;
+	tw_imag_1_r0_r <= tw_imag_1_r0;
+end
+//--------  2nd+2 pipeline  ------------
+always@(posedge clk) begin
+	t_r_3_p0 <= tw_real_1_r0_r * tw_real_2r;
+	t_r_3_p1 <= tw_imag_1_r0_r * tw_imag_2r;
+	t_i_3_p0 <= tw_real_1_r0_r * tw_imag_2r;
+	t_i_3_p1 <= tw_imag_1_r0_r * tw_real_2r;
+	t_r_4_p0 <= tw_real_2r * tw_real_2r;
+	t_r_4_p1 <= tw_imag_2r * tw_imag_2r;
+	t_i_4    <= tw_real_2r * tw_imag_2r;
 
-	tw_real_1_r1 <= tw_real_1_r0;
-	tw_imag_1_r1 <= tw_imag_1_r0;
-	tw_real_2_r0 <= tw_real[2];
-	tw_imag_2_r0 <= tw_imag[2];	
+	tw_real_1_r1 <= tw_real_1_r0_r;
+	tw_imag_1_r1 <= tw_imag_1_r0_r;
+	tw_real_2_r0 <= tw_real_2r;
+	tw_imag_2_r0 <= tw_imag_2r;	
 end
 assign t_r[3] = t_r_3_p0 - t_r_3_p1;
 assign t_i[3] = t_i_3_p0 + t_i_3_p1;
 assign t_r[4] = t_r_4_p0 - t_r_4_p1;
 assign t_i[4] = t_i_4;
 
-//--------  3rd pipeline  ------------
+//--------  3rd+2 pipeline  ------------
 always@(posedge clk) begin
 	tw_real[3] <= (factor==3'd2)? tw_real_1_r1: t_r[3][29:14];
 	tw_imag[3] <= (factor==3'd2)? tw_imag_1_r1: t_i[3][29:14];

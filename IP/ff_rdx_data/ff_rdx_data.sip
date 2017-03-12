@@ -5,4 +5,4 @@ set_global_assignment -library "lib_ff_rdx_data" -name SPD_FILE [file join $::qu
 set_global_assignment -library "lib_ff_rdx_data" -name MISC_FILE [file join $::quartus(sip_path) "../ff_rdx_data.qsys"]
 
 set_global_assignment -library "lib_ff_rdx_data" -name MISC_FILE [file join $::quartus(sip_path) "sim/ff_rdx_data.v"]
-set_global_assignment -library "lib_ff_rdx_data" -name MISC_FILE [file join $::quartus(sip_path) "fifo_151/sim/ff_rdx_data_fifo_151_4d3nvky.v"]
+set_global_assignment -library "lib_ff_rdx_data" -name MISC_FILE [file join $::quartus(sip_path) "fifo_151/sim/ff_rdx_data_fifo_151_vbtzbya.v"]

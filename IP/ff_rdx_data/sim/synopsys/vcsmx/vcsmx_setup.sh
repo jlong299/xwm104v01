@@ -12,7 +12,7 @@
 # or its authorized distributors. Please refer to the applicable 
 # agreement for further details.
 
-# ACDS 15.1 185 win32 2017.03.09.17:10:23
+# ACDS 15.1 185 win32 2017.03.10.22:14:31
 
 # ----------------------------------------
 # vcsmx - auto-generated simulation script
@@ -59,7 +59,7 @@
 # within the Quartus project, and generate a unified
 # script which supports all the Altera IP within the design.
 # ----------------------------------------
-# ACDS 15.1 185 win32 2017.03.09.17:10:23
+# ACDS 15.1 185 win32 2017.03.10.22:14:31
 # ----------------------------------------
 # initialize variables
 TOP_LEVEL_NAME="ff_rdx_data"
@@ -131,7 +131,7 @@ fi
 # ----------------------------------------
 # compile design files in correct order
 if [ $SKIP_COM -eq 0 ]; then
-  vlogan +v2k $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/../fifo_151/sim/ff_rdx_data_fifo_151_4d3nvky.v" -work ff_rdx_data_fifo_151
+  vlogan +v2k $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/../fifo_151/sim/ff_rdx_data_fifo_151_vbtzbya.v" -work ff_rdx_data_fifo_151
   vlogan +v2k $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/ff_rdx_data.v"                                                            
 fi
 

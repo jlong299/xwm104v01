@@ -65,7 +65,7 @@
   <parameter name="GUI_CLOCKS_ARE_SYNCHRONIZED" value="0" />
   <parameter name="GUI_Clock" value="0" />
   <parameter name="GUI_DISABLE_DCFIFO_EMBEDDED_TIMING_CONSTRAINT" value="true" />
-  <parameter name="GUI_Depth" value="32" />
+  <parameter name="GUI_Depth" value="64" />
   <parameter name="GUI_ENABLE_ECC" value="false" />
   <parameter name="GUI_Empty" value="false" />
   <parameter name="GUI_Full" value="false" />
