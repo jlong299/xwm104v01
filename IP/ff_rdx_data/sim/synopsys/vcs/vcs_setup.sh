@@ -12,7 +12,7 @@
 # or its authorized distributors. Please refer to the applicable 
 # agreement for further details.
 
-# ACDS 15.1 185 win32 2017.03.10.22:14:31
+# ACDS 15.1 185 win32 2017.03.12.11:03:51
 
 # ----------------------------------------
 # vcs - auto-generated simulation script
@@ -54,7 +54,7 @@
 # within the Quartus project, and generate a unified
 # script which supports all the Altera IP within the design.
 # ----------------------------------------
-# ACDS 15.1 185 win32 2017.03.10.22:14:31
+# ACDS 15.1 185 win32 2017.03.12.11:03:51
 # ----------------------------------------
 # initialize variables
 TOP_LEVEL_NAME="ff_rdx_data"
@@ -103,7 +103,7 @@ vcs -lca -timescale=1ps/1ps -sverilog +verilog2001ext+.v -ntb_opts dtm $ELAB_OPT
   -v $QUARTUS_INSTALL_DIR/eda/sim_lib/twentynm_hssi_atoms.v \
   -v $QUARTUS_INSTALL_DIR/eda/sim_lib/synopsys/twentynm_hip_atoms_ncrypt.v \
   -v $QUARTUS_INSTALL_DIR/eda/sim_lib/twentynm_hip_atoms.v \
-  $QSYS_SIMDIR/../fifo_151/sim/ff_rdx_data_fifo_151_vbtzbya.v \
+  $QSYS_SIMDIR/../fifo_151/sim/ff_rdx_data_fifo_151_efv2tfa.v \
   $QSYS_SIMDIR/ff_rdx_data.v \
   -top $TOP_LEVEL_NAME
 # ----------------------------------------

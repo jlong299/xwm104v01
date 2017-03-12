@@ -49,7 +49,7 @@ for (i=0; i<5; i++) begin : gen0
 	ff_rdx_data ff_inst (
 		.data  ({din_real[i], din_imag[i]}),  //  fifo_input.datain
 		.wrreq (in_val), //            .wrreq
-		.rdreq (valid_r[delay_twdl-7+3]), //            .rdreq
+		.rdreq (valid_r[delay_twdl-8+3]), //            .rdreq
 		.clock (clk), //            .clk
 		.sclr  (sclr),  //            .sclr
 		.q     ({d_real_r[i], d_imag_r[i]})      // fifo_output.dataout
@@ -189,6 +189,22 @@ always@(posedge clk) begin
 	tw_imag_dly[4] <= tw_imag[4];
 end
 
+logic signed [wDataInOut-1:0]  d_real_r_r [0:4];
+logic signed [wDataInOut-1:0]  d_imag_r_r [0:4];
+always@(posedge clk) begin
+	for (j=0; j<=4; j++) begin
+		d_real_r_r[j] <= d_real_r[j];
+		d_imag_r_r[j] <= d_imag_r[j];
+	end
+	for (j=1; j<=4; j++) begin
+		dout_real_t_p0[j] <= d_real_r_r[j]*tw_real_dly[j];  
+		dout_real_t_p1[j] <= d_imag_r_r[j]*tw_imag_dly[j];
+		dout_imag_t_p0[j] <= d_real_r_r[j]*tw_imag_dly[j];
+		dout_imag_t_p1[j] <= d_imag_r_r[j]*tw_real_dly[j]; // 1.17*2.14
+	end
+end
+
+
 // assign tw_real_An = An;
 generate
 for (i=1; i<5; i++) begin : gen1
@@ -196,10 +212,8 @@ always@(posedge clk)
 begin
 	if (!rst_n)  
 	begin
-		dout_real_t_p0[i] <= 0;
-		dout_real_t_p1[i] <= 0;
-		dout_imag_t_p0[i] <= 0;
-		dout_imag_t_p1[i] <= 0;
+		dout_real_t[i] <= 0;
+		dout_imag_t[i] <= 0;
 	end
 	else
 	begin
@@ -213,28 +227,28 @@ begin
 				dout_real_t[i] <= 0;
 				dout_imag_t[i] <= 0;
 			end
-			dout_real_t_p0[i] <= 0;
-			dout_real_t_p1[i] <= 0;
-			dout_imag_t_p0[i] <= 0;
-			dout_imag_t_p1[i] <= 0;
+			// dout_real_t_p0[i] <= 0;
+			// dout_real_t_p1[i] <= 0;
+			// dout_imag_t_p0[i] <= 0;
+			// dout_imag_t_p1[i] <= 0;
 		end
 		else begin
-			if (valid_r[delay_twdl-6+3]) begin
-				// dout_real_t[i] <= d_real_r[i][delay_twdl-5]*tw_real[i] 
-				//                   - d_imag_r[i][delay_twdl-5]*tw_imag[i];
-				// dout_imag_t[i] <= d_real_r[i][delay_twdl-5]*tw_imag[i] 
-				//                   + d_imag_r[i][delay_twdl-5]*tw_real[i];
-				dout_real_t_p0[i] <= d_real_r[i]*tw_real_dly[i];  
-				dout_real_t_p1[i] <= d_imag_r[i]*tw_imag_dly[i];
-				dout_imag_t_p0[i] <= d_real_r[i]*tw_imag_dly[i];
-				dout_imag_t_p1[i] <= d_imag_r[i]*tw_real_dly[i]; // 1.17*2.14
-			end
-			else begin
-				dout_real_t_p0[i] <= 0;
-				dout_real_t_p1[i] <= 0;
-				dout_imag_t_p0[i] <= 0;
-				dout_imag_t_p1[i] <= 0;
-			end
+			// if (valid_r[delay_twdl-6+3]) begin
+			// 	// dout_real_t[i] <= d_real_r[i][delay_twdl-5]*tw_real[i] 
+			// 	//                   - d_imag_r[i][delay_twdl-5]*tw_imag[i];
+			// 	// dout_imag_t[i] <= d_real_r[i][delay_twdl-5]*tw_imag[i] 
+			// 	//                   + d_imag_r[i][delay_twdl-5]*tw_real[i];
+			// 	dout_real_t_p0[i] <= d_real_r_r[i]*tw_real_dly[i];  
+			// 	dout_real_t_p1[i] <= d_imag_r_r[i]*tw_imag_dly[i];
+			// 	dout_imag_t_p0[i] <= d_real_r_r[i]*tw_imag_dly[i];
+			// 	dout_imag_t_p1[i] <= d_imag_r_r[i]*tw_real_dly[i]; // 1.17*2.14
+			// end
+			// else begin
+			// 	dout_real_t_p0[i] <= 0;
+			// 	dout_real_t_p1[i] <= 0;
+			// 	dout_imag_t_p0[i] <= 0;
+			// 	dout_imag_t_p1[i] <= 0;
+			// end
 			dout_real_t[i] <= dout_real_t_p0[i] - dout_real_t_p1[i];
 			dout_imag_t[i] <= dout_imag_t_p0[i] + dout_imag_t_p1[i];
 		end
@@ -285,8 +299,8 @@ begin
 				dout_imag[0] <= 0;
 			end
 		end
-		d_real_r2 <= d_real_r[0];
-		d_imag_r2 <= d_imag_r[0];
+		d_real_r2 <= d_real_r_r[0];
+		d_imag_r2 <= d_imag_r_r[0];
 	end
 end
 

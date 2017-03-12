@@ -15,13 +15,13 @@ Info: ff_rdx_data: "Transforming system: ff_rdx_data"
 Info: ff_rdx_data: Running transform generation_view_transform
 Info: ff_rdx_data: Running transform generation_view_transform took 0.000s
 Info: fifo_0: Running transform generation_view_transform
-Info: fifo_0: Running transform generation_view_transform took 0.001s
+Info: fifo_0: Running transform generation_view_transform took 0.000s
 Info: ff_rdx_data: Running transform merlin_avalon_transform
-Info: ff_rdx_data: Running transform merlin_avalon_transform took 0.030s
+Info: ff_rdx_data: Running transform merlin_avalon_transform took 0.034s
 Info: ff_rdx_data: "Naming system components in system: ff_rdx_data"
 Info: ff_rdx_data: "Processing generation queue"
 Info: ff_rdx_data: "Generating: ff_rdx_data"
-Info: ff_rdx_data: "Generating: ff_rdx_data_fifo_151_vbtzbya"
+Info: ff_rdx_data: "Generating: ff_rdx_data_fifo_151_efv2tfa"
 Info: ff_rdx_data: Done "ff_rdx_data" with 2 modules, 2 files
 Info: qsys-generate succeeded.
 Info: Finished: Create simulation model
@@ -64,11 +64,11 @@ Info: ff_rdx_data: Running transform generation_view_transform took 0.000s
 Info: fifo_0: Running transform generation_view_transform
 Info: fifo_0: Running transform generation_view_transform took 0.000s
 Info: ff_rdx_data: Running transform merlin_avalon_transform
-Info: ff_rdx_data: Running transform merlin_avalon_transform took 0.007s
+Info: ff_rdx_data: Running transform merlin_avalon_transform took 0.024s
 Info: ff_rdx_data: "Naming system components in system: ff_rdx_data"
 Info: ff_rdx_data: "Processing generation queue"
 Info: ff_rdx_data: "Generating: ff_rdx_data"
-Info: ff_rdx_data: "Generating: ff_rdx_data_fifo_151_vbtzbya"
+Info: ff_rdx_data: "Generating: ff_rdx_data_fifo_151_efv2tfa"
 Info: ff_rdx_data: Done "ff_rdx_data" with 2 modules, 3 files
 Info: qsys-generate succeeded.
 Info: Finished: Create HDL design files for synthesis

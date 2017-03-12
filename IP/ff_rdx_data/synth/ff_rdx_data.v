@@ -12,7 +12,7 @@ module ff_rdx_data (
 		output wire [35:0] q      // fifo_output.dataout
 	);
 
-	ff_rdx_data_fifo_151_vbtzbya fifo_0 (
+	ff_rdx_data_fifo_151_efv2tfa fifo_0 (
 		.data  (data),  //  fifo_input.datain
 		.wrreq (wrreq), //            .wrreq
 		.rdreq (rdreq), //            .rdreq

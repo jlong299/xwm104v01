@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <deploy
- date="2017.03.10.16:53:27"
+ date="2017.03.12.11:58:28"
  outputDirectory="C:/work/pj104/code/1702/Mixed_Radix_DFT/IP/ff_rdx_index/">
  <perimeter>
   <parameter
@@ -49,7 +49,7 @@
   </interface>
  </perimeter>
  <entity kind="ff_rdx_index" version="1.0" name="ff_rdx_index">
-  <parameter name="AUTO_GENERATION_ID" value="1489136007" />
+  <parameter name="AUTO_GENERATION_ID" value="1489291108" />
   <parameter name="AUTO_DEVICE" value="10AX115U3F45E2SGE3" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Arria 10" />
   <parameter name="AUTO_UNIQUE_ID" value="" />
@@ -78,10 +78,10 @@
   </childSourceFiles>
   <messages>
    <message level="Info" culprit="ff_rdx_index">"Generating: ff_rdx_index"</message>
-   <message level="Info" culprit="ff_rdx_index">"Generating: ff_rdx_index_fifo_151_dnln5rq"</message>
+   <message level="Info" culprit="ff_rdx_index">"Generating: ff_rdx_index_fifo_151_dv6wpvq"</message>
   </messages>
  </entity>
- <entity kind="fifo" version="15.1" name="ff_rdx_index_fifo_151_dnln5rq">
+ <entity kind="fifo" version="15.1" name="ff_rdx_index_fifo_151_dv6wpvq">
   <parameter name="GUI_Full" value="false" />
   <parameter name="GUI_RdUsedw_width" value="8" />
   <parameter name="GUI_AlmostFullThr" value="1" />
@@ -93,7 +93,7 @@
   <parameter name="GUI_msb_usedw" value="false" />
   <parameter name="GUI_WrUsedw_width" value="8" />
   <parameter name="GUI_rsEmpty" value="true" />
-  <parameter name="GUI_Optimize" value="0" />
+  <parameter name="GUI_Optimize" value="1" />
   <parameter name="GUI_Depth" value="64" />
   <parameter name="GUI_LE_BasedFIFO" value="false" />
   <parameter name="GUI_UsedW" value="false" />
@@ -126,12 +126,12 @@
   <parameter name="GUI_Width" value="55" />
   <generatedFiles>
    <file
-       path="C:\work\pj104\code\1702\Mixed_Radix_DFT\IP\ff_rdx_index\fifo_151\synth\ff_rdx_index_fifo_151_dnln5rq.v"
+       path="C:\work\pj104\code\1702\Mixed_Radix_DFT\IP\ff_rdx_index\fifo_151\synth\ff_rdx_index_fifo_151_dv6wpvq.v"
        attributes="" />
   </generatedFiles>
   <childGeneratedFiles>
    <file
-       path="C:\work\pj104\code\1702\Mixed_Radix_DFT\IP\ff_rdx_index\fifo_151\synth\ff_rdx_index_fifo_151_dnln5rq.v"
+       path="C:\work\pj104\code\1702\Mixed_Radix_DFT\IP\ff_rdx_index\fifo_151\synth\ff_rdx_index_fifo_151_dv6wpvq.v"
        attributes="" />
   </childGeneratedFiles>
   <sourceFiles>
@@ -140,7 +140,7 @@
   <childSourceFiles/>
   <instantiator instantiator="ff_rdx_index" as="fifo_0" />
   <messages>
-   <message level="Info" culprit="ff_rdx_index">"Generating: ff_rdx_index_fifo_151_dnln5rq"</message>
+   <message level="Info" culprit="ff_rdx_index">"Generating: ff_rdx_index_fifo_151_dv6wpvq"</message>
   </messages>
  </entity>
 </deploy>

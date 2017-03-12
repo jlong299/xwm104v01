@@ -74,7 +74,7 @@
   <parameter name="GUI_MAX_DEPTH" value="Auto" />
   <parameter name="GUI_MAX_DEPTH_BY_9" value="false" />
   <parameter name="GUI_OVERFLOW_CHECKING" value="false" />
-  <parameter name="GUI_Optimize" value="0" />
+  <parameter name="GUI_Optimize" value="1" />
   <parameter name="GUI_Optimize_max" value="0" />
   <parameter name="GUI_RAM_BLOCK_TYPE" value="Auto" />
   <parameter name="GUI_UNDERFLOW_CHECKING" value="false" />

@@ -12,7 +12,7 @@
 # or its authorized distributors. Please refer to the applicable 
 # agreement for further details.
 
-# ACDS 15.1 185 win32 2017.03.10.22:14:31
+# ACDS 15.1 185 win32 2017.03.12.11:03:51
 # ----------------------------------------
 # Auto-generated simulation script rivierapro_setup.tcl
 # ----------------------------------------
@@ -154,7 +154,7 @@ alias dev_com {
 # Compile the design files in correct order
 alias com {
   echo "\[exec\] com"
-  eval  vlog -v2k5 $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/../fifo_151/sim/ff_rdx_data_fifo_151_vbtzbya.v" -work ff_rdx_data_fifo_151
+  eval  vlog -v2k5 $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/../fifo_151/sim/ff_rdx_data_fifo_151_efv2tfa.v" -work ff_rdx_data_fifo_151
   eval  vlog -v2k5 $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/ff_rdx_data.v"                                                            
 }
 
