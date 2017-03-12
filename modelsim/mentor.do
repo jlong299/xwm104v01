@@ -59,6 +59,14 @@ add wave -radix unsigned sim:/top_tb/top_inst/ctrl_fsm/*
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/fsm}
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/cnt_stage}
 
+add wave -radix unsigned {sim:/top_tb/top_inst/mem0/bank_addr_source}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem0/bank_addr_source_r1}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem0/bank_index_source_r}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem0/bank_index_source_r2}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem0/rdRAM_FSMsource/rden}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem0/rdRAM_FSMsource_rden_r1}
+
+
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/mrd_FSMrd_rd_inst/*}
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/out_rdx2345_data/*}
 add wave -radix signed {sim:/top_tb/top_inst/mem0/out_rdx2345_data/d_real}
@@ -114,4 +122,4 @@ view structure
 view signals
 
 run 800us
-# run 100us
+# run 50us

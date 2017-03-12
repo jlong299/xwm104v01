@@ -11,7 +11,7 @@ localparam  wDFTout = 18;
 localparam  wDFTin = 18;
 
 // localparam  delay_twdl = 25;
-localparam  delay_twdl = 25+8+2;
+localparam  delay_twdl = 25+8+2-2;
 
 // logic [0:4][2:0]  bank_index_r [0 : delay_twdl-1];
 // logic [0:4][7:0]  bank_addr_r [0 : delay_twdl-1];

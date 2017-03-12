@@ -174,6 +174,19 @@ endgenerate
 //-------------------------------------------
 //--------------  Switches --------------------
 //-------------------------------------------
+
+logic [11:0]  bank_addr_source_r0, bank_addr_source_r1;
+logic [2:0] bank_index_source_r1, bank_index_source_r2;
+logic [0:6] rdRAM_FSMsource_rden_r0, rdRAM_FSMsource_rden_r1;
+always@(posedge clk) begin
+	bank_addr_source_r0 <= bank_addr_source;
+	bank_addr_source_r1 <= bank_addr_source_r0;
+	bank_index_source_r1 <= bank_index_source_r;
+	bank_index_source_r2 <= bank_index_source_r1;
+	rdRAM_FSMsource_rden_r0 <= rdRAM_FSMsource.rden;
+	rdRAM_FSMsource_rden_r1 <= rdRAM_FSMsource_rden_r0;
+end
+
 generate
 for (i=0; i<=6; i++)  begin : din_switch
 always@(*)
@@ -197,18 +210,27 @@ assign wrRAM.wren[i] = (fsm==Sink)? (wrRAM_FSMsink.wren[i] & valid_r[0])
                   : wrRAM_FSMrd.wren[i] ; 
 
 
-assign rdRAM.rdaddr[i]= (fsm==Rd)? rdRAM_FSMrd.rdaddr[i] : bank_addr_source[mrd_mem_pkt::wADDR-1:0];
+
+
+assign rdRAM.rdaddr[i]= (fsm==Rd)? rdRAM_FSMrd.rdaddr[i] : bank_addr_source_r1[mrd_mem_pkt::wADDR-1:0];
 assign rdRAM.rden[i] = (fsm==Rd)? rdRAM_FSMrd.rden[i] : 
-                 (rdRAM_FSMsource.rden[i] & fsm_lastRd_source);
+                 // (rdRAM_FSMsource.rden[i] & fsm_lastRd_source);
+                 (rdRAM_FSMsource_rden_r1[i] & fsm_lastRd_source);
 assign rdRAM_FSMrd.dout_real[i] = (fsm==Rd)? rdRAM.dout_real[i] : 18'd0;
 assign rdRAM_FSMrd.dout_imag[i] = (fsm==Rd)? rdRAM.dout_imag[i] : 18'd0;
 end
 endgenerate 
 
 logic [17:0] out_data_real_r, out_data_imag_r;
+logic [17:0] out_data_real_r1, out_data_imag_r1;
+logic [17:0] out_data_real_r2, out_data_imag_r2;
 always@(posedge clk) begin
-	 out_data_real_r <= rdRAM.dout_real[bank_index_source_r] ;
-	 out_data_imag_r <= rdRAM.dout_imag[bank_index_source_r] ;
+	 out_data_real_r <= rdRAM.dout_real[bank_index_source_r2] ;
+	 out_data_imag_r <= rdRAM.dout_imag[bank_index_source_r2] ;
+	 out_data_real_r1 <= out_data_real_r;
+	 out_data_imag_r1 <= out_data_imag_r;
+	 out_data_real_r2 <= out_data_real_r1;
+	 out_data_imag_r2 <= out_data_imag_r1;
 	 out_data.dout_real <= (fsm_lastRd_source && in_rdx2345_data.valid)? 
             in_rdx2345_data.d_real[0] : out_data_real_r ;
 	 out_data.dout_imag <= (fsm_lastRd_source && in_rdx2345_data.valid)? 

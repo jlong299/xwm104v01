@@ -17,8 +17,30 @@ module mrd_rdx3_v2
 );
 
 localparam unsigned [1:0] worst_case_growth = 2'd2;
-logic [2:0] val_r;
+logic [2+2:0] val_r;
 logic unsigned [1:0] word_growth;
+
+integer j;
+//---------- first 2 pipelines  Only register inputs to sync with radx5 -------------
+logic signed [18-1:0] din_real_r0 [0:2];
+logic signed [18-1:0] din_real_r1 [0:2];
+logic signed [18-1:0] din_imag_r0 [0:2];
+logic signed [18-1:0] din_imag_r1 [0:2];
+always@(posedge clk) begin
+	for (j=0; j<=2; j++) begin
+		din_real_r0[j] <= din_real[j];
+		din_real_r1[j] <= din_real_r0[j];
+		din_imag_r0[j] <= din_imag[j];
+		din_imag_r1[j] <= din_imag_r0[j];
+	end
+end
+
+// assign din_real_r1[0] = din_real[0];
+// assign din_real_r1[1] = din_real[1];
+// assign din_real_r1[2] = din_real[2];
+// assign din_imag_r1[0] = din_imag[0];
+// assign din_imag_r1[1] = din_imag[1];
+// assign din_imag_r1[2] = din_imag[2];
 
 //---------- 1st pipeline --------------
 logic signed [18-1:0] p1_x0_r, p1_x0_i; //1.17
@@ -26,8 +48,8 @@ logic signed [19-1:0] p1_x1_r, p1_x1_i; //2.17
 logic signed [18-1:0] p1_x2_r, p1_x2_i; //2.16
 wire signed [19-1:0] wir1_p1_x2_r, wir1_p1_x2_i;
 
-assign wir1_p1_x2_r = -din_real[1] + din_real[2];
-assign wir1_p1_x2_i = -din_imag[1] + din_imag[2];
+assign wir1_p1_x2_r = -din_real_r1[1] + din_real_r1[2];
+assign wir1_p1_x2_i = -din_imag_r1[1] + din_imag_r1[2];
 always@(posedge clk)
 begin
 	if (!rst_n) begin
@@ -40,10 +62,10 @@ begin
 	end
 	else begin
 		// 1st pipeline
-		p1_x0_r <= din_real[0];
-		p1_x0_i <= din_imag[0];
-		p1_x1_r <= din_real[1] + din_real[2];
-		p1_x1_i <= din_imag[1] + din_imag[2];
+		p1_x0_r <= din_real_r1[0];
+		p1_x0_i <= din_imag_r1[0];
+		p1_x1_r <= din_real_r1[1] + din_real_r1[2];
+		p1_x1_i <= din_imag_r1[1] + din_imag_r1[2];
 		p1_x2_r <= (wir1_p1_x2_r[0])? wir1_p1_x2_r[18:1]+2'sd1 : wir1_p1_x2_r[18:1];
 		p1_x2_i <= (wir1_p1_x2_i[0])? wir1_p1_x2_i[18:1]+2'sd1 : wir1_p1_x2_i[18:1];
 	end
@@ -167,7 +189,6 @@ case (word_growth)
 endcase
 end
 
-integer j;
 always@(posedge clk)
 begin
 	if (!rst_n) begin
@@ -197,7 +218,7 @@ begin
 		dout_real[4] <= 0;
 		dout_imag[4] <= 0;
 
-		exp_out <= (val_r[1])? exp_in + word_growth : exp_out; 
+		exp_out <= (val_r[1+2])? exp_in + word_growth : exp_out; 
 	end
 end
 

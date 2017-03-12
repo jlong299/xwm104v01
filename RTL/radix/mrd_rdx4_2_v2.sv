@@ -19,10 +19,34 @@ module mrd_rdx4_2_v2
 
 logic unsigned [1:0] worst_case_growth;
 logic unsigned [1:0] word_growth;
-logic [2:0] val_r;
+logic [2+2:0] val_r;
 logic signed [18-1:0] p1_x0_r, p1_x0_i, p1_x1_r, p1_x1_i, p1_x2_r, p1_x2_i, p1_x3_r, p1_x3_i; //1.17
 
 assign worst_case_growth = (factor==3'd2)? 2'd2 : 2'd3;
+integer j;
+//---------- first 2 pipelines  Only register inputs to sync with radx5 -------------
+logic signed [18-1:0] din_real_r0 [0:3];
+logic signed [18-1:0] din_real_r1 [0:3];
+logic signed [18-1:0] din_imag_r0 [0:3];
+logic signed [18-1:0] din_imag_r1 [0:3];
+always@(posedge clk) begin
+	for (j=0; j<=3; j++) begin
+		din_real_r0[j] <= din_real[j];
+		din_real_r1[j] <= din_real_r0[j];
+		din_imag_r0[j] <= din_imag[j];
+		din_imag_r1[j] <= din_imag_r0[j];
+	end
+end
+
+// assign din_real_r1[0] = din_real[0];
+// assign din_real_r1[1] = din_real[1];
+// assign din_real_r1[2] = din_real[2];
+// assign din_real_r1[3] = din_real[3];
+// assign din_imag_r1[0] = din_imag[0];
+// assign din_imag_r1[1] = din_imag[1];
+// assign din_imag_r1[2] = din_imag[2];
+// assign din_imag_r1[3] = din_imag[3];
+
 //---------- 1st pipeline -------------
 always@(posedge clk)
 begin
@@ -37,14 +61,14 @@ begin
 		p1_x3_i <= 0;
 	end
 	else begin
-		p1_x0_r <= din_real[0];
-		p1_x0_i <= din_imag[0];
-		p1_x1_r <= (factor==3'd2)? din_real[1] : din_real[2];
-		p1_x1_i <= (factor==3'd2)? din_imag[1] : din_imag[2];
-		p1_x2_r <= (factor==3'd2)? din_real[2] : din_real[1];
-		p1_x2_i <= (factor==3'd2)? din_imag[2] : din_imag[1];
-		p1_x3_r <= din_real[3];
-		p1_x3_i <= din_imag[3];
+		p1_x0_r <= din_real_r1[0];
+		p1_x0_i <= din_imag_r1[0];
+		p1_x1_r <= (factor==3'd2)? din_real_r1[1] : din_real_r1[2];
+		p1_x1_i <= (factor==3'd2)? din_imag_r1[1] : din_imag_r1[2];
+		p1_x2_r <= (factor==3'd2)? din_real_r1[2] : din_real_r1[1];
+		p1_x2_i <= (factor==3'd2)? din_imag_r1[2] : din_imag_r1[1];
+		p1_x3_r <= din_real_r1[3];
+		p1_x3_i <= din_imag_r1[3];
 	end
 end
 
@@ -181,7 +205,6 @@ case (word_growth)
 endcase
 end
 
-integer j;
 always@(posedge clk)
 begin
 	if (!rst_n) begin
@@ -208,7 +231,7 @@ begin
 		dout_real[3] <= (wir2_p4_x3_r[2])? wir2_p4_x3_r[20:3]+2'sd1 : wir2_p4_x3_r[20:3]; 
 		dout_imag[3] <= (wir2_p4_x3_i[2])? wir2_p4_x3_i[20:3]+2'sd1 : wir2_p4_x3_i[20:3]; 
 
-		exp_out <= (val_r[1])? exp_in + word_growth : exp_out; 
+		exp_out <= (val_r[1+2])? exp_in + word_growth : exp_out; 
 	end
 end
 
