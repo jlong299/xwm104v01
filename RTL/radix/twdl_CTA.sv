@@ -107,7 +107,8 @@ logic signed [15:0] tw_real_1r, tw_imag_1r;
 //--------  1st pipeline  ------------
 always@(posedge clk) begin
 	tw_real_1r <= tw_real[1];
-	tw_imag_1r <= tw_imag[1];
+	// tw_imag_1r <= tw_imag[1];
+	tw_imag_1r <= -tw_imag[1];
 end
 //--------  1st+1 pipeline  ------------
 always@(posedge clk) begin

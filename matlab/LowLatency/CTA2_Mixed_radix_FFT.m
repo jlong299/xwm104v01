@@ -121,6 +121,10 @@ end
 FX = fft(x);
 IFX = N*ifft(x);
 
+if (InverseFFT==1) 
+    FX = IFX; 
+end
+
 fprintf(outf_FFT, '%d\n' , m_len*12);
 for k = 1 : length(x_real)
     fprintf(outf_FFT, '%d %d\n' , int32(real(FX(k))), int32(imag(FX(k))));

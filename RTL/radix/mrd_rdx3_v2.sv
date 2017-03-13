@@ -84,8 +84,13 @@ assign wir1_p2_x0_i = {p1_x0_i[17],p1_x0_i,1'b0};
 assign wir1_p2_x1_r = {p1_x1_r[18],p1_x1_r};
 assign wir1_p2_x1_i = {p1_x1_i[18],p1_x1_i};
 
-assign wir1_p2_x2_r = p1_x2_i * -18'sh1BB68 ; //3.33 = 2.16 * 1.17
-assign wir1_p2_x2_i = p1_x2_r * 18'sh1BB68 ;
+// FFT
+// assign wir1_p2_x2_r = p1_x2_i * -18'sh1BB68 ; //3.33 = 2.16 * 1.17
+// assign wir1_p2_x2_i = p1_x2_r * 18'sh1BB68 ;
+
+// Inverse FFT
+assign wir1_p2_x2_r = p1_x2_i * 18'sh1BB68 ; //3.33 = 2.16 * 1.17
+assign wir1_p2_x2_i = p1_x2_r * -18'sh1BB68 ;
 
 always@(posedge clk)
 begin

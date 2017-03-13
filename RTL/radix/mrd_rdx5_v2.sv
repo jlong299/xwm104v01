@@ -131,14 +131,24 @@ always@(posedge clk) begin
 	// 	coeff[5] <= 0;
 	// end
 	// else begin
-		coeff[2] <= 18'sh11E37 ; //1.17
-		coeff[3] <= 18'sh2760E ; //2.16
-		coeff3_n <= -18'sh2760E;
-		coeff[4] <= 18'sh34601 ; //1.17
-		coeff4_n <= -18'sh34601 ; //1.17
-		coeff[5] <= 18'sh1E6F1 ; //1.17
-		coeff5_n <= -18'sh1E6F1 ; //1.17
+		// // FFT
+		// coeff[2] <= 18'sh11E37 ; //1.17
+		// coeff[3] <= 18'sh2760E ; //2.16
+		// coeff3_n <= -18'sh2760E;
+		// coeff[4] <= 18'sh34601 ; //1.17
+		// coeff4_n <= -18'sh34601 ; //1.17
+		// coeff[5] <= 18'sh1E6F1 ; //1.17
+		// coeff5_n <= -18'sh1E6F1 ; //1.17
 	// end
+
+	// Inverse FFT
+	coeff[2] <= 18'sh11E37 ; //1.17
+	coeff[3] <= -18'sh2760E ; //2.16
+	coeff3_n <= 18'sh2760E;
+	coeff[4] <= -18'sh34601 ; //1.17
+	coeff4_n <= 18'sh34601 ; //1.17
+	coeff[5] <= -18'sh1E6F1 ; //1.17
+	coeff5_n <= 18'sh1E6F1 ; //1.17
 end
 
 assign wir1_p2_x2_r = p1r_x2_r * coeff[2]; //1.17
