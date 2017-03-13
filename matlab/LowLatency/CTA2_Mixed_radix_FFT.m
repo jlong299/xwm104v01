@@ -61,7 +61,7 @@ NumOfBanks = 7; % total 7 RAM banks
 
 NumOfFactors_max = 6; % 6 factors at most
 
-
+InverseFFT = 1;
 %-----------------------------------------
 %-------- Loop  from 12 to 1200 ----------
 %-----------------------------------------
@@ -119,6 +119,8 @@ for k = 1 : length(x_real)
 end
 
 FX = fft(x);
+IFX = N*ifft(x);
+
 fprintf(outf_FFT, '%d\n' , m_len*12);
 for k = 1 : length(x_real)
     fprintf(outf_FFT, '%d %d\n' , int32(real(FX(k))), int32(imag(FX(k))));
@@ -244,10 +246,14 @@ for m=1:NumOfFactors
                             end
 
                             for t = 1:5
-                                tw_coeff(t) = exp(-1i*2*pi* (t-1)*(tw_N_exp)/tw_base);
+                                if (InverseFFT==1)
+                                    tw_coeff(t) = exp(1i*2*pi* (t-1)*(tw_N_exp)/tw_base);
+                                else
+                                    tw_coeff(t) = exp(-1i*2*pi* (t-1)*(tw_N_exp)/tw_base);
+                                end
                             end
                                 
-                            fft_tw_out = fft_tw2(read_data_index(1:5), Nf(m), tw_coeff, is_last_stage );
+                            fft_tw_out = fft_tw2(read_data_index(1:5), Nf(m), tw_coeff, is_last_stage, InverseFFT );
                             %fft_tw_out = read_data_index(1:5);
                             fft_out_int32 = int32(fft_tw_out);
                         
@@ -286,7 +292,7 @@ for m=1:NumOfFactors
 
 end
 
-%----------- PART  3  (Inverse sequence of PART 1)----------------------------
+%----------- PART  3  (InverseFFT sequence of PART 1)----------------------------
 %----------- I/O output --------------------------
 %----------- code considering RTL structure ------
 Fout = zeros(N,1);
@@ -324,7 +330,7 @@ for t=0:N-1
     end
 
 
-    %--------  Inverse sequence --------------
+    %--------  InverseFFT sequence --------------
     %  k1, k2, k3, k4, k5, k6
     %  0,  0,  0,  0,  0,  0
     %  1,  0,  0,  0,  0,  0
@@ -372,8 +378,11 @@ end
 
 % result
 N
-% max(abs(Fout-FX.'))
-max(abs(Fout-FX.'))
+if (InverseFFT == 1)
+    max(abs(Fout-IFX.'))
+else
+    max(abs(Fout-FX.'))
+end
 % size(RAM_read)
 % size(RAM_write)
 

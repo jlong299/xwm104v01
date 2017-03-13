@@ -1,30 +1,60 @@
-function [ y ] = fft_tw( x, radix, tw_coeff, is_last_stage)
+function [ y ] = fft_tw( x, radix, tw_coeff, is_last_stage, InverseFFT)
 %FFT_TW Summary of this function goes here
 %   Detailed explanation goes here
 
 f = zeros(length(x),1);
 
-switch radix
+if (InverseFFT == 1)
+	switch radix
 	case 5
-		f = fft(x,5);
+		f = 5*ifft(x,5);
 	case 4
-		f(1:4) = fft(x(1:4));
+		% f(1:4) = fft(x(1:4));
+		f(1:4) = 4*ifft(x(1:4));
 		f(5) = 0;
 	case 3
-		f(1:3) = fft(x(1:3));
+		% f(1:3) = fft(x(1:3));
+		f(1:3) = 3*ifft(x(1:3));
 		f(4) = 0;
 		f(5) = 0;
 	case 2
-		f(1:2) = fft(x(1:2));
+		f(1:2) = 2*ifft(x(1:2));
 		f(3) = 0;
 		f(4) = 0;
 		f(5) = 0;
 	otherwise
-		f(1:2) = fft(x(1:2));
+		f(1:2) = 2*ifft(x(1:2));
 		f(3) = 0;
 		f(4) = 0;
 		f(5) = 0;
+	end
+
+else
+	switch radix
+		case 5
+			f = fft(x,5);
+		case 4
+			% f(1:4) = fft(x(1:4));
+			f(1:4) = ifft(x(1:4));
+			f(5) = 0;
+		case 3
+			% f(1:3) = fft(x(1:3));
+			f(1:3) = ifft(x(1:3));
+			f(4) = 0;
+			f(5) = 0;
+		case 2
+			f(1:2) = fft(x(1:2));
+			f(3) = 0;
+			f(4) = 0;
+			f(5) = 0;
+		otherwise
+			f(1:2) = fft(x(1:2));
+			f(3) = 0;
+			f(4) = 0;
+			f(5) = 0;
+	end
 end
+
 
 if is_last_stage==1
 	 y = f;
