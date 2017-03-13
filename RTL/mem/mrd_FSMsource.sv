@@ -16,15 +16,13 @@ module mrd_FSMsource #(parameter
 	input [0:5][11:0]  twdl_demontr,
 
 	// Interfaces
-	mrd_ctrl_if ctrl,
+	mrd_rdx2345_if in_rdx2345_data,
 	mrd_mem_rd rdRAM_FSMsource,
 	mrd_st_if  out_data,
-	mrd_rdx2345_if in_rdx2345_data,
 
 	// Output
 	output logic [0:4][11:0] addrs_butterfly_src,
-	output logic [11:0]  bank_addr_source,
-	output logic [2:0] bank_index_source_r,
+	output logic [2:0] bank_index_source,
 	output logic source_end
 	
 );
@@ -33,8 +31,10 @@ module mrd_FSMsource #(parameter
 localparam Source = 3'd5;
 
 logic source_ongoing;
-logic [2:0] bank_index_source;
+logic [11:0]  bank_addr_source_pre, bank_addr_source_r0, bank_addr_source_r1;
+logic [2:0] bank_index_source_pre, bank_index_source_r0, bank_index_source_r1;
 logic [11:0] addr_source_CTA;
+genvar i;
 
 //--------Part 1 : RAMs read address which feeds to mrd_FSMrd_rd.sv ------ 
 //--------Note :  Addresses are inverse bit order ----
@@ -117,25 +117,42 @@ divider_7 divider_7_inst2 (
 	// .dividend 	(addr_source_CTA_r[27]),  
 	.dividend 	(addr_source_CTA_r[dly_addr_source-1]),  
 
-	.quotient 	(bank_addr_source),
-	.remainder 	(bank_index_source)
+	.quotient 	(bank_addr_source_pre),
+	.remainder 	(bank_index_source_pre)
 );
 
-always@(posedge clk)
-	if (!rst_n)	bank_index_source_r <= 0;
-	else		bank_index_source_r <= bank_index_source;
+always@(posedge clk) begin
+	if (!rst_n)	begin
+		bank_addr_source_r0 <= 0;
+		bank_addr_source_r1 <= 0;
+		bank_index_source_r0 <= 0;
+		bank_index_source_r1 <= 0;
+		bank_index_source <= 0;
+	end
+	else begin
+		bank_addr_source_r0 <= bank_addr_source_pre;
+		bank_addr_source_r1 <= bank_addr_source_r0;
+		bank_index_source_r0 <= bank_index_source_pre;
+		bank_index_source_r1 <= bank_index_source_r0;
+		bank_index_source <= bank_index_source_r1;
+	end
+end
+generate 
+for (i=0; i<=6; i++)
+assign rdRAM_FSMsource.rdaddr[i] = bank_addr_source_r1[mrd_mem_pkt::wADDR-1:0];
+endgenerate
 
-always@(*)
+always@(posedge clk)
 begin
-	case (bank_index_source)
-	3'd0:  rdRAM_FSMsource.rden = 7'b1000000;
-	3'd1:  rdRAM_FSMsource.rden = 7'b0100000;
-	3'd2:  rdRAM_FSMsource.rden = 7'b0010000;
-	3'd3:  rdRAM_FSMsource.rden = 7'b0001000;
-	3'd4:  rdRAM_FSMsource.rden = 7'b0000100;
-	3'd5:  rdRAM_FSMsource.rden = 7'b0000010;
-	3'd6:  rdRAM_FSMsource.rden = 7'b0000001;
-	default: rdRAM_FSMsource.rden = 7'd0;
+	case (bank_index_source_r0)
+	3'd0:  rdRAM_FSMsource.rden <= 7'b1000000;
+	3'd1:  rdRAM_FSMsource.rden <= 7'b0100000;
+	3'd2:  rdRAM_FSMsource.rden <= 7'b0010000;
+	3'd3:  rdRAM_FSMsource.rden <= 7'b0001000;
+	3'd4:  rdRAM_FSMsource.rden <= 7'b0000100;
+	3'd5:  rdRAM_FSMsource.rden <= 7'b0000010;
+	3'd6:  rdRAM_FSMsource.rden <= 7'b0000001;
+	default: rdRAM_FSMsource.rden <= 7'd0;
 	endcase
 end
 

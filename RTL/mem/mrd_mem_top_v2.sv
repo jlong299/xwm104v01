@@ -56,7 +56,7 @@ logic [2:0]  stage_of_rdx2;
 logic [mrd_mem_pkt::wADDR-1:0]  bank_addr_sink;
 logic [0:4][11:0]  addrs_butterfly_src;
 logic [11:0]  bank_addr_source;
-logic [2:0] bank_index_source_r;
+logic [2:0] bank_index_source;
 logic [0:4][11:0]  twdl_numrtr;
 logic [0:5][11:0]  twdl_demontr;
 logic [2:0]  cnt_stage;
@@ -187,19 +187,6 @@ endgenerate
 //-------------------------------------------
 //--------------  Switches --------------------
 //-------------------------------------------
-
-logic [11:0]  bank_addr_source_r0, bank_addr_source_r1;
-logic [2:0] bank_index_source_r1, bank_index_source_r2;
-logic [0:6] rdRAM_FSMsource_rden_r0, rdRAM_FSMsource_rden_r1;
-always@(posedge clk) begin
-	bank_addr_source_r0 <= bank_addr_source;
-	bank_addr_source_r1 <= bank_addr_source_r0;
-	bank_index_source_r1 <= bank_index_source_r;
-	bank_index_source_r2 <= bank_index_source_r1;
-	rdRAM_FSMsource_rden_r0 <= rdRAM_FSMsource.rden;
-	rdRAM_FSMsource_rden_r1 <= rdRAM_FSMsource_rden_r0;
-end
-
 generate
 for (i=0; i<=6; i++)  begin : din_switch
 always@(*)
@@ -225,7 +212,7 @@ assign wrRAM.wren[i] = (fsm==Sink)? (wrRAM_FSMsink.wren[i] & valid_r[0])
 
 
 
-assign rdRAM.rdaddr[i]= (fsm==Rd)? rdRAM_FSMrd.rdaddr[i] : bank_addr_source[mrd_mem_pkt::wADDR-1:0];
+assign rdRAM.rdaddr[i]= (fsm==Rd)? rdRAM_FSMrd.rdaddr[i] : rdRAM_FSMsource.rdaddr[i];
 assign rdRAM.rden[i] = (fsm==Rd)? rdRAM_FSMrd.rden[i] : 
                  (rdRAM_FSMsource.rden[i] & fsm_lastRd_source);
                  // (rdRAM_FSMsource_rden_r1[i] & fsm_lastRd_source);
@@ -236,8 +223,8 @@ endgenerate
 
 logic [17:0] out_data_real_r, out_data_imag_r;
 always@(posedge clk) begin
-	 out_data_real_r <= rdRAM.dout_real[bank_index_source_r] ;
-	 out_data_imag_r <= rdRAM.dout_imag[bank_index_source_r] ;
+	 out_data_real_r <= rdRAM.dout_real[bank_index_source] ;
+	 out_data_imag_r <= rdRAM.dout_imag[bank_index_source] ;
 	 out_data.dout_real <= (fsm_lastRd_source && in_rdx2345_data.valid)? 
             in_rdx2345_data.d_real[0] : out_data_real_r ;
 	 out_data.dout_imag <= (fsm_lastRd_source && in_rdx2345_data.valid)? 
@@ -327,7 +314,7 @@ mrd_FSMrd_wr_inst (
 // Output       |---------------------|------------------------------|  
 //                     1/3                      2/3 
 mrd_FSMsource #(
-	.dly_addr_source (10)
+	.dly_addr_source (8)
 	)
 mrd_FSMsource_inst (
 	clk,
@@ -341,14 +328,12 @@ mrd_FSMsource_inst (
 	dftpts,
 	twdl_demontr,
 
-	ctrl,
+	in_rdx2345_data,
 	rdRAM_FSMsource,
 	out_data,
-	in_rdx2345_data,
 
 	addrs_butterfly_src,
-	bank_addr_source,
-	bank_index_source_r,
+	bank_index_source,
 	source_end
 );
 
