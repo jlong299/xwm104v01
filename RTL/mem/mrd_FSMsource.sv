@@ -1,24 +1,30 @@
-module mrd_FSMsource (
+module mrd_FSMsource #(parameter
+	dly_addr_source = 10
+	)
+	(
 	input clk,
 	input rst_n,
 
+	// FSM signals
 	input [2:0] fsm,
 	input [2:0] fsm_r,
+	input fsm_lastRd_source,
 
+	// Parameters
 	input [0:5][2:0] Nf,
-	input [2:0]  cnt_stage,
 	input [11:0] dftpts,
 	input [0:5][11:0]  twdl_demontr,
 
+	// Interfaces
 	mrd_ctrl_if ctrl,
 	mrd_mem_rd rdRAM_FSMsource,
 	mrd_st_if  out_data,
 	mrd_rdx2345_if in_rdx2345_data,
 
+	// Output
 	output logic [0:4][11:0] addrs_butterfly_src,
 	output logic [11:0]  bank_addr_source,
 	output logic [2:0] bank_index_source_r,
-	output logic fsm_lastRd_source,
 	output logic source_end
 	
 );
@@ -26,34 +32,12 @@ module mrd_FSMsource (
 //   			Rd = 3'd3,  Wait_wr_end = 3'd4,  Source = 3'd5;
 localparam Source = 3'd5;
 
-logic clr_n_PFA_addr_o, source_ongoing;
-logic [11:0] cnt_source_ongoing;
+logic source_ongoing;
 logic [2:0] bank_index_source;
-logic [11:0]  addr_source_CTA;
-localparam dly_addr_source = 8;
-logic [dly_addr_source-1:0][11:0]  addr_source_CTA_r;
+logic [11:0] addr_source_CTA;
 
-always@(posedge clk)
-begin
-	if (!rst_n)
-	begin
-		clr_n_PFA_addr_o <= 0;
-	end
-	else
-	begin
-		if (cnt_source_ongoing == 12'd1)
-			clr_n_PFA_addr_o <= 1'b1;
-		else if (cnt_source_ongoing == dftpts+'d1)
-			clr_n_PFA_addr_o <= 1'b0;
-		else
-			clr_n_PFA_addr_o <= clr_n_PFA_addr_o;
-	end
-end
-
-// cnt_stage changes at the same time of rden_r0   (rden_r0 in mrd_FSMrd_rd.v)
-assign fsm_lastRd_source = (fsm==Source || cnt_stage==ctrl.NumOfFactors-3'd1);
-
-// If you change the latency of mrd_FSMrd_rd.sv, you should change this file as well
+//--------Part 1 : RAMs read address which feeds to mrd_FSMrd_rd.sv ------ 
+//--------Note :  Addresses are inverse bit order ----
 CTA_addr_source #(
 		12
 	)
@@ -68,9 +52,6 @@ CTA_addr_source_inst (
 	addr_source_CTA 
 );
 
-always@(posedge clk) 
-	addr_source_CTA_r <= {addr_source_CTA_r[dly_addr_source-2:0], addr_source_CTA};
-
 always@(posedge clk)
 begin
 	addrs_butterfly_src[0] <= addr_source_CTA;
@@ -80,40 +61,8 @@ begin
 	addrs_butterfly_src[4] <= 0;
 end
 
-always@(posedge clk)
-begin 
-	if (!rst_n)
-	begin
-		bank_index_source_r <= 0;
-	end
-	else
-	begin
-		bank_index_source_r <= bank_index_source;
-	end
-end
-
-divider_7 divider_7_inst2 (
-	// .dividend 	(addr_source_CTA_r[27]),  
-	.dividend 	(addr_source_CTA_r[dly_addr_source-1]),  
-
-	.quotient 	(bank_addr_source),
-	.remainder 	(bank_index_source)
-);
-
-always@(*)
-begin
-	case (bank_index_source)
-	3'd0:  rdRAM_FSMsource.rden = 7'b1000000;
-	3'd1:  rdRAM_FSMsource.rden = 7'b0100000;
-	3'd2:  rdRAM_FSMsource.rden = 7'b0010000;
-	3'd3:  rdRAM_FSMsource.rden = 7'b0001000;
-	3'd4:  rdRAM_FSMsource.rden = 7'b0000100;
-	3'd5:  rdRAM_FSMsource.rden = 7'b0000010;
-	3'd6:  rdRAM_FSMsource.rden = 7'b0000001;
-	default: rdRAM_FSMsource.rden = 7'd0;
-	endcase
-end
-
+//------Part 2 : Gen output sop,eop,valid according to in_rdx2345_data.valid--
+//------Note : in_rdx2345_data.valid represents first 1/3 output data ----
 logic in_rdx2345_valid_r;
 logic [11:0]  cnt_source;
 always@(posedge clk)
@@ -158,26 +107,36 @@ begin
 	end
 end
 
+//------Part 3 : Delay the source RAM read address to make the  ----
+//------last 2/3 output data right behind the first 1/3 ----
+logic [dly_addr_source-1:0][11:0]  addr_source_CTA_r;
+always@(posedge clk) 
+	addr_source_CTA_r <= {addr_source_CTA_r[dly_addr_source-2:0], addr_source_CTA};
+
+divider_7 divider_7_inst2 (
+	// .dividend 	(addr_source_CTA_r[27]),  
+	.dividend 	(addr_source_CTA_r[dly_addr_source-1]),  
+
+	.quotient 	(bank_addr_source),
+	.remainder 	(bank_index_source)
+);
+
 always@(posedge clk)
+	if (!rst_n)	bank_index_source_r <= 0;
+	else		bank_index_source_r <= bank_index_source;
+
+always@(*)
 begin
-	if (!rst_n)
-	begin
-		// source_ongoing <= 0;
-		cnt_source_ongoing <= 0;
-	end
-	else
-	begin
-		if (fsm == Source && fsm_r != Source)                          
-			cnt_source_ongoing <= 12'd1;
-		else if (cnt_source_ongoing != 12'd0)
-			cnt_source_ongoing <= (cnt_source_ongoing==dftpts+'d2) ?
-		                           12'd0 : cnt_source_ongoing + 12'd1;
-		else
-			cnt_source_ongoing <= 0;
-
-		// source_ongoing <= (cnt_source_ongoing != 12'd0);
-	end
+	case (bank_index_source)
+	3'd0:  rdRAM_FSMsource.rden = 7'b1000000;
+	3'd1:  rdRAM_FSMsource.rden = 7'b0100000;
+	3'd2:  rdRAM_FSMsource.rden = 7'b0010000;
+	3'd3:  rdRAM_FSMsource.rden = 7'b0001000;
+	3'd4:  rdRAM_FSMsource.rden = 7'b0000100;
+	3'd5:  rdRAM_FSMsource.rden = 7'b0000010;
+	3'd6:  rdRAM_FSMsource.rden = 7'b0000001;
+	default: rdRAM_FSMsource.rden = 7'd0;
+	endcase
 end
-
 
 endmodule

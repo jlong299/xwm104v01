@@ -7,6 +7,7 @@ module mrd_FSMrd_rd #(parameter
 
 	input [2:0] fsm,
 	input [2:0] fsm_r,
+	input [2:0] cnt_stage,
 
 	input [in_dly:0][17:0] din_real_r,
 	input [in_dly:0][17:0] din_imag_r,
@@ -20,8 +21,7 @@ module mrd_FSMrd_rd #(parameter
 	mrd_mem_rd rdRAM_FSMrd,
 	mrd_rdx2345_if out_rdx2345_data,
 
-	output rd_end,
-	output logic [2:0]  cnt_stage
+	output rd_end
 );
 // parameter Idle = 3'd0, Sink = 3'd1, Wait_to_rd = 3'd2,
 //   			Rd = 3'd3,  Wait_wr_end = 3'd4,  Source = 3'd5;
@@ -50,7 +50,6 @@ always@(posedge clk)
 begin
 	if (!rst_n)
 	begin
-		cnt_stage <= 0;
 		rden_r <= 0;
 	end
 	else
@@ -64,10 +63,6 @@ begin
 			cnt_FSMrd <= 0;
 		//////
 		rden_r[in_dly-1:1] <= {rden_r[in_dly-2:1], rden_r0};
-
-		if (fsm==Idle) cnt_stage <= 0;
-		else cnt_stage <= (fsm==Rd && fsm_r==Wait_wr_end)? 
-			               cnt_stage+3'd1 : cnt_stage;
 	end
 end
 

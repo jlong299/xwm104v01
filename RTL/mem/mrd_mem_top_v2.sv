@@ -25,7 +25,7 @@
 //                 Write    Write                Write
 //                |----|   |----|     ...       |------| 
 //                                                   Source    
-//                                             |-----------------|
+//                                              |-----------------|
 //                                              1/3*
 //                                              Source
 //  ---------> time line
@@ -149,6 +149,19 @@ begin
 	end
 end
 
+// cnt_stage :  number of current read stage
+// cnt_stage changes at the same time of rden_r0   (rden_r0 in mrd_FSMrd_rd.v)
+always@(posedge clk)
+begin
+	if (!rst_n)	cnt_stage <= 0;
+	else
+		if (fsm==Idle) cnt_stage <= 0;
+		else cnt_stage <= (fsm==Rd && fsm_r==Wait_wr_end)? 
+			               cnt_stage+3'd1 : cnt_stage;
+end
+//fsm_lastRd_source : '1' when FSM is in last read stage or source stage
+assign fsm_lastRd_source = (fsm==Source || cnt_stage==ctrl.NumOfFactors-3'd1);
+
 
 //-------------------------------------------
 //--------------  7 RAMs --------------------
@@ -212,25 +225,19 @@ assign wrRAM.wren[i] = (fsm==Sink)? (wrRAM_FSMsink.wren[i] & valid_r[0])
 
 
 
-assign rdRAM.rdaddr[i]= (fsm==Rd)? rdRAM_FSMrd.rdaddr[i] : bank_addr_source_r1[mrd_mem_pkt::wADDR-1:0];
+assign rdRAM.rdaddr[i]= (fsm==Rd)? rdRAM_FSMrd.rdaddr[i] : bank_addr_source[mrd_mem_pkt::wADDR-1:0];
 assign rdRAM.rden[i] = (fsm==Rd)? rdRAM_FSMrd.rden[i] : 
-                 // (rdRAM_FSMsource.rden[i] & fsm_lastRd_source);
-                 (rdRAM_FSMsource_rden_r1[i] & fsm_lastRd_source);
+                 (rdRAM_FSMsource.rden[i] & fsm_lastRd_source);
+                 // (rdRAM_FSMsource_rden_r1[i] & fsm_lastRd_source);
 assign rdRAM_FSMrd.dout_real[i] = (fsm==Rd)? rdRAM.dout_real[i] : 18'd0;
 assign rdRAM_FSMrd.dout_imag[i] = (fsm==Rd)? rdRAM.dout_imag[i] : 18'd0;
 end
 endgenerate 
 
 logic [17:0] out_data_real_r, out_data_imag_r;
-logic [17:0] out_data_real_r1, out_data_imag_r1;
-logic [17:0] out_data_real_r2, out_data_imag_r2;
 always@(posedge clk) begin
-	 out_data_real_r <= rdRAM.dout_real[bank_index_source_r2] ;
-	 out_data_imag_r <= rdRAM.dout_imag[bank_index_source_r2] ;
-	 out_data_real_r1 <= out_data_real_r;
-	 out_data_imag_r1 <= out_data_imag_r;
-	 out_data_real_r2 <= out_data_real_r1;
-	 out_data_imag_r2 <= out_data_imag_r1;
+	 out_data_real_r <= rdRAM.dout_real[bank_index_source_r] ;
+	 out_data_imag_r <= rdRAM.dout_imag[bank_index_source_r] ;
 	 out_data.dout_real <= (fsm_lastRd_source && in_rdx2345_data.valid)? 
             in_rdx2345_data.d_real[0] : out_data_real_r ;
 	 out_data.dout_imag <= (fsm_lastRd_source && in_rdx2345_data.valid)? 
@@ -272,6 +279,7 @@ mrd_FSMrd_rd_inst (
 
 	fsm,
 	fsm_r,
+	cnt_stage,
 
 	din_real_r,
 	din_imag_r,
@@ -285,8 +293,7 @@ mrd_FSMrd_rd_inst (
 	rdRAM_FSMrd,
 	out_rdx2345_data,
 
-	rd_end,
-	cnt_stage
+	rd_end
 );
 
 
@@ -308,16 +315,29 @@ mrd_FSMrd_wr_inst (
 //------------------------------------------------
 //------------------ 4th stage: Source -----------
 //------------------------------------------------
-mrd_FSMsource 
+//------ Timeline ------->
+// the last Rd stage -->  Wait_wr_end --> Source stage
+//            Read 1/3 butterfly
+//          |---------------------| 
+//                Write 1/3 butterfly (in_rdx2345_data.valid)
+//              |---------------------|
+//
+//          |---|   dly_addr_source
+//
+// Output       |---------------------|------------------------------|  
+//                     1/3                      2/3 
+mrd_FSMsource #(
+	.dly_addr_source (10)
+	)
 mrd_FSMsource_inst (
 	clk,
 	rst_n,
 
 	fsm,
 	fsm_r,
+	fsm_lastRd_source,
 
 	Nf,
-	cnt_stage,
 	dftpts,
 	twdl_demontr,
 
@@ -329,7 +349,6 @@ mrd_FSMsource_inst (
 	addrs_butterfly_src,
 	bank_addr_source,
 	bank_index_source_r,
-	fsm_lastRd_source,
 	source_end
 );
 

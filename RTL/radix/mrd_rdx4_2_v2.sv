@@ -94,12 +94,8 @@ begin
 		p2_x1_i <= p1_x0_i - p1_x1_i;
 		p2_x2_r <= p1_x2_r + p1_x3_r;
 		p2_x2_i <= p1_x2_i + p1_x3_i;
-		// FFT
 		p2_x3_r <= p1_x2_r - p1_x3_r;
 		p2_x3_i <= p1_x2_i - p1_x3_i;
-		// Inverse FFT
-		// p2_x3_r <= -p1_x2_r + p1_x3_r;
-		// p2_x3_i <= -p1_x2_i + p1_x3_i;
 	end
 end
 
@@ -137,8 +133,8 @@ begin
 			p3_x1_r <= p2_x1_r + p2_x3_i;
 			p3_x1_i <= p2_x1_i - p2_x3_r;
 			// Inverse FFT
-			p3_x1_r <= p2_x1_r - p2_x3_i;
-			p3_x1_i <= p2_x1_i + p2_x3_r;
+			// p3_x1_r <= p2_x1_r - p2_x3_i;
+			// p3_x1_i <= p2_x1_i + p2_x3_r;
 
 			p3_x2_r <= p2_x0_r - p2_x2_r;
 			p3_x2_i <= p2_x0_i - p2_x2_i;
@@ -147,8 +143,8 @@ begin
 			p3_x3_r <= p2_x1_r - p2_x3_i;
 			p3_x3_i <= p2_x1_i + p2_x3_r;
 			// Inverse FFT
-			p3_x3_r <= p2_x1_r + p2_x3_i;
-			p3_x3_i <= p2_x1_i - p2_x3_r;
+			// p3_x3_r <= p2_x1_r + p2_x3_i;
+			// p3_x3_i <= p2_x1_i - p2_x3_r;
 		end
 	end
 end
