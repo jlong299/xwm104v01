@@ -19,7 +19,7 @@ while ~feof(outf_m)
     	t0 = max(max(abs(FPGA_out - matlab_out)));
     	mse = mean(mean( (abs(FPGA_out - matlab_out)).^2 ));
     	t1 = mse/ mean(mean((abs(matlab_out)).^2));
-        if t1>0.01  
+        if t1>0.00001  
             mse_too_big = 1;
         end
         

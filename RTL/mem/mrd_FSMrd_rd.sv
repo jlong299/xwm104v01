@@ -32,7 +32,7 @@ logic [0:4][2:0]  bank_index_rd, bank_index_rd_r, bank_index_rd_rr,
                   div7_rmdr_rd;
 logic [0:4][11:0]  addrs_butterfly, addrs_butterfly_mux;
 logic [11:0]  cnt_rd_stop;
-logic [0:4][11:0]  twdl_numrtr;
+logic [11:0]  twdl_numrtr_1;
 
 logic [11:0] cnt_FSMrd;
 logic [in_dly-1:1] rden_r; //////
@@ -82,7 +82,7 @@ CTA_addr_trans_inst	(
 	.stage_of_rdx2  (stage_of_rdx2),
 
 	.addrs_butterfly  (addrs_butterfly),
-	.twdl_numrtr  (twdl_numrtr)
+	.twdl_numrtr_1  (twdl_numrtr_1)
 	);
 
 genvar  k;
@@ -214,21 +214,21 @@ assign out_rdx2345_data.valid = rden_r[in_dly-1];
 assign out_rdx2345_data.bank_index = bank_index_rd_rr;
 assign out_rdx2345_data.bank_addr = bank_addr_rd_rr;
 
-logic [0:4][11:0] twdl_numrtr_r0;
-always@(posedge clk) twdl_numrtr_r0 <= twdl_numrtr;
-always@(posedge clk) begin
-		out_rdx2345_data.twdl_numrtr[0] <= twdl_numrtr_r0[0];
-		out_rdx2345_data.twdl_numrtr[1] <= twdl_numrtr_r0[1];
-		out_rdx2345_data.twdl_numrtr[4] <= twdl_numrtr_r0[4];
-	if (cnt_stage == stage_of_rdx2) begin
-		out_rdx2345_data.twdl_numrtr[2] <= twdl_numrtr_r0[0];
-		out_rdx2345_data.twdl_numrtr[3] <= twdl_numrtr_r0[1];
-	end
-	else begin
-		out_rdx2345_data.twdl_numrtr[2] <= twdl_numrtr_r0[2];
-		out_rdx2345_data.twdl_numrtr[3] <= twdl_numrtr_r0[3];
-	end
-end
+// always@(posedge clk) begin
+// 		out_rdx2345_data.twdl_numrtr[0] <= twdl_numrtr_r0[0];
+// 		out_rdx2345_data.twdl_numrtr[1] <= twdl_numrtr_r0[1];
+// 		out_rdx2345_data.twdl_numrtr[4] <= twdl_numrtr_r0[4];
+// 	if (cnt_stage == stage_of_rdx2) begin
+// 		out_rdx2345_data.twdl_numrtr[2] <= twdl_numrtr_r0[0];
+// 		out_rdx2345_data.twdl_numrtr[3] <= twdl_numrtr_r0[1];
+// 	end
+// 	else begin
+// 		out_rdx2345_data.twdl_numrtr[2] <= twdl_numrtr_r0[2];
+// 		out_rdx2345_data.twdl_numrtr[3] <= twdl_numrtr_r0[3];
+// 	end
+// end
+
+assign	out_rdx2345_data.twdl_numrtr_1 = twdl_numrtr_1;
 
 always@(posedge clk) out_rdx2345_data.twdl_demontr <= 
                          twdl_demontr[cnt_stage];

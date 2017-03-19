@@ -309,7 +309,7 @@ mrd_FSMrd_wr_inst (
 //                Write 1/3 butterfly (in_rdx2345_data.valid)
 //              |---------------------|
 //
-//          |---|   dly_addr_source
+//          |---| dly_addr_source
 //
 // Output       |---------------------|------------------------------|  
 //                     1/3                      2/3 

@@ -18,7 +18,8 @@ module CTA_addr_trans #(parameter
 	input [2:0]  stage_of_rdx2,
 
 	output reg [0:4][wDataInOut-1:0] addrs_butterfly,
-	output reg [0:4][wDataInOut-1:0] twdl_numrtr
+	// output reg [0:4][wDataInOut-1:0] twdl_numrtr
+	output reg [wDataInOut-1:0] twdl_numrtr_1
 );
 
 logic [0:5]  carry_out, carry_in;
@@ -375,13 +376,15 @@ end
 // 	twdl_numrtr[3] <= 3'd3*twdl_numrtr_base; 
 // 	twdl_numrtr[4] <= 3'd4*twdl_numrtr_base; 
 // end
-always@(posedge clk) begin
-	twdl_numrtr[0] <= 0; 
-	twdl_numrtr[1] <= twdl_numrtr_base; 
-	twdl_numrtr[2] <= twdl_numrtr_base << 1; 
-	twdl_numrtr[3] <= twdl_numrtr_base + (twdl_numrtr_base << 1);
-	twdl_numrtr[4] <= twdl_numrtr_base << 2; 
-end
 
+// always@(posedge clk) begin
+// 	twdl_numrtr[0] <= 0; 
+// 	twdl_numrtr[1] <= twdl_numrtr_base; 
+// 	twdl_numrtr[2] <= twdl_numrtr_base << 1; 
+// 	twdl_numrtr[3] <= twdl_numrtr_base + (twdl_numrtr_base << 1);
+// 	twdl_numrtr[4] <= twdl_numrtr_base << 2; 
+// end
+
+assign twdl_numrtr_1 = twdl_numrtr_base;
 
 endmodule
