@@ -9,6 +9,8 @@ module twdl_CTA #(parameter
 	input [2:0]  factor,
 	input [11:0]  twdl_numrtr_1,
 	input [11:0]  twdl_demontr,
+	input [20-1:0] twdl_quotient,
+	input [12-1:0] twdl_remainder,
 
 	input  in_val,
 	input  signed [wDataInOut-1:0]  din_real [0:4],
@@ -83,6 +85,8 @@ coeff_twdl_CTA_inst	(
 
 	.numerator (twdl_numrtr_1),
 	.demoninator (twdl_demontr),
+	.twdl_quotient (twdl_quotient),
+	.twdl_remainder (twdl_remainder),
 
 	.dout_real (tw_real[1]),
 	.dout_imag (tw_imag[1])
