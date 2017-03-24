@@ -18,6 +18,13 @@ logic signed [18-1:0] dout_real [0:4];
 logic signed [18-1:0] dout_imag [0:4];  
 logic unsigned [3:0] exp_out;
 
+logic [2:0] factor = 3'd5;
+
+logic out_val_53;
+logic signed [18-1:0] dout_real_53 [0:4];
+logic signed [18-1:0] dout_imag_53 [0:4];  
+logic unsigned [3:0] exp_out_53;
+
 initial	begin
 	rst_n = 0;
 	clk = 0;
@@ -89,6 +96,26 @@ mrd_rdx5_v2_inst
 	dout_real,
 	dout_imag,  
 	exp_out
+);
+
+mrd_rdx5_3_v2  
+mrd_rdx5_3_v2_inst 
+	(
+	clk,    
+	rst_n,
+
+	in_val,
+	din_real,
+	din_imag,
+	factor,
+
+	margin_in,
+	exp_in,
+
+	out_val_53,
+	dout_real_53,
+	dout_imag_53,  
+	exp_out_53
 );
 
 logic out_val_2;

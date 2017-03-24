@@ -18,6 +18,13 @@ logic signed [18-1:0] dout_real [0:4];
 logic signed [18-1:0] dout_imag [0:4];  
 logic unsigned [3:0] exp_out;
 
+logic out_val_53;
+logic signed [18-1:0] dout_real_53 [0:4];
+logic signed [18-1:0] dout_imag_53 [0:4];  
+logic unsigned [3:0] exp_out_53;
+
+logic [2:0] factor=3'd3;
+
 initial	begin
 	rst_n = 0;
 	clk = 0;
@@ -49,18 +56,18 @@ begin
 		x[22:1] <= x[21:0];
 
 		cnt <= (cnt[8:5]==4'd7)? 0 : cnt + 1;
-		// din_real[0] <= (cnt[8:5]==4'd1)? {x[17],x[17],x[17],x[14:0]} : din_real[0];
-		// din_imag[0] <= (cnt[8:5]==4'd2)? {x[17],x[17],x[17],x[14:0]} : din_imag[0];
-		// din_real[1] <= (cnt[8:5]==4'd3)? {x[17],x[17],x[17],x[14:0]} : din_real[1];
-		// din_imag[1] <= (cnt[8:5]==4'd4)? {x[17],x[17],x[17],x[14:0]} : din_imag[1];
-		// din_real[2] <= (cnt[8:5]==4'd5)? {x[17],x[17],x[17],x[14:0]} : din_real[2];
-		// din_imag[2] <= (cnt[8:5]==4'd6)? {x[17],x[17],x[17],x[14:0]} : din_imag[2];
-		din_real[0] <= 18'sh1ffff;
-		din_imag[0] <= 18'sh00000;
-		din_real[1] <= 18'sh30000;
-		din_imag[1] <= 18'sh1ffff;
-		din_real[2] <= 18'sh30000;
-		din_imag[2] <= 18'sh20000;
+		din_real[0] <= (cnt[8:5]==4'd1)? {x[17],x[17],x[17],x[14:0]} : din_real[0];
+		din_imag[0] <= (cnt[8:5]==4'd2)? {x[17],x[17],x[17],x[14:0]} : din_imag[0];
+		din_real[1] <= (cnt[8:5]==4'd3)? {x[17],x[17],x[17],x[14:0]} : din_real[1];
+		din_imag[1] <= (cnt[8:5]==4'd4)? {x[17],x[17],x[17],x[14:0]} : din_imag[1];
+		din_real[2] <= (cnt[8:5]==4'd5)? {x[17],x[17],x[17],x[14:0]} : din_real[2];
+		din_imag[2] <= (cnt[8:5]==4'd6)? {x[17],x[17],x[17],x[14:0]} : din_imag[2];
+		// din_real[0] <= 18'sh1ffff;
+		// din_imag[0] <= 18'sh00000;
+		// din_real[1] <= 18'sh30000;
+		// din_imag[1] <= 18'sh1ffff;
+		// din_real[2] <= 18'sh30000;
+		// din_imag[2] <= 18'sh20000;
 
 		in_val <= (cnt[8:5]==4'd6) & (cnt[4:0]==5'd1);
 	end
@@ -84,6 +91,26 @@ mrd_rdx3_v2_inst
 	dout_real,
 	dout_imag,  
 	exp_out
+);
+
+mrd_rdx5_3_v2  
+mrd_rdx5_3_v2_inst 
+	(
+	clk,    
+	rst_n,
+
+	in_val,
+	din_real,
+	din_imag,
+	factor,
+
+	margin_in,
+	exp_in,
+
+	out_val_53,
+	dout_real_53,
+	dout_imag_53,  
+	exp_out_53
 );
 
 logic out_val_2;

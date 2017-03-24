@@ -138,8 +138,9 @@ always@(posedge clk) begin
 	end
 end
 generate 
-for (i=0; i<=6; i++)
+for (i=0; i<=6; i++) begin : temp0
 assign rdRAM_FSMsource.rdaddr[i] = bank_addr_source_r1[mrd_mem_pkt::wADDR-1:0];
+end
 endgenerate
 
 always@(posedge clk)

@@ -1,7 +1,7 @@
-set TOP_LEVEL_NAME top_tb
+# set TOP_LEVEL_NAME top_tb
 # set TOP_LEVEL_NAME divider_pipe0_tb
 # set TOP_LEVEL_NAME mrd_twdl_tb
-# set TOP_LEVEL_NAME mrd_rdx4_v2_tb
+set TOP_LEVEL_NAME mrd_rdx3_v2_tb
 
 # ----------------------------------------
 # Auto-generated simulation script msim_setup.tcl
@@ -52,33 +52,49 @@ elab
 # elab
 # vmap       work     ./libraries/work/
 
-add wave -radix signed {sim:/top_tb/*}
 
-add wave -radix unsigned sim:/top_tb/top_inst/ctrl_fsm/*
+add wave -radix signed {sim:/mrd_rdx3_v2_tb/*}
+add wave -radix signed {sim:/mrd_rdx3_v2_tb/dout_imag}
+add wave -radix signed {sim:/mrd_rdx3_v2_tb/exp_out}
+add wave -radix signed {sim:/mrd_rdx3_v2_tb/out_val}
+add wave -radix signed {sim:/mrd_rdx3_v2_tb/out_val_53}
+add wave -radix signed {sim:/mrd_rdx3_v2_tb/dout_real}
+add wave -radix signed {sim:/mrd_rdx3_v2_tb/dout_real_53}
+add wave -radix signed {sim:/mrd_rdx3_v2_tb/dout_imag_53}
+add wave -radix signed {sim:/mrd_rdx3_v2_tb/exp_out_53}
 
-add wave -radix unsigned {sim:/top_tb/top_inst/mem0/fsm}
-add wave -radix unsigned {sim:/top_tb/top_inst/mem0/cnt_stage}
+# add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_v2_inst/p3*}
+# add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_3_v2_inst/p3*}
 
-add wave -radix unsigned {sim:/top_tb/top_inst/mem0/mrd_FSMrd_rd_inst/*}
-add wave -radix unsigned {sim:/top_tb/top_inst/mem0/out_rdx2345_data/*}
-add wave -radix signed {sim:/top_tb/top_inst/mem0/out_rdx2345_data/d_real}
-add wave -radix signed {sim:/top_tb/top_inst/mem0/out_rdx2345_data/d_imag}
-add wave -radix unsigned {sim:/top_tb/top_inst/mem0/in_rdx2345_data/*}
-add wave -radix signed {sim:/top_tb/top_inst/mem0/in_rdx2345_data/d_real}
-add wave -radix signed {sim:/top_tb/top_inst/mem0/in_rdx2345_data/d_imag}
 
-add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/exp_in}
-add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/exp_out}
-add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/dft_val}
-add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/abs_real}
-add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/abs_imag}
-add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/margin_real}
-add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/margin_imag}
-add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/min_margin}
-add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/margin_out}
-add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/margin_in}
+# add wave -radix signed {sim:/top_tb/*}
 
-# add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/rdx3_v2/*}
+# add wave -radix unsigned sim:/top_tb/top_inst/ctrl_fsm/*
+
+# add wave -radix unsigned {sim:/top_tb/top_inst/mem0/fsm}
+# add wave -radix unsigned {sim:/top_tb/top_inst/mem0/cnt_stage}
+
+# add wave -radix unsigned {sim:/top_tb/top_inst/mem0/mrd_FSMrd_rd_inst/*}
+# add wave -radix unsigned {sim:/top_tb/top_inst/mem0/out_rdx2345_data/*}
+# add wave -radix signed {sim:/top_tb/top_inst/mem0/out_rdx2345_data/d_real}
+# add wave -radix signed {sim:/top_tb/top_inst/mem0/out_rdx2345_data/d_imag}
+# add wave -radix unsigned {sim:/top_tb/top_inst/mem0/in_rdx2345_data/*}
+# add wave -radix signed {sim:/top_tb/top_inst/mem0/in_rdx2345_data/d_real}
+# add wave -radix signed {sim:/top_tb/top_inst/mem0/in_rdx2345_data/d_imag}
+
+# add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/exp_in}
+# add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/exp_out}
+# add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/dft_val}
+# add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/abs_real}
+# add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/abs_imag}
+# add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/margin_real}
+# add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/margin_imag}
+# add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/min_margin}
+# add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/margin_out}
+# add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/margin_in}
+
+
+
 
 
 # add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/in_val}
@@ -114,4 +130,4 @@ view structure
 view signals
 
 # run 800us
-run 50us
+run 10us
