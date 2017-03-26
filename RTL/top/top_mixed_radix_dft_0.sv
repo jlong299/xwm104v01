@@ -75,7 +75,7 @@ mrd_rdx2345_if rdx2345_to_mem();
 mrd_rdx2345_if mem_to_rdx2345();
 
 mrd_ctrl_if ctrl_to_mem();
-
+logic [2:0] fsm;
 
 mrd_mem_top_v2
 mem0 (
@@ -88,7 +88,8 @@ mem0 (
 	.ctrl (ctrl_to_mem),
 
 	.out_data ( source_st ),
-	.out_rdx2345_data ( mem_to_rdx2345 )
+	.out_rdx2345_data ( mem_to_rdx2345 ),
+	.fsm (fsm)
 	);
 
 //Radix 2/3/4/5 core  &  twiddle CORDIC
@@ -108,6 +109,7 @@ ctrl_fsm(
 	.clk (clk),
 	.rst_n (rst_n),
 
+	.fsm (fsm),
 	.sink_sop (sink_sop),
 	.dftpts (dftpts_in),
 

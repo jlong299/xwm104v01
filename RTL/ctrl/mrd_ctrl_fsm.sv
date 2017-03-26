@@ -57,6 +57,7 @@ module mrd_ctrl_fsm (
 	input clk,    
 	input rst_n,  
 
+	input [2:0] fsm,
 	input sink_sop,
 	input [11:0]  dftpts,
 
@@ -87,45 +88,78 @@ logic [2:0] stage_of_rdx2;
 //             '{12'd1200,12'd300,12'd75,12'd15,12'd3,12'd1};
 
 
-//-----------  1200 case ----------------\
-assign ctrl_to_mem.NumOfFactors = 3'd5;
-assign ctrl_to_mem.Nf[0:5] = '{3'd4,3'd4,3'd5,3'd5,3'd3,3'd1};
+// //-----------------------------------------------------
+// //-----------  1200 case ----------------\
+// assign ctrl_to_mem.NumOfFactors = 3'd5;
+// assign ctrl_to_mem.Nf[0:5] = '{3'd4,3'd4,3'd5,3'd5,3'd3,3'd1};
+// assign ctrl_to_mem.dftpts_div_Nf[0:5] = 
+//             '{12'd300,12'd300,12'd240,12'd240,12'd400,12'd1200};
+// assign ctrl_to_mem.twdl_demontr[0:5] = 
+//             '{12'd1200,12'd300,12'd75,12'd15,12'd3,12'd1};
+
+// assign ctrl_to_mem.stage_of_rdx2 = 3'd7;
+
+// // assign ctrl_to_mem.quotient = '{20'd873,20'd3495,20'd13981,20'd69905,20'd349525,20'd0};
+// // assign ctrl_to_mem.remainder = '{12'd976,12'd76,12'd1,12'd1,12'd1,12'd0};
+
+// //--------
+// logic sink_sop_r, start_calc_param ;
+// always@(posedge clk)  sink_sop_r <= sink_sop;
+// assign start_calc_param = ~sink_sop & sink_sop_r;
+
+//  //----- exmaple 1200 --------
+//  // 2^20 = 1200 * 873 + 976
+//  // 2^20 = 300 * 3495 + 76
+//  // 2^20 = 75 * 13981 + 1
+//  // 2^20 = 15 * 69905 + 1
+//  // 2^20 = 3 * 349525 + 1
+
+//  //   quot                  remd
+//  //   873                   976
+//  //   873*2  cnt_quot=1     976-300           cnt_remd = 1
+//  //   873*3  cnt_quot=2     976-300*2         cnt_remd = 2
+//  //   873*4  cnt_quot=3     976-300*3 < 300   cnt_remd = 3
+//  //   quotient[k]= quot + 3
+
+// assign ctrl_to_mem.quotient[0] = 20'd873;
+// assign ctrl_to_mem.remainder[0] = 20'd976;
+// //--------------------------------------------------------------------------
+
+
+
+
+//-----------------------------------------------------
+//-----------  1152 case ----------------\
+assign ctrl_to_mem.NumOfFactors = 3'd6;
+assign ctrl_to_mem.Nf[0:5] = '{3'd4,3'd4,3'd4,3'd2,3'd3,3'd3};
 assign ctrl_to_mem.dftpts_div_Nf[0:5] = 
-            '{12'd300,12'd300,12'd240,12'd240,12'd400,12'd1200};
+            '{12'd288,12'd288,12'd288,12'd576,12'd384,12'd384};
 assign ctrl_to_mem.twdl_demontr[0:5] = 
-            '{12'd1200,12'd300,12'd75,12'd15,12'd3,12'd1};
+            '{12'd1152,12'd288,12'd72,12'd18,12'd9,12'd3};
 
-assign ctrl_to_mem.stage_of_rdx2 = 3'd7;
+assign ctrl_to_mem.stage_of_rdx2 = 3'd3;
 
-// assign ctrl_to_mem.quotient = '{20'd873,20'd3495,20'd13981,20'd69905,20'd349525,20'd0};
-// assign ctrl_to_mem.remainder = '{12'd976,12'd76,12'd1,12'd1,12'd1,12'd0};
 
 //--------
 logic sink_sop_r, start_calc_param ;
 always@(posedge clk)  sink_sop_r <= sink_sop;
 assign start_calc_param = ~sink_sop & sink_sop_r;
 
- //----- exmaple 1200 --------
- // 2^20 = 1200 * 873 + 976
- // 2^20 = 300 * 3495 + 76
- // 2^20 = 75 * 13981 + 1
- // 2^20 = 15 * 69905 + 1
- // 2^20 = 3 * 349525 + 1
+ //----- exmaple 1152 --------
+ // 2^20 = 1152 * 910 + 256
 
- //   quot                  remd
- //   873                   976
- //   873*2  cnt_quot=1     976-300           cnt_remd = 1
- //   873*3  cnt_quot=2     976-300*2         cnt_remd = 2
- //   873*4  cnt_quot=3     976-300*3 < 300   cnt_remd = 3
- //   quotient[k]= quot + 3
+assign ctrl_to_mem.quotient[0] = 20'd910;
+assign ctrl_to_mem.remainder[0] = 20'd256;
+//--------------------------------------------------------------------------
 
-assign ctrl_to_mem.quotient[0] = 20'd873;
-assign ctrl_to_mem.remainder[0] = 20'd976;
+
+
+
 logic [2:0]  cnt_quot, index, cnt_remd;
 logic [20-1:0] quot ;
 logic [12-1:0] remd ;
 logic flag_index_change;
-assign flag_index_change = (cnt_quot==ctrl_to_mem.Nf[index]-3'd1) ;
+assign flag_index_change = (fsm != 3'd0) && (cnt_quot==ctrl_to_mem.Nf[index]-3'd1) ;
 always@(posedge clk) begin
 	if (!rst_n) begin
 		index <= 0;
@@ -135,6 +169,11 @@ always@(posedge clk) begin
 		ctrl_to_mem.quotient[3] <= 0;
 		ctrl_to_mem.quotient[4] <= 0;
 		ctrl_to_mem.quotient[5] <= 0;
+		ctrl_to_mem.remainder[1] <= 0;
+		ctrl_to_mem.remainder[2] <= 0;
+		ctrl_to_mem.remainder[3] <= 0;
+		ctrl_to_mem.remainder[4] <= 0;
+		ctrl_to_mem.remainder[5] <= 0;
 		quot <= 0;
 		remd <= 0;
 		cnt_remd <= 0;
@@ -145,7 +184,7 @@ always@(posedge clk) begin
 		else index <= (flag_index_change)? index+3'd1 : index;
 
 		if (start_calc_param) cnt_quot <= 3'd0;
-		else if (index==3'd5) cnt_quot <= 3'd0;
+		else if ((index==3'd4 && flag_index_change) || index==3'd5 ) cnt_quot <= 3'd6;
 		else cnt_quot <= (flag_index_change)? 3'd0 : cnt_quot+3'd1;
 
 		if (start_calc_param)   ctrl_to_mem.quotient[1:5] = { {4{20'd0}}, ctrl_to_mem.quotient[0] };
@@ -164,6 +203,12 @@ always@(posedge clk) begin
 
 		if (start_calc_param)  remd <= ctrl_to_mem.remainder[0];
 		else remd <= (remd < ctrl_to_mem.twdl_demontr[index+3'd1] )? remd : remd-ctrl_to_mem.twdl_demontr[index+3'd1];
+
+		if (start_calc_param)   ctrl_to_mem.remainder[1:5] = { {4{12'd0}}, ctrl_to_mem.remainder[0] };
+		else begin
+			ctrl_to_mem.remainder[1:4] <= (flag_index_change)? ctrl_to_mem.remainder[2:5] : ctrl_to_mem.remainder[1:4];
+			ctrl_to_mem.remainder[5] <= (flag_index_change)? remd : ctrl_to_mem.remainder[5];
+		end
 	end
 end
 

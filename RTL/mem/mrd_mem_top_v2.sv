@@ -46,7 +46,8 @@ module mrd_mem_top_v2 (
 	mrd_ctrl_if  ctrl,
 
 	mrd_st_if  out_data,
-	mrd_rdx2345_if  out_rdx2345_data
+	mrd_rdx2345_if  out_rdx2345_data,
+	output logic [2:0] fsm
 );
 
 logic [11:0]  dftpts;
@@ -71,7 +72,7 @@ mrd_mem_rd rdRAM_FSMrd();
 mrd_mem_wr wrRAM_FSMsink();
 mrd_mem_rd rdRAM_FSMsource();
 
-logic [2:0] fsm, fsm_r;
+logic [2:0]  fsm_r;
 localparam Idle = 3'd0, Sink = 3'd1, Wait_to_rd = 3'd2,
   			Rd = 3'd3,  Wait_wr_end = 3'd4,  Source = 3'd5;
 
