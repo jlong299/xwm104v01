@@ -88,69 +88,87 @@ logic [2:0] stage_of_rdx2;
 //             '{12'd1200,12'd300,12'd75,12'd15,12'd3,12'd1};
 
 
-// //-----------------------------------------------------
-// //-----------  1200 case ----------------\
-// assign ctrl_to_mem.NumOfFactors = 3'd5;
-// assign ctrl_to_mem.Nf[0:5] = '{3'd4,3'd4,3'd5,3'd5,3'd3,3'd1};
-// assign ctrl_to_mem.dftpts_div_Nf[0:5] = 
-//             '{12'd300,12'd300,12'd240,12'd240,12'd400,12'd1200};
+//-----------------------------------------------------
+//-----------  1200 case ----------------\
+assign ctrl_to_mem.NumOfFactors = 3'd5;
+assign ctrl_to_mem.Nf[0:5] = '{3'd4,3'd4,3'd5,3'd5,3'd3,3'd1};
+assign ctrl_to_mem.dftpts_div_Nf[0:5] = 
+            '{12'd300,12'd300,12'd240,12'd240,12'd400,12'd1200};
 // assign ctrl_to_mem.twdl_demontr[0:5] = 
 //             '{12'd1200,12'd300,12'd75,12'd15,12'd3,12'd1};
+assign ctrl_to_mem.twdl_demontr[0] = 12'd1200;
+// !!!!!!!!!!!!!!!!!!  [0:5]  -->  [0:4]  ??
 
-// assign ctrl_to_mem.stage_of_rdx2 = 3'd7;
+assign ctrl_to_mem.stage_of_rdx2 = 3'd7;
 
-// // assign ctrl_to_mem.quotient = '{20'd873,20'd3495,20'd13981,20'd69905,20'd349525,20'd0};
-// // assign ctrl_to_mem.remainder = '{12'd976,12'd76,12'd1,12'd1,12'd1,12'd0};
+// assign ctrl_to_mem.quotient = '{20'd873,20'd3495,20'd13981,20'd69905,20'd349525,20'd0};
+// assign ctrl_to_mem.remainder = '{12'd976,12'd76,12'd1,12'd1,12'd1,12'd0};
+
+//--------
+logic sink_sop_r;
+logic [4:0] start_calc_param_r ;
+always@(posedge clk)  sink_sop_r <= sink_sop;
+assign start_calc_param = ~sink_sop & sink_sop_r;
+
+ //----- exmaple 1200 --------
+ // 2^20 = 1200 * 873 + 976
+ // 2^20 = 300 * 3495 + 76
+ // 2^20 = 75 * 13981 + 1
+ // 2^20 = 15 * 69905 + 1
+ // 2^20 = 3 * 349525 + 1
+
+ //   quot                  remd
+ //   873                   976
+ //   873*2  cnt_quot=1     976-300           cnt_remd = 1
+ //   873*3  cnt_quot=2     976-300*2         cnt_remd = 2
+ //   873*4  cnt_quot=3     976-300*3 < 300   cnt_remd = 3
+ //   quotient[k]= quot + 3
+
+assign ctrl_to_mem.quotient[0] = 20'd873;
+assign ctrl_to_mem.remainder[0] = 20'd976;
+//--------------------------------------------------------------------------
+always@(posedge clk) begin
+	if (!rst_n)  start_calc_param_r <= 0;
+	else start_calc_param_r[4:0] <= {start_calc_param_r[3:0], start_calc_param};
+end
+always@(posedge clk) begin
+	if (!rst_n) ctrl_to_mem.twdl_demontr[1:5] <= {5{12'd0}};
+	else begin
+		if (start_calc_param) ctrl_to_mem.twdl_demontr[5] <= ctrl_to_mem.Nf[5];
+		else ctrl_to_mem.twdl_demontr[5] <= ctrl_to_mem.twdl_demontr[5]
+
+		if (start_calc_param) begin
+			if (ctrl_to_mem.Nf[4]==3'd3) 
+				ctrl_to_mem.twdl_demontr[4] <= ctrl_to_mem.Nf[5] + {ctrl_to_mem.Nf[5],1'b0};
+			else if (ctrl_to_mem.Nf[4]==3'd5)
+				ctrl_to_mem.twdl_demontr[4] <= 
+
+
+
+
+// //-----------------------------------------------------
+// //-----------  1152 case ----------------\
+// assign ctrl_to_mem.NumOfFactors = 3'd6;
+// assign ctrl_to_mem.Nf[0:5] = '{3'd4,3'd4,3'd4,3'd2,3'd3,3'd3};
+// assign ctrl_to_mem.dftpts_div_Nf[0:5] = 
+//             '{12'd288,12'd288,12'd288,12'd576,12'd384,12'd384};
+// assign ctrl_to_mem.twdl_demontr[0:5] = 
+//             '{12'd1152,12'd288,12'd72,12'd18,12'd9,12'd3};
+
+// assign ctrl_to_mem.stage_of_rdx2 = 3'd3;
+
 
 // //--------
 // logic sink_sop_r, start_calc_param ;
 // always@(posedge clk)  sink_sop_r <= sink_sop;
 // assign start_calc_param = ~sink_sop & sink_sop_r;
 
-//  //----- exmaple 1200 --------
-//  // 2^20 = 1200 * 873 + 976
-//  // 2^20 = 300 * 3495 + 76
-//  // 2^20 = 75 * 13981 + 1
-//  // 2^20 = 15 * 69905 + 1
-//  // 2^20 = 3 * 349525 + 1
+//  //----- exmaple 1152 --------
+//  // 2^20 = 1152 * 910 + 256
 
-//  //   quot                  remd
-//  //   873                   976
-//  //   873*2  cnt_quot=1     976-300           cnt_remd = 1
-//  //   873*3  cnt_quot=2     976-300*2         cnt_remd = 2
-//  //   873*4  cnt_quot=3     976-300*3 < 300   cnt_remd = 3
-//  //   quotient[k]= quot + 3
-
-// assign ctrl_to_mem.quotient[0] = 20'd873;
-// assign ctrl_to_mem.remainder[0] = 20'd976;
+// assign ctrl_to_mem.quotient[0] = 20'd910;
+// assign ctrl_to_mem.remainder[0] = 20'd256;
 // //--------------------------------------------------------------------------
-
-
-
-
-//-----------------------------------------------------
-//-----------  1152 case ----------------\
-assign ctrl_to_mem.NumOfFactors = 3'd6;
-assign ctrl_to_mem.Nf[0:5] = '{3'd4,3'd4,3'd4,3'd2,3'd3,3'd3};
-assign ctrl_to_mem.dftpts_div_Nf[0:5] = 
-            '{12'd288,12'd288,12'd288,12'd576,12'd384,12'd384};
-assign ctrl_to_mem.twdl_demontr[0:5] = 
-            '{12'd1152,12'd288,12'd72,12'd18,12'd9,12'd3};
-
-assign ctrl_to_mem.stage_of_rdx2 = 3'd3;
-
-
-//--------
-logic sink_sop_r, start_calc_param ;
-always@(posedge clk)  sink_sop_r <= sink_sop;
-assign start_calc_param = ~sink_sop & sink_sop_r;
-
- //----- exmaple 1152 --------
- // 2^20 = 1152 * 910 + 256
-
-assign ctrl_to_mem.quotient[0] = 20'd910;
-assign ctrl_to_mem.remainder[0] = 20'd256;
-//--------------------------------------------------------------------------
 
 
 
