@@ -45,13 +45,16 @@ integer j;
 logic sclr;
 assign sclr = valid_r[delay_twdl-1] & (!valid_r[delay_twdl-2]);
 wire [23:0]  wir_whatever;
+
+logic rdreq ;
+assign rdreq = (factor==3'd3 || factor==3'd5)? valid_r[delay_twdl-8+3] : valid_r[delay_twdl-8+3];
 generate
 for (i=0; i<5; i++) begin : gen0
 
 	ff_rdx_data ff_inst (
 		.data  ({din_real[i], din_imag[i]}),  //  fifo_input.datain
 		.wrreq (in_val), //            .wrreq
-		.rdreq (valid_r[delay_twdl-8+3]), //            .rdreq
+		.rdreq (rdreq), //            .rdreq
 		.clock (clk), //            .clk
 		.sclr  (sclr),  //            .sclr
 		.q     ({d_real_r[i], d_imag_r[i]})      // fifo_output.dataout

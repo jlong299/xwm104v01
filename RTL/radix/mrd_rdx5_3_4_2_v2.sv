@@ -531,7 +531,12 @@ begin
 		// end
 	end
 	else begin
-		{out_val, val_r} <= {val_r, in_val};
+		// {out_val, val_r} <= {val_r, in_val};
+		val_r <= {val_r[3:0], in_val};
+		if (factor==3'd3 || factor==3'd5)
+			out_val <= val_r[4];
+		else
+			out_val <= val_r[1];
 
 		dout_real_t[0] <= (wir2_p4_x0_r[5])? wir2_p4_x0_r[23:6]+2'sd1 : wir2_p4_x0_r[23:6]; 
 		dout_imag_t[0] <= (wir2_p4_x0_i[5])? wir2_p4_x0_i[23:6]+2'sd1 : wir2_p4_x0_i[23:6]; 
@@ -548,7 +553,10 @@ begin
 		dout_real_t[4] <= (wir2_p4_x4_r[5])? wir2_p4_x4_r[23:6]+2'sd1 : wir2_p4_x4_r[23:6]; 
 		dout_imag_t[4] <= (wir2_p4_x4_i[5])? wir2_p4_x4_i[23:6]+2'sd1 : wir2_p4_x4_i[23:6]; 
 
-		exp_out <= (val_r[1+2])? exp_in + word_growth : exp_out; 
+		if (factor==3'd3 || factor==3'd5) 
+			exp_out <= (val_r[1+2])? exp_in + word_growth : exp_out; 
+		else
+			exp_out <= (val_r[0])? exp_in + word_growth : exp_out; 
 	end
 end
 
