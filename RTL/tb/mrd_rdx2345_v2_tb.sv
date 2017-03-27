@@ -1,5 +1,5 @@
 `timescale 1 ns / 1 ns
-module mrd_rdx4_v2_tb (
+module mrd_rdx2345_v2_tb (
 
 	);
 
@@ -108,8 +108,47 @@ begin
 end
 
 
-mrd_rdx4_2_v2  
-mrd_rdx4_2_v2_inst 
+// mrd_rdx4_2_v2  
+// mrd_rdx4_2_v2_inst 
+// 	(
+// 	clk,    
+// 	rst_n,
+
+// 	in_val,
+// 	din_real,
+// 	din_imag,
+// 	3'd4,
+
+// 	margin_in,
+// 	exp_in,
+
+// 	out_val,
+// 	dout_real,
+// 	dout_imag,  
+// 	exp_out
+// );
+
+// mrd_rdx5_v2  
+// mrd_rdx5_v2_inst 
+// 	(
+// 	clk,    
+// 	rst_n,
+
+// 	in_val,
+// 	din_real,
+// 	din_imag,
+
+// 	margin_in,
+// 	exp_in,
+
+// 	out_val,
+// 	dout_real,
+// 	dout_imag,  
+// 	exp_out
+// );
+
+mrd_rdx3_v2  
+mrd_rdx3_v2_inst 
 	(
 	clk,    
 	rst_n,
@@ -117,7 +156,6 @@ mrd_rdx4_2_v2_inst
 	in_val,
 	din_real,
 	din_imag,
-	3'd4,
 
 	margin_in,
 	exp_in,
@@ -137,7 +175,7 @@ mrd_rdx5_3_4_2_v2_inst
 	in_val,
 	din_real,
 	din_imag,
-	3'd4,
+	3'd3,
 
 	margin_in,
 	exp_in,

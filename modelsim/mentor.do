@@ -1,7 +1,7 @@
 # set TOP_LEVEL_NAME top_tb
 # set TOP_LEVEL_NAME divider_pipe0_tb
 # set TOP_LEVEL_NAME mrd_twdl_tb
-set TOP_LEVEL_NAME mrd_rdx3_v2_tb
+set TOP_LEVEL_NAME mrd_rdx2345_v2_tb
 
 # ----------------------------------------
 # Auto-generated simulation script msim_setup.tcl
@@ -53,15 +53,18 @@ elab
 # vmap       work     ./libraries/work/
 
 
-add wave -radix signed {sim:/mrd_rdx3_v2_tb/*}
-add wave -radix signed {sim:/mrd_rdx3_v2_tb/dout_imag}
-add wave -radix signed {sim:/mrd_rdx3_v2_tb/exp_out}
-add wave -radix signed {sim:/mrd_rdx3_v2_tb/out_val}
-add wave -radix signed {sim:/mrd_rdx3_v2_tb/out_val_53}
-add wave -radix signed {sim:/mrd_rdx3_v2_tb/dout_real}
-add wave -radix signed {sim:/mrd_rdx3_v2_tb/dout_real_53}
-add wave -radix signed {sim:/mrd_rdx3_v2_tb/dout_imag_53}
-add wave -radix signed {sim:/mrd_rdx3_v2_tb/exp_out_53}
+add wave -radix signed {sim:/mrd_rdx2345_v2_tb/*}
+add wave -radix signed {sim:/mrd_rdx2345_v2_tb/din_real}
+add wave -radix signed {sim:/mrd_rdx2345_v2_tb/din_imag}
+add wave -radix signed {sim:/mrd_rdx2345_v2_tb/out_val}
+add wave -radix signed {sim:/mrd_rdx2345_v2_tb/out_val_53}
+add wave -radix signed {sim:/mrd_rdx2345_v2_tb/dout_real}
+add wave -radix signed {sim:/mrd_rdx2345_v2_tb/dout_real_53}
+add wave -radix signed {sim:/mrd_rdx2345_v2_tb/dout_imag}
+add wave -radix signed {sim:/mrd_rdx2345_v2_tb/dout_imag_53}
+add wave -radix signed {sim:/mrd_rdx2345_v2_tb/exp_out}
+add wave -radix signed {sim:/mrd_rdx2345_v2_tb/exp_out_53}
+
 
 # add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_v2_inst/p3*}
 # add wave -radix signed {sim:/mrd_rdx5_v2_tb/mrd_rdx5_3_v2_inst/p3*}
