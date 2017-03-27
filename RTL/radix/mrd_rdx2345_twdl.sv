@@ -11,7 +11,8 @@ localparam  wDFTout = 18;
 localparam  wDFTin = 18;
 
 // localparam  delay_twdl = 25;
-localparam  delay_twdl = 25+8+2-2-3-15;
+localparam  delay_twdl = 15;
+localparam  delay_twdl_42 = 15+3;
 
 // logic [0:4][2:0]  bank_index_r [0 : delay_twdl-1];
 // logic [0:4][7:0]  bank_addr_r [0 : delay_twdl-1];
@@ -174,10 +175,10 @@ end
 
 
 //---------- Temp!!!-----------------
-logic dft_val_t;
-logic signed [18-1:0] dft_real_t [0:4];
-logic signed [18-1:0] dft_imag_t [0:4];
-logic [3:0] exp_out_t;
+// logic dft_val_t;
+// logic signed [18-1:0] dft_real_t [0:4];
+// logic signed [18-1:0] dft_imag_t [0:4];
+// logic [3:0] exp_out_t;
 
 mrd_rdx5_3_4_2_v2
 rdx5_3_4_2_v2 (
@@ -192,46 +193,46 @@ rdx5_3_4_2_v2 (
 	.margin_in (margin_in),
 	.exp_in (exp_in),
 
-	.out_val  (val_t),
-	.dout_real  (dft_real_t),
-	.dout_imag  (dft_imag_t),
-	.exp_out (exp_out_t)
+	.out_val  (dft_val),
+	.dout_real  (dft_real),
+	.dout_imag  (dft_imag),
+	.exp_out (exp_out)
 	);
 
-logic signed [18-1:0] dft_real_t1 [0:4];
-logic signed [18-1:0] dft_real_t2 [0:4];
-logic signed [18-1:0] dft_real_t3 [0:4];
-logic signed [18-1:0] dft_imag_t1 [0:4];
-logic signed [18-1:0] dft_imag_t2 [0:4];
-logic signed [18-1:0] dft_imag_t3 [0:4];
-logic val_t1, val_t2, val_t3;
-always@(posedge clk) begin
-	dft_real_t1 <= dft_real_t;
-	dft_real_t2 <= dft_real_t1;
-	dft_real_t3 <= dft_real_t2;
-	dft_imag_t1 <= dft_imag_t;
-	dft_imag_t2 <= dft_imag_t1;
-	dft_imag_t3 <= dft_imag_t2;
-	val_t1 <= val_t;
-	val_t2 <= val_t1;
-	val_t3 <= val_t2;
-end
+// logic signed [18-1:0] dft_real_t1 [0:4];
+// logic signed [18-1:0] dft_real_t2 [0:4];
+// logic signed [18-1:0] dft_real_t3 [0:4];
+// logic signed [18-1:0] dft_imag_t1 [0:4];
+// logic signed [18-1:0] dft_imag_t2 [0:4];
+// logic signed [18-1:0] dft_imag_t3 [0:4];
+// logic val_t1, val_t2, val_t3;
+// always@(posedge clk) begin
+// 	dft_real_t1 <= dft_real_t;
+// 	dft_real_t2 <= dft_real_t1;
+// 	dft_real_t3 <= dft_real_t2;
+// 	dft_imag_t1 <= dft_imag_t;
+// 	dft_imag_t2 <= dft_imag_t1;
+// 	dft_imag_t3 <= dft_imag_t2;
+// 	val_t1 <= val_t;
+// 	val_t2 <= val_t1;
+// 	val_t3 <= val_t2;
+// end
 
-always@(*)
-begin
-	if (from_mem.factor==3'd4 || from_mem.factor==3'd2) begin
-		dft_real = dft_real_t3;
-		dft_imag = dft_imag_t3;
- 		dft_val = val_t3;
- 		exp_out = exp_out_t;
-	end
-	else begin
-		dft_real = dft_real_t;
-		dft_imag = dft_imag_t;
- 		dft_val = val_t;
- 		exp_out = exp_out_t;
-	end
-end
+// always@(*)
+// begin
+// 	if (from_mem.factor==3'd4 || from_mem.factor==3'd2) begin
+// 		dft_real = dft_real_t;
+// 		dft_imag = dft_imag_t;
+//  		dft_val = val_t;
+//  		exp_out = exp_out_t;
+// 	end
+// 	else begin
+// 		dft_real = dft_real_t;
+// 		dft_imag = dft_imag_t;
+//  		dft_val = val_t;
+//  		exp_out = exp_out_t;
+// 	end
+// end
 //------------- Temp!!--------------
 
 
@@ -251,7 +252,8 @@ always@(posedge clk) dft_val_r <= dft_val;
 
 twdl_CTA #(
 	.wDataInOut (18),
-	.delay_twdl (delay_twdl)
+	.delay_twdl (delay_twdl),
+	.delay_twdl_42 (delay_twdl_42)
 	) 
 twdl (
 	.clk  (clk),

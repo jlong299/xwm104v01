@@ -1,6 +1,7 @@
 module twdl_CTA #(parameter
 	wDataInOut = 18,
-	delay_twdl = 23
+	delay_twdl = 15,
+	delay_twdl_42 = 15+3
 	)
  (
 	input clk,    
@@ -21,11 +22,11 @@ module twdl_CTA #(parameter
 	output logic signed [wDataInOut-1:0]  dout_imag [0:4],
 
 	output sclr_ff_addr,
-	output rdreq_ff_addr
+	output logic rdreq_ff_addr
 );
 
 localparam  wDataTemp = 34;  //18 + 16  (1.17*2.14) 
-logic [delay_twdl-1:0]  valid_r;
+logic [delay_twdl_42-1:0]  valid_r;
 logic [0:4][7:0] rdaddr;
 logic signed [15:0] tw_real [0:4]; 
 logic signed [15:0] tw_imag [0:4]; 
@@ -43,11 +44,12 @@ genvar i;
 integer j;
 
 logic sclr;
-assign sclr = valid_r[delay_twdl-1] & (!valid_r[delay_twdl-2]);
+// assign sclr = valid_r[delay_twdl-1] & (!valid_r[delay_twdl-2]);
+assign sclr = valid_r[delay_twdl_42-1] & (!valid_r[delay_twdl_42-2]);
 wire [23:0]  wir_whatever;
 
 logic rdreq ;
-assign rdreq = (factor==3'd3 || factor==3'd5)? valid_r[delay_twdl-8+3] : valid_r[delay_twdl-8+3];
+assign rdreq = (factor==3'd3 || factor==3'd5)? valid_r[delay_twdl-8+3] : valid_r[delay_twdl_42-8+3];
 generate
 for (i=0; i<5; i++) begin : gen0
 
@@ -66,12 +68,13 @@ always@(posedge clk) begin
 	if (twdl_demontr==12'd3)
 		out_val <= in_val;
 	else
-		out_val <= valid_r[delay_twdl-5+3] ;
+		out_val <= (factor==3'd3 || factor==3'd5)? valid_r[delay_twdl-5+3] : valid_r[delay_twdl_42-5+3] ;
 end
 always@(posedge clk)
 begin
 	if (!rst_n)  valid_r <= 0;
-	else	valid_r <= {valid_r[delay_twdl-2:0], in_val};
+	// else	valid_r <= {valid_r[delay_twdl-2:0], in_val};
+	else	valid_r <= {valid_r[delay_twdl_42-2:0], in_val};
 end
 
 localparam An = 16384;
@@ -301,7 +304,9 @@ begin
 			end
 		end
 		else begin
-			if (valid_r[delay_twdl-5+3]) begin
+			if  (  ((factor==3'd3 || factor==3'd5) && valid_r[delay_twdl-5+3] ) 
+				|| ((factor==3'd4 || factor==3'd2) && valid_r[delay_twdl_42-5+3])  )
+			begin
 				dout_real[0] <= d_real_r2; 
 				dout_imag[0] <= d_imag_r2;
 			end
@@ -315,7 +320,13 @@ begin
 	end
 end
 
-assign rdreq_ff_addr = (twdl_demontr==12'd3)? in_val : valid_r[delay_twdl-5+3];
+always@(*) begin
+	if (factor==3'd3 || factor==3'd5)
+		rdreq_ff_addr = (twdl_demontr==12'd3)? in_val : valid_r[delay_twdl-5+3];
+	else
+		rdreq_ff_addr = (twdl_demontr==12'd3)? in_val : valid_r[delay_twdl_42-5+3];
+end
+
 assign sclr_ff_addr = sclr;
 
 endmodule
