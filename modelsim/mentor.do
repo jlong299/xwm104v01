@@ -55,6 +55,7 @@ elab
 add wave -radix signed {sim:/top_tb/*}
 
 add wave -radix unsigned sim:/top_tb/top_inst/ctrl_fsm/*
+add wave -radix unsigned sim:/top_tb/top_inst/ctrl_fsm/ctrl_to_mem/*
 
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/fsm}
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/cnt_stage}
