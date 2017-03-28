@@ -40,12 +40,12 @@ interface mrd_ctrl_if ();
 	// logic [1:0] state;
 
 	logic [2:0]  NumOfFactors;
-	logic [0:5][2:0] Nf;
-	logic [0:5][11:0] dftpts_div_Nf; 
-	logic [0:5][11:0] twdl_demontr; 
+	logic [0:5][2:0] Nf; // Factors
+	logic [0:5][11:0] dftpts_div_Nf;  // N / Nf
+	logic [0:5][11:0] twdl_demontr;   // Nf[k]*...*Nf[5]
 	logic [2:0] stage_of_rdx2;
-	logic [0:5][20-1:0] quotient;
-	logic [0:5][12-1:0] remainder;
+	logic [0:5][20-1:0] quotient; //For twiddle coeffe calc
+	logic [0:5][12-1:0] remainder; //For twiddle coeffe calc
 endinterface
 
 // //mrd_stat_if :  State signals from mrd_mem_top to mrd_ctrl_fsm.
