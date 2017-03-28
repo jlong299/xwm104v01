@@ -59,7 +59,8 @@ module mrd_ctrl_fsm (
 
 	input [2:0] fsm,
 	input sink_sop,
-	input [11:0]  dftpts,
+	// input [11:0]  dftpts,
+	input [5:0] size,
 
 	mrd_ctrl_if  ctrl_to_mem
 );
@@ -87,51 +88,123 @@ logic [2:0] j;
 //             '{12'd1200,12'd300,12'd75,12'd15,12'd3,12'd1};
 
 
+logic sink_sop_r1, sink_sop_r2, sink_sop_r3, start_calc_param;
+logic [2:0] start_calc_param_r ;
+always@(posedge clk)  sink_sop_r1 <= sink_sop;
+always@(posedge clk)  sink_sop_r2 <= sink_sop_r1;
+always@(posedge clk)  sink_sop_r3 <= sink_sop_r2;
+always@(posedge clk)  start_calc_param <= ~sink_sop_r1 & sink_sop_r2;
+
 logic [11:0] dftpts_div_base;
 logic factor_5;
-//-----------------------------------------------------
-//-----------  1200 case ----------------\
-assign ctrl_to_mem.NumOfFactors = 3'd5;
-assign ctrl_to_mem.Nf[0:5] = '{3'd4,3'd4,3'd5,3'd5,3'd3,3'd1};
-// assign ctrl_to_mem.dftpts_div_Nf[0:5] = 
-//             '{12'd300,12'd300,12'd240,12'd240,12'd400,12'd1200};
-assign dftpts_div_base = 12'd80;  // N/3  or N/3/5  (depends on factor_5)
-// assign ctrl_to_mem.twdl_demontr[0:5] = 
-//             '{12'd1200,12'd300,12'd75,12'd15,12'd3,12'd1};
-assign ctrl_to_mem.twdl_demontr[0] = 12'd1200;
+logic [6:0] rdaddr_ROM;
+logic [63:0] q_ROM;
 
-assign ctrl_to_mem.stage_of_rdx2 = 3'd7;
+always@(posedge clk) begin
+if (!rst_n) rdaddr_ROM <= 0;
+else 
+	if (sink_sop) rdaddr_ROM <= {size,1'b0};
+	else if (sink_sop_r1) rdaddr_ROM <= {size,1'b1};
+end
 
-assign factor_5 = 1'b1;  // Is 5 a factor of current size ?
+always@(posedge clk) begin
+if (!rst_n) begin
+	factor_5 <= 0;
+	ctrl_to_mem.stage_of_rdx2 <= 0;
+	ctrl_to_mem.remainder[0] <= 0;
+	ctrl_to_mem.quotient[0] <= 0;
+	ctrl_to_mem.twdl_demontr[0] <= 0;
+	dftpts_div_base <= 0;
+	ctrl_to_mem.Nf <= 0;
+	ctrl_to_mem.NumOfFactors <= 0;
+end
+else begin
+	ctrl_to_mem.Nf[0] <= 3'd4;
+	if (~sink_sop_r1 & sink_sop_r2) begin
+		ctrl_to_mem.twdl_demontr[0] <= q_ROM[11:0];
+		dftpts_div_base <= q_ROM[23:12];
+		ctrl_to_mem.Nf[5] <= q_ROM[26:24];
+		ctrl_to_mem.Nf[4] <= q_ROM[29:27];
+		ctrl_to_mem.Nf[3] <= q_ROM[32:30];
+		ctrl_to_mem.Nf[2] <= q_ROM[35:33];
+		ctrl_to_mem.Nf[1] <= q_ROM[38:36];
+		ctrl_to_mem.NumOfFactors <= q_ROM[41:39];
+	end
+	else begin
+		ctrl_to_mem.twdl_demontr[0] <= ctrl_to_mem.twdl_demontr[0];
+		dftpts_div_base <= dftpts_div_base;
+		ctrl_to_mem.Nf[5] <= ctrl_to_mem.Nf[5];
+		ctrl_to_mem.Nf[4] <= ctrl_to_mem.Nf[4];
+		ctrl_to_mem.Nf[3] <= ctrl_to_mem.Nf[3];
+		ctrl_to_mem.Nf[2] <= ctrl_to_mem.Nf[2];
+		ctrl_to_mem.Nf[1] <= ctrl_to_mem.Nf[1];
+		ctrl_to_mem.NumOfFactors <= ctrl_to_mem.NumOfFactors;
+	end
+
+	if (~sink_sop_r2 & sink_sop_r3) begin
+		factor_5 <= q_ROM[0];
+		ctrl_to_mem.stage_of_rdx2 <= q_ROM[3:1];
+		ctrl_to_mem.remainder[0] <= q_ROM[15:4];
+		ctrl_to_mem.quotient[0] <= q_ROM[35:16];
+	end
+	else begin
+		factor_5 <= factor_5;
+		ctrl_to_mem.stage_of_rdx2 <= ctrl_to_mem.stage_of_rdx2;
+		ctrl_to_mem.remainder[0] <= ctrl_to_mem.remainder[0];
+		ctrl_to_mem.quotient[0] <= ctrl_to_mem.quotient[0];
+	end
+end
+end
+
+mrd_ROM_Init_fake 
+mrd_ROM_Init_fake_inst (
+	clk,
+	rdaddr_ROM,
+	q_ROM
+);
 
 wire [11:0] dft_size;
 assign dft_size = ctrl_to_mem.twdl_demontr[0];
 
-// assign ctrl_to_mem.quotient = '{20'd873,20'd3495,20'd13981,20'd69905,20'd349525,20'd0};
-// assign ctrl_to_mem.remainder = '{12'd976,12'd76,12'd1,12'd1,12'd1,12'd0};
 
- //----- exmaple 1200 --------
- // 2^20 = 1200 * 873 + 976
- // 2^20 = 300 * 3495 + 76
- // 2^20 = 75 * 13981 + 1
- // 2^20 = 15 * 69905 + 1
- // 2^20 = 3 * 349525 + 1
+// //-----------------------------------------------------
+// //-----------  1200 case ----------------\
+// assign ctrl_to_mem.NumOfFactors = 3'd5;
+// assign ctrl_to_mem.Nf[0:5] = '{3'd4,3'd4,3'd5,3'd5,3'd3,3'd1};
+// // assign ctrl_to_mem.dftpts_div_Nf[0:5] = 
+// //             '{12'd300,12'd300,12'd240,12'd240,12'd400,12'd1200};
+// assign dftpts_div_base = 12'd80;  // N/3  or N/3/5  (depends on factor_5)
+// // assign ctrl_to_mem.twdl_demontr[0:5] = 
+// //             '{12'd1200,12'd300,12'd75,12'd15,12'd3,12'd1};
+// assign ctrl_to_mem.twdl_demontr[0] = 12'd1200;
 
- //   quot                  remd
- //   873                   976
- //   873*2  cnt_quot=1     976-300           cnt_remd = 1
- //   873*3  cnt_quot=2     976-300*2         cnt_remd = 2
- //   873*4  cnt_quot=3     976-300*3 < 300   cnt_remd = 3
- //   quotient[k]= quot + 3
+// assign ctrl_to_mem.stage_of_rdx2 = 3'd7;
 
-always@(posedge clk) ctrl_to_mem.quotient[0] <= 20'd873;
-always@(posedge clk) ctrl_to_mem.remainder[0] <= 12'd976;
+// assign factor_5 = 1'b1;  // Is 5 a factor of current size ?
 
+// wire [11:0] dft_size;
+// assign dft_size = ctrl_to_mem.twdl_demontr[0];
 
-logic sink_sop_r;
-logic [2:0] start_calc_param_r ;
-always@(posedge clk)  sink_sop_r <= sink_sop;
-assign start_calc_param = ~sink_sop & sink_sop_r;
+// // assign ctrl_to_mem.quotient = '{20'd873,20'd3495,20'd13981,20'd69905,20'd349525,20'd0};
+// // assign ctrl_to_mem.remainder = '{12'd976,12'd76,12'd1,12'd1,12'd1,12'd0};
+
+//  //----- exmaple 1200 --------
+//  // 2^20 = 1200 * 873 + 976
+//  // 2^20 = 300 * 3495 + 76
+//  // 2^20 = 75 * 13981 + 1
+//  // 2^20 = 15 * 69905 + 1
+//  // 2^20 = 3 * 349525 + 1
+
+//  //   quot                  remd
+//  //   873                   976
+//  //   873*2  cnt_quot=1     976-300           cnt_remd = 1
+//  //   873*3  cnt_quot=2     976-300*2         cnt_remd = 2
+//  //   873*4  cnt_quot=3     976-300*3 < 300   cnt_remd = 3
+//  //   quotient[k]= quot + 3
+
+// always@(posedge clk) ctrl_to_mem.quotient[0] <= 20'd873;
+// always@(posedge clk) ctrl_to_mem.remainder[0] <= 12'd976;
+
 
 //------------------ctrl_to_mem.dftpts_div_Nf[0:5]-----------------------
 // assign ctrl_to_mem.dftpts_div_Nf[0:5] = '{12'd300,12'd300,12'd240,12'd240,12'd400,12'd1200};

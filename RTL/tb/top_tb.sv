@@ -130,6 +130,13 @@ begin
 	end
 end
 
+logic [5:0] size;
+always@(*) begin
+	case (dftpts_in)
+		12'd1200 : size = 6'd33;
+	default : size = 6'd0;
+	endcase
+end
 
 top_mixed_radix_dft_0 
 top_inst(
@@ -142,7 +149,8 @@ top_inst(
 	.sink_eop  (sink_eop),
 	.sink_real  (sink_real),
 	.sink_imag  (sink_imag),
-	.dftpts_in  (dftpts_in),
+	// .dftpts_in  (dftpts_in),
+	.size  (size),
 	.inverse  (inverse),
 
 	.source_valid  (source_valid),
@@ -151,8 +159,8 @@ top_inst(
 	.source_eop  (source_eop),
 	.source_real  (source_real),
 	.source_imag  (source_imag),
-	.source_exp (source_exp),
-	.dftpts_out  ()
+	.source_exp (source_exp)
+	// .dftpts_out  ()
 );
 
 

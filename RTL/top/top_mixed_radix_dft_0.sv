@@ -9,7 +9,7 @@ module top_mixed_radix_dft_0 (
 	sink_eop,
 	sink_real,
 	sink_imag,
-	dftpts_in,
+	size,
 	inverse,
 
 	source_valid,
@@ -18,8 +18,8 @@ module top_mixed_radix_dft_0 (
 	source_eop,
 	source_real,
 	source_imag,
-	source_exp,
-	dftpts_out
+	source_exp
+	// dftpts_out
 );
 
 input clk;
@@ -30,7 +30,8 @@ input sink_sop;
 input sink_eop;
 input [17:0] sink_real;
 input [17:0] sink_imag;
-input [11:0] dftpts_in;
+// input [11:0] dftpts_in;
+input [5:0] size;
 input inverse;
 
 output reg source_valid;
@@ -40,7 +41,7 @@ output reg source_eop;
 output reg [17:0] source_real;
 output reg [17:0] source_imag;
 output reg [3:0] source_exp;
-output reg [11:0] dftpts_out;
+// output reg [11:0] dftpts_out;
 
 reg rst_n_sync, rst_n_r0, rst_n_r1;
 always@(posedge clk)
@@ -58,7 +59,8 @@ assign sink_st.sop = sink_sop;
 assign sink_st.eop = sink_eop;
 assign sink_st.din_real = sink_real;
 assign sink_st.din_imag = sink_imag;
-assign sink_st.dftpts = dftpts_in;
+// assign sink_st.dftpts = dftpts_in;
+assign sink_st.size = size;
 assign sink_st.inverse = inverse;
 assign sink_ready = sink_st.ready;
 
@@ -68,7 +70,7 @@ assign source_eop = source_st.eop;
 assign source_real = source_st.dout_real;
 assign source_imag = source_st.dout_imag;
 assign source_exp = source_st.exp;
-assign dftpts_out = source_st.dftpts;
+// assign dftpts_out = source_st.dftpts;
 assign source_st.ready = source_ready;
 
 mrd_rdx2345_if rdx2345_to_mem();
@@ -112,7 +114,8 @@ ctrl_fsm(
 
 	.fsm (fsm),
 	.sink_sop (sink_sop),
-	.dftpts (dftpts_in),
+	// .dftpts (dftpts_in),
+	.size (size),
 
 	.ctrl_to_mem (ctrl_to_mem)
 	);

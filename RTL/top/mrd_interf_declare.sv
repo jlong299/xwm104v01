@@ -6,7 +6,8 @@ interface mrd_st_if ();
 	logic [17:0] din_real, din_imag;
 	logic [18-1:0] dout_real, dout_imag;
 	logic [3:0] exp;
-	logic [11:0] dftpts; // Number of DFT points
+	// logic [5:0] dftpts; // Number of DFT points
+	logic [5:0] size; // Number of DFT points  //0~33 : 12~1200
 	logic inverse;
 
 	// modport ST_IN (input valid, sop, eop, d_real, d_imag, dftpts, inverse,

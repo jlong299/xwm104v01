@@ -50,7 +50,8 @@ module mrd_mem_top_v2 (
 	output logic [2:0] fsm
 );
 
-logic [11:0]  dftpts;
+// logic [11:0]  dftpts;
+logic [5:0] size;
 logic [0:5][2:0] Nf;
 logic [0:5][11:0] dftpts_div_Nf; 
 logic [2:0]  stage_of_rdx2;
@@ -81,7 +82,8 @@ always@(posedge clk)
 begin
 	if (!rst_n)
 	begin
-		dftpts <= 0;
+		// dftpts <= 0;
+		size <= 0;
 		Nf <= 0;
 		dftpts_div_Nf <= 0;   //  dftpts/Nf
 		twdl_demontr <= 0;
@@ -102,7 +104,8 @@ begin
 			twdl_demontr <= twdl_demontr;
 			stage_of_rdx2 <= stage_of_rdx2;
 		end
-		dftpts <= (in_data.sop)? in_data.dftpts : dftpts;
+		// dftpts <= (in_data.sop)? in_data.dftpts : dftpts;
+		size <= (in_data.sop)? in_data.size : size;
 	end
 end
 
@@ -328,7 +331,7 @@ mrd_FSMsource_inst (
 	fsm_lastRd_source,
 
 	Nf,
-	dftpts,
+	ctrl.twdl_demontr[0], // DFT points
 	twdl_demontr,
 
 	in_rdx2345_data,
