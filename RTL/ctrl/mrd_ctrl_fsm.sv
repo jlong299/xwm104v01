@@ -110,12 +110,6 @@ assign dft_size = ctrl_to_mem.twdl_demontr[0];
 // assign ctrl_to_mem.quotient = '{20'd873,20'd3495,20'd13981,20'd69905,20'd349525,20'd0};
 // assign ctrl_to_mem.remainder = '{12'd976,12'd76,12'd1,12'd1,12'd1,12'd0};
 
-//--------
-logic sink_sop_r;
-logic [2:0] start_calc_param_r ;
-always@(posedge clk)  sink_sop_r <= sink_sop;
-assign start_calc_param = ~sink_sop & sink_sop_r;
-
  //----- exmaple 1200 --------
  // 2^20 = 1200 * 873 + 976
  // 2^20 = 300 * 3495 + 76
@@ -130,8 +124,14 @@ assign start_calc_param = ~sink_sop & sink_sop_r;
  //   873*4  cnt_quot=3     976-300*3 < 300   cnt_remd = 3
  //   quotient[k]= quot + 3
 
-assign ctrl_to_mem.quotient[0] = 20'd873;
-assign ctrl_to_mem.remainder[0] = 12'd976;
+always@(posedge clk) ctrl_to_mem.quotient[0] <= 20'd873;
+always@(posedge clk) ctrl_to_mem.remainder[0] <= 12'd976;
+
+
+logic sink_sop_r;
+logic [2:0] start_calc_param_r ;
+always@(posedge clk)  sink_sop_r <= sink_sop;
+assign start_calc_param = ~sink_sop & sink_sop_r;
 
 //------------------ctrl_to_mem.dftpts_div_Nf[0:5]-----------------------
 // assign ctrl_to_mem.dftpts_div_Nf[0:5] = '{12'd300,12'd300,12'd240,12'd240,12'd400,12'd1200};
@@ -281,7 +281,7 @@ always@(posedge clk) begin
 		else if ((index==3'd4 && flag_index_change) || index==3'd5 ) cnt_quot <= 3'd6;
 		else cnt_quot <= (flag_index_change)? 3'd0 : cnt_quot+3'd1;
 
-		if (start_calc_param_r[2])   ctrl_to_mem.quotient[1:5] = { {4{20'd0}}, ctrl_to_mem.quotient[0] };
+		if (start_calc_param_r[2])   ctrl_to_mem.quotient[1:5] <= { {4{20'd0}}, ctrl_to_mem.quotient[0] };
 		else begin
 			ctrl_to_mem.quotient[1:4] <= (flag_index_change)? ctrl_to_mem.quotient[2:5] : ctrl_to_mem.quotient[1:4];
 			ctrl_to_mem.quotient[5] <= (flag_index_change)? quot+cnt_remd : ctrl_to_mem.quotient[5];
@@ -298,7 +298,7 @@ always@(posedge clk) begin
 		if (start_calc_param_r[2])  remd <= ctrl_to_mem.remainder[0];
 		else remd <= (remd < ctrl_to_mem.twdl_demontr[index+3'd1] )? remd : remd-ctrl_to_mem.twdl_demontr[index+3'd1];
 
-		if (start_calc_param_r[2])   ctrl_to_mem.remainder[1:5] = { {4{12'd0}}, ctrl_to_mem.remainder[0] };
+		if (start_calc_param_r[2])   ctrl_to_mem.remainder[1:5] <= { {4{12'd0}}, ctrl_to_mem.remainder[0] };
 		else begin
 			ctrl_to_mem.remainder[1:4] <= (flag_index_change)? ctrl_to_mem.remainder[2:5] : ctrl_to_mem.remainder[1:4];
 			ctrl_to_mem.remainder[5] <= (flag_index_change)? remd : ctrl_to_mem.remainder[5];
