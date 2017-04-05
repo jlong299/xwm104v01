@@ -93,7 +93,7 @@ logic [2:0] start_calc_param_r ;
 always@(posedge clk)  sink_sop_r1 <= sink_sop;
 always@(posedge clk)  sink_sop_r2 <= sink_sop_r1;
 always@(posedge clk)  sink_sop_r3 <= sink_sop_r2;
-always@(posedge clk)  start_calc_param <= ~sink_sop_r1 & sink_sop_r2;
+always@(posedge clk)  start_calc_param <= ~sink_sop_r2 & sink_sop_r3;
 
 logic [11:0] dftpts_div_base;
 logic factor_5;

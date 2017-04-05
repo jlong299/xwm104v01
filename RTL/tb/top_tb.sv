@@ -134,6 +134,39 @@ logic [5:0] size;
 always@(*) begin
 	case (dftpts_in)
 		12'd1200 : size = 6'd33;
+		12'd1152 : size = 6'd32;
+		12'd1080 : size = 6'd31;
+		12'd972 : size = 6'd30;
+		12'd960 : size = 6'd29;
+		12'd900 : size = 6'd28;
+		12'd864 : size = 6'd27;
+		12'd768 : size = 6'd26;
+		12'd720 : size = 6'd25;
+		12'd648 : size = 6'd24;
+		12'd600 : size = 6'd23;
+		12'd576 : size = 6'd22;
+		12'd540 : size = 6'd21;
+		12'd480 : size = 6'd20;
+		12'd432 : size = 6'd19;
+		12'd384 : size = 6'd18;
+		12'd360 : size = 6'd17;
+		12'd324 : size = 6'd16;
+		12'd300 : size = 6'd15;
+		12'd288 : size = 6'd14;
+		12'd240 : size = 6'd13;
+		12'd216 : size = 6'd12;
+		12'd192 : size = 6'd11;
+		12'd180 : size = 6'd10;
+		12'd144 : size = 6'd9;
+		12'd120 : size = 6'd8;
+		12'd108 : size = 6'd7;
+		12'd99 : size = 6'd6;
+		12'd72 : size = 6'd5;
+		12'd60 : size = 6'd4;
+		12'd48 : size = 6'd3;
+		12'd36 : size = 6'd2;
+		12'd24 : size = 6'd1;
+		12'd12 : size = 6'd0;
 	default : size = 6'd0;
 	endcase
 end
