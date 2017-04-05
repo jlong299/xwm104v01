@@ -16,7 +16,7 @@
 # Auto-generated simulation script msim_setup.tcl
 # ----------------------------------------
 # This script can be used to simulate the following IP:
-#     mrd_RAM_IP
+#     mrd_ROM_Init
 # To create a top-level simulation script which compiles other
 # IP, and manages other system issues, copy the following template
 # and adapt it to your needs:
@@ -43,7 +43,7 @@
 # exit -code 0
 # # End of template
 # ----------------------------------------
-# If mrd_RAM_IP is one of several IP cores in your
+# If mrd_ROM_Init is one of several IP cores in your
 # Quartus project, you can generate a simulation script
 # suitable for inclusion in your top-level simulation
 # script by running the following command line:
@@ -54,7 +54,7 @@
 # within the Quartus project, and generate a unified
 # script which supports all the Altera IP within the design.
 # ----------------------------------------
-# ACDS 15.1 193 win32 2017.02.27.14:33:26
+# ACDS 15.1 185 win32 2017.04.05.11:11:35
 
 # ----------------------------------------
 # Initialize variables
@@ -65,15 +65,15 @@ if ![info exists SYSTEM_INSTANCE_NAME] {
 }
 
 if ![info exists TOP_LEVEL_NAME] { 
-  set TOP_LEVEL_NAME "mrd_RAM_IP"
+  set TOP_LEVEL_NAME "mrd_ROM_Init"
 }
 
 if ![info exists QSYS_SIMDIR] { 
-  set QSYS_SIMDIR "../IP"
+  set QSYS_SIMDIR "./../"
 }
 
 if ![info exists QUARTUS_INSTALL_DIR] { 
-  set QUARTUS_INSTALL_DIR "C:/altera_pro/15.1/quartus/"
+  set QUARTUS_INSTALL_DIR "C:/altera/15.1/quartus/"
 }
 
 if ![info exists USER_DEFINED_COMPILE_OPTIONS] { 
@@ -122,10 +122,8 @@ if ![ string match "*ModelSim ALTERA*" [ vsim -version ] ] {
   ensure_lib                   ./libraries/twentynm_hip_ver/ 
   vmap       twentynm_hip_ver  ./libraries/twentynm_hip_ver/ 
 }
-ensure_lib               ./libraries/ram_2port_151/
-vmap       ram_2port_151 ./libraries/ram_2port_151/
-# ensure_lib                      ./libraries/ff_rdx_data_fifo_151/
-# vmap       ff_rdx_data_fifo_151 ./libraries/ff_rdx_data_fifo_151/
+ensure_lib                            ./libraries/mrd_ROM_Init_rom_1port_151/
+vmap       mrd_ROM_Init_rom_1port_151 ./libraries/mrd_ROM_Init_rom_1port_151/
 
 # ----------------------------------------
 # Compile device library files
@@ -150,28 +148,22 @@ alias dev_com {
 # Compile the design files in correct order
 alias com {
   echo "\[exec\] com"
-  eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/mrd_RAM_IP/ram_2port_151/sim/mrd_RAM_IP_ram_2port_151_hhdwfsy.v" -work ram_2port_151
-  eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/mrd_RAM_IP/sim/mrd_RAM_IP.v"                                                               
-  eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/ff_rdx_data/fifo_151/sim/ff_rdx_data_fifo_151_efv2tfa.v" 
-  eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/ff_rdx_data/sim/ff_rdx_data.v"                                                            
-  eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/ff_rdx_index/fifo_151/sim/ff_rdx_index_fifo_151_dv6wpvq.v" 
-  eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/ff_rdx_index/sim/ff_rdx_index.v"                                                            
-  eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/mrd_ROM_Init/rom_1port_151/sim/mrd_ROM_Init_rom_1port_151_qacsi6a.v" 
-  eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/mrd_ROM_Init/sim/mrd_ROM_Init.v"                                                            
+  eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/../rom_1port_151/sim/mrd_ROM_Init_rom_1port_151_qacsi6a.v" -work mrd_ROM_Init_rom_1port_151
+  eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/mrd_ROM_Init.v"                                                                            
 }
 
 # ----------------------------------------
 # Elaborate top level design
 alias elab {
   echo "\[exec\] elab"
-  eval vsim -t ps $ELAB_OPTIONS $USER_DEFINED_ELAB_OPTIONS -L work -L work_lib -L ram_2port_151 -L altera_ver -L lpm_ver -L sgate_ver -L altera_mf_ver -L altera_lnsim_ver -L twentynm_ver -L twentynm_hssi_ver -L twentynm_hip_ver $TOP_LEVEL_NAME
+  eval vsim -t ps $ELAB_OPTIONS $USER_DEFINED_ELAB_OPTIONS -L work -L work_lib -L mrd_ROM_Init_rom_1port_151 -L altera_ver -L lpm_ver -L sgate_ver -L altera_mf_ver -L altera_lnsim_ver -L twentynm_ver -L twentynm_hssi_ver -L twentynm_hip_ver $TOP_LEVEL_NAME
 }
 
 # ----------------------------------------
 # Elaborate the top level design with novopt option
 alias elab_debug {
   echo "\[exec\] elab_debug"
-  eval vsim -novopt -t ps $ELAB_OPTIONS $USER_DEFINED_ELAB_OPTIONS -L work -L work_lib -L ram_2port_151 -L altera_ver -L lpm_ver -L sgate_ver -L altera_mf_ver -L altera_lnsim_ver -L twentynm_ver -L twentynm_hssi_ver -L twentynm_hip_ver $TOP_LEVEL_NAME
+  eval vsim -novopt -t ps $ELAB_OPTIONS $USER_DEFINED_ELAB_OPTIONS -L work -L work_lib -L mrd_ROM_Init_rom_1port_151 -L altera_ver -L lpm_ver -L sgate_ver -L altera_mf_ver -L altera_lnsim_ver -L twentynm_ver -L twentynm_hssi_ver -L twentynm_hip_ver $TOP_LEVEL_NAME
 }
 
 # ----------------------------------------

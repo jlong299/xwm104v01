@@ -105,5 +105,5 @@ add wave -radix signed {sim:/top_tb/top_inst/mem0/in_rdx2345_data/d_imag}
 view structure
 view signals
 
+# run 800us
 run 800us
-# run 100us

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simPackage>
+ <file
+   path="rom_1port_151/sim/mrd_ROM_Init_rom_1port_151_qacsi6a.v"
+   type="VERILOG"
+   library="mrd_ROM_Init_rom_1port_151" />
+ <file
+   path="sim/mrd_ROM_Init.v"
+   type="VERILOG"
+   hasInlineConfiguration="true" />
+ <topLevel name="mrd_ROM_Init" />
+ <deviceFamily name="arria10" />
+</simPackage>

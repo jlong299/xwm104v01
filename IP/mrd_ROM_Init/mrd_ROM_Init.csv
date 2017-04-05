@@ -1,0 +1,18 @@
+# system info mrd_ROM_Init on 2017.04.05.11:11:31
+system_info:
+name,value
+DEVICE,10AX115U3F45E2SGE3
+DEVICE_FAMILY,Arria 10
+GENERATION_ID,1491361891
+#
+#
+# Files generated for mrd_ROM_Init on 2017.04.05.11:11:31
+files:
+filepath,kind,attributes,module,is_top
+sim/mrd_ROM_Init.v,VERILOG,CONTAINS_INLINE_CONFIGURATION,mrd_ROM_Init,true
+rom_1port_151/sim/mrd_ROM_Init_rom_1port_151_qacsi6a.v,VERILOG,,mrd_ROM_Init_rom_1port_151_qacsi6a,false
+#
+# Map from instance-path to kind of module
+instances:
+instancePath,module
+mrd_ROM_Init.rom_1port_0,mrd_ROM_Init_rom_1port_151_qacsi6a

@@ -77,7 +77,8 @@ begin
 	else begin
 		cnt_sink <= (in_data.valid)? cnt_sink+12'd1 : 12'd0;
 		if (cnt_sink != 12'd0 && cnt_sink==
-			(ctrl.twdl_demontr[0] - ctrl.twdl_demontr[1] - 12'd1))
+			// (ctrl.twdl_demontr[0] - ctrl.twdl_demontr[1] - 12'd1))
+			(ctrl.twdl_demontr[0][11:2] + ctrl.twdl_demontr[0][11:1] - 12'd1))
 			sink_3_4 <= 1'b1;
 		else sink_3_4 <= 1'b0;
 	end

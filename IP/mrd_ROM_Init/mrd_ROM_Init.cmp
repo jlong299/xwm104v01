@@ -1,0 +1,8 @@
+	component mrd_ROM_Init is
+		port (
+			address : in  std_logic_vector(6 downto 0)  := (others => 'X'); -- address
+			clock   : in  std_logic                     := 'X';             -- clk
+			q       : out std_logic_vector(63 downto 0)                     -- dataout
+		);
+	end component mrd_ROM_Init;
+

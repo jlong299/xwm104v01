@@ -88,12 +88,13 @@ logic [2:0] j;
 //             '{12'd1200,12'd300,12'd75,12'd15,12'd3,12'd1};
 
 
-logic sink_sop_r1, sink_sop_r2, sink_sop_r3, start_calc_param;
+logic sink_sop_r1, sink_sop_r2, sink_sop_r3, sink_sop_r4, start_calc_param;
 logic [2:0] start_calc_param_r ;
 always@(posedge clk)  sink_sop_r1 <= sink_sop;
 always@(posedge clk)  sink_sop_r2 <= sink_sop_r1;
 always@(posedge clk)  sink_sop_r3 <= sink_sop_r2;
-always@(posedge clk)  start_calc_param <= ~sink_sop_r2 & sink_sop_r3;
+always@(posedge clk)  sink_sop_r4 <= sink_sop_r3;
+always@(posedge clk)  start_calc_param <= ~sink_sop_r3 & sink_sop_r4;
 
 logic [11:0] dftpts_div_base;
 logic factor_5;
@@ -101,10 +102,11 @@ logic [6:0] rdaddr_ROM;
 logic [63:0] q_ROM;
 
 always@(posedge clk) begin
-if (!rst_n) rdaddr_ROM <= 0;
+if (!rst_n) rdaddr_ROM <= 0;//0;
 else 
 	if (sink_sop) rdaddr_ROM <= {size,1'b0};
 	else if (sink_sop_r1) rdaddr_ROM <= {size,1'b1};
+	else rdaddr_ROM <= rdaddr_ROM;
 end
 
 always@(posedge clk) begin
@@ -120,7 +122,7 @@ if (!rst_n) begin
 end
 else begin
 	ctrl_to_mem.Nf[0] <= 3'd4;
-	if (~sink_sop_r1 & sink_sop_r2) begin
+	if (~sink_sop_r2 & sink_sop_r3) begin
 		ctrl_to_mem.twdl_demontr[0] <= q_ROM[11:0];
 		dftpts_div_base <= q_ROM[23:12];
 		ctrl_to_mem.Nf[5] <= q_ROM[26:24];
@@ -141,7 +143,7 @@ else begin
 		ctrl_to_mem.NumOfFactors <= ctrl_to_mem.NumOfFactors;
 	end
 
-	if (~sink_sop_r2 & sink_sop_r3) begin
+	if (~sink_sop_r3 & sink_sop_r4) begin
 		factor_5 <= q_ROM[0];
 		ctrl_to_mem.stage_of_rdx2 <= q_ROM[3:1];
 		ctrl_to_mem.remainder[0] <= q_ROM[15:4];
@@ -156,11 +158,11 @@ else begin
 end
 end
 
-mrd_ROM_Init_fake 
-mrd_ROM_Init_fake_inst (
-	clk,
-	rdaddr_ROM,
-	q_ROM
+mrd_ROM_Init 
+mrd_ROM_Init_inst (
+	.address (rdaddr_ROM),
+	.clock (clk),
+	.q (q_ROM)
 );
 
 wire [11:0] dft_size;
