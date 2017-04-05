@@ -160,7 +160,7 @@ always@(*) begin
 		12'd144 : size = 6'd9;
 		12'd120 : size = 6'd8;
 		12'd108 : size = 6'd7;
-		12'd99 : size = 6'd6;
+		12'd96 : size = 6'd6;
 		12'd72 : size = 6'd5;
 		12'd60 : size = 6'd4;
 		12'd48 : size = 6'd3;

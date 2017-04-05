@@ -252,8 +252,10 @@ always@(posedge clk) begin
 				ctrl_to_mem.twdl_demontr[4] <= ctrl_to_mem.Nf[5] + {ctrl_to_mem.Nf[5],2'b00};
 			else if (ctrl_to_mem.Nf[4]==3'd4)
 				ctrl_to_mem.twdl_demontr[4] <= {ctrl_to_mem.Nf[5],2'b00};
-			else
+			else if (ctrl_to_mem.Nf[4]==3'd2)
 				ctrl_to_mem.twdl_demontr[4] <= {ctrl_to_mem.Nf[5],1'b0};
+			else
+				ctrl_to_mem.twdl_demontr[4] <= ctrl_to_mem.Nf[5];
 		end
 		else ctrl_to_mem.twdl_demontr[4] <= ctrl_to_mem.twdl_demontr[4];
 
@@ -264,8 +266,10 @@ always@(posedge clk) begin
 				ctrl_to_mem.twdl_demontr[3] <= ctrl_to_mem.twdl_demontr[4] + {ctrl_to_mem.twdl_demontr[4],2'b00};
 			else if (ctrl_to_mem.Nf[3]==3'd4)
 				ctrl_to_mem.twdl_demontr[3] <= {ctrl_to_mem.twdl_demontr[4],2'b00};
-			else
+			else if (ctrl_to_mem.Nf[3]==3'd2)
 				ctrl_to_mem.twdl_demontr[3] <= {ctrl_to_mem.twdl_demontr[4],1'b0};
+			else
+				ctrl_to_mem.twdl_demontr[3] <= ctrl_to_mem.twdl_demontr[4];
 		end
 		else ctrl_to_mem.twdl_demontr[3] <= ctrl_to_mem.twdl_demontr[3];
 
@@ -276,8 +280,10 @@ always@(posedge clk) begin
 				ctrl_to_mem.twdl_demontr[2] <= ctrl_to_mem.twdl_demontr[3] + {ctrl_to_mem.twdl_demontr[3],2'b00};
 			else if (ctrl_to_mem.Nf[2]==3'd4)
 				ctrl_to_mem.twdl_demontr[2] <= {ctrl_to_mem.twdl_demontr[3],2'b00};
-			else
+			else if (ctrl_to_mem.Nf[2]==3'd2)
 				ctrl_to_mem.twdl_demontr[2] <= {ctrl_to_mem.twdl_demontr[3],1'b0};
+			else
+				ctrl_to_mem.twdl_demontr[2] <= ctrl_to_mem.twdl_demontr[3];
 		end
 		else ctrl_to_mem.twdl_demontr[2] <= ctrl_to_mem.twdl_demontr[2];
 
@@ -288,8 +294,10 @@ always@(posedge clk) begin
 				ctrl_to_mem.twdl_demontr[1] <= ctrl_to_mem.twdl_demontr[2] + {ctrl_to_mem.twdl_demontr[2],2'b00};
 			else if (ctrl_to_mem.Nf[1]==3'd4)
 				ctrl_to_mem.twdl_demontr[1] <= {ctrl_to_mem.twdl_demontr[2],2'b00};
-			else
+			else if (ctrl_to_mem.Nf[1]==3'd2)
 				ctrl_to_mem.twdl_demontr[1] <= {ctrl_to_mem.twdl_demontr[2],1'b0};
+			else
+				ctrl_to_mem.twdl_demontr[1] <= ctrl_to_mem.twdl_demontr[2];
 		end
 		else ctrl_to_mem.twdl_demontr[1] <= ctrl_to_mem.twdl_demontr[1];
 	end

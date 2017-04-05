@@ -71,7 +71,7 @@ NumOfLen = 0;
 outf = fopen('../../modelsim/dft_src.dat','w');
 outf_FFT = fopen('../../modelsim/matlab_result.dat','w');
 %  Loop  from  12*1  to  12*100
-for m_len = 27:100   % The end of loop body is at the end of this file
+for m_len = 1:100   % The end of loop body is at the end of this file
     % factorize  N 
     [Nf_temp, err] = factor_2345(m_len);
     if err==1   % m_len can not be factorized to 2,3,4,5

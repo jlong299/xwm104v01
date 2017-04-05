@@ -106,4 +106,4 @@ view structure
 view signals
 
 run 800us
-# run 200us
+# run 100us
