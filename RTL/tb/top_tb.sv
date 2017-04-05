@@ -184,7 +184,7 @@ top_inst(
 	.sink_imag  (sink_imag),
 	// .dftpts_in  (dftpts_in),
 	.size  (size),
-	.inverse  (inverse),
+	.inverse  (1'b0),
 
 	.source_valid  (source_valid),
 	.source_ready  (1'b1),

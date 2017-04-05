@@ -8,7 +8,7 @@ interface mrd_st_if ();
 	logic [3:0] exp;
 	// logic [5:0] dftpts; // Number of DFT points
 	logic [5:0] size; // Number of DFT points  //0~33 : 12~1200
-	logic inverse;
+	// logic inverse;
 
 	// modport ST_IN (input valid, sop, eop, d_real, d_imag, dftpts, inverse,
 	// 	           output ready);

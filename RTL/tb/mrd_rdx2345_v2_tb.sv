@@ -175,7 +175,7 @@ mrd_rdx5_3_4_2_v2_inst
 	in_val,
 	din_real,
 	din_imag,
-	3'd3,
+	3'd4,
 
 	margin_in,
 	exp_in,

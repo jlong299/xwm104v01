@@ -7,6 +7,7 @@ module mrd_rdx5_3_4_2_v2
 	input signed [18-1:0] din_real [0:4],
 	input signed [18-1:0] din_imag [0:4],
 	input [2:0] factor,
+	input inverse,
 
 	input unsigned [1:0] margin_in,
 	input unsigned [3:0] exp_in,
@@ -93,13 +94,16 @@ end
 
 always@(posedge clk) begin
 	wir1_p1_x1_r <= din_real_t[1] + din_real_t[3];
-	wir1_p1_x2_r <= din_real_t[2] + din_real_t[4];
-	wir1_p1_x3_r <= din_real_t[1] - din_real_t[3];
-	wir1_p1_x4_r <= din_real_t[2] - din_real_t[4];
 	wir1_p1_x1_i <= din_imag_t[1] + din_imag_t[3];
+	wir1_p1_x2_r <= din_real_t[2] + din_real_t[4];
 	wir1_p1_x2_i <= din_imag_t[2] + din_imag_t[4];
+
+	wir1_p1_x3_r <= din_real_t[1] - din_real_t[3];
 	wir1_p1_x3_i <= din_imag_t[1] - din_imag_t[3];
+
+	wir1_p1_x4_r <= din_real_t[2] - din_real_t[4];
 	wir1_p1_x4_i <= din_imag_t[2] - din_imag_t[4];
+
 	din_real_0_r <= din_real_t[0];
 	din_imag_0_r <= din_imag_t[0];
 end
@@ -217,30 +221,39 @@ always@(posedge clk) begin
 	// else begin
 		// FFT
 		if (factor==3'd5) begin
-		coeff[2] <= 18'sh11E37 ; //1.17
-		coeff2_n <= 18'sh11E37 ; //1.17
+			// FFT and IFFT
+			coeff[2] <= 18'sh11E37 ; //1.17
+			coeff2_n <= 18'sh11E37 ; //1.17
 		end
 		else begin// factor == 3
-		coeff[2] <= 18'sh1BB68 ; //1.17
-		coeff2_n <= -18'sh1BB68;
+			if (inverse == 1'b0) begin // FFT
+				coeff[2] <= 18'sh1BB68 ; //1.17
+				coeff2_n <= -18'sh1BB68;
+			end
+			else begin	// IFFT
+				coeff[2] <= -18'sh1BB68 ; //1.17
+				coeff2_n <= 18'sh1BB68;
+			end
 		end
 
-		coeff[3] <= 18'sh2760E ; //2.16
-		coeff3_n <= -18'sh2760E;
-		coeff[4] <= 18'sh34601 ; //1.17
-		coeff4_n <= -18'sh34601 ; //1.17
-		coeff[5] <= 18'sh1E6F1 ; //1.17
-		coeff5_n <= -18'sh1E6F1 ; //1.17
+		if (inverse == 1'b0) begin// FFT
+			coeff[3] <= 18'sh2760E ; //2.16
+			coeff3_n <= -18'sh2760E;
+			coeff[4] <= 18'sh34601 ; //1.17
+			coeff4_n <= -18'sh34601 ; //1.17
+			coeff[5] <= 18'sh1E6F1 ; //1.17
+			coeff5_n <= -18'sh1E6F1 ; //1.17
+		end
+		else begin	// IFFT
+			coeff[3] <= -18'sh2760E ; //2.16
+			coeff3_n <= 18'sh2760E;
+			coeff[4] <= -18'sh34601 ; //1.17
+			coeff4_n <= 18'sh34601 ; //1.17
+			coeff[5] <= -18'sh1E6F1 ; //1.17
+			coeff5_n <= 18'sh1E6F1 ; //1.17
+		end
 	// end
 
-	// // Inverse FFT
-	// coeff[2] <= 18'sh11E37 ; //1.17
-	// coeff[3] <= -18'sh2760E ; //2.16
-	// coeff3_n <= 18'sh2760E;
-	// coeff[4] <= -18'sh34601 ; //1.17
-	// coeff4_n <= 18'sh34601 ; //1.17
-	// coeff[5] <= -18'sh1E6F1 ; //1.17
-	// coeff5_n <= 18'sh1E6F1 ; //1.17
 end
 
 assign wir1_p2_x2_r = p1r_x2_r * coeff[2]; //1.17
@@ -395,10 +408,18 @@ always@(*) begin
 		wir2_p3_x2_r = wir1_p3_x1_r - wir1_p3_x2_r;
 		wir2_p3_x2_i = wir1_p3_x1_i - wir1_p3_x2_i;
 		if (factor == 3'd4) begin
-			wir2_p3_x3_r = wir1_p3_x3_r + wir1_p3_x4_i;
-			wir2_p3_x3_i = wir1_p3_x3_i - wir1_p3_x4_r;
-			wir2_p3_x4_r = wir1_p3_x3_r - wir1_p3_x4_i;
-			wir2_p3_x4_i = wir1_p3_x3_i + wir1_p3_x4_r;
+			if (inverse == 1'b0) begin
+				wir2_p3_x3_r = wir1_p3_x3_r + wir1_p3_x4_i;
+				wir2_p3_x3_i = wir1_p3_x3_i - wir1_p3_x4_r;
+				wir2_p3_x4_r = wir1_p3_x3_r - wir1_p3_x4_i;
+				wir2_p3_x4_i = wir1_p3_x3_i + wir1_p3_x4_r;
+			end
+			else begin
+				wir2_p3_x3_r = wir1_p3_x3_r - wir1_p3_x4_i;
+				wir2_p3_x3_i = wir1_p3_x3_i + wir1_p3_x4_r;
+				wir2_p3_x4_r = wir1_p3_x3_r + wir1_p3_x4_i;
+				wir2_p3_x4_i = wir1_p3_x3_i - wir1_p3_x4_r;
+			end
 		end
 		else begin
 			wir2_p3_x3_r = wir1_p3_x3_r + wir1_p3_x4_r;

@@ -61,7 +61,7 @@ assign sink_st.din_real = sink_real;
 assign sink_st.din_imag = sink_imag;
 // assign sink_st.dftpts = dftpts_in;
 assign sink_st.size = size;
-assign sink_st.inverse = inverse;
+// assign sink_st.inverse = inverse;
 assign sink_ready = sink_st.ready;
 
 assign source_valid = source_st.valid;
@@ -102,6 +102,7 @@ rdx2345_twdl(
 	.rst_n (rst_n_sync), 
 
 	.sop (sink_sop),
+	.inverse (inverse),
 	.from_mem (mem_to_rdx2345),
 	.to_mem (rdx2345_to_mem)
 	);

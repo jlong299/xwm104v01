@@ -12,6 +12,7 @@ module twdl_CTA #(parameter
 	input [11:0]  twdl_demontr,
 	input [20-1:0] twdl_quotient,
 	input [12-1:0] twdl_remainder,
+	input inverse,
 
 	input  in_val,
 	input  signed [wDataInOut-1:0]  din_real [0:4],
@@ -118,10 +119,10 @@ logic signed [15:0] tw_real_1r, tw_imag_1r;
 always@(posedge clk) begin
 	tw_real_1r <= tw_real[1];
 
-	// FFT
-	tw_imag_1r <= tw_imag[1];
-	// Inverse FFT
-	// tw_imag_1r <= -tw_imag[1];
+	if (inverse == 1'b0) // FFT// FFT
+		tw_imag_1r <= tw_imag[1];
+	else// Inverse FFT
+		tw_imag_1r <= -tw_imag[1];
 end
 //--------  1st+1 pipeline  ------------
 always@(posedge clk) begin

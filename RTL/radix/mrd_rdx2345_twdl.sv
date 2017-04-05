@@ -3,6 +3,7 @@ module mrd_rdx2345_twdl (
 	input rst_n,  
 
 	input sop,
+	input inverse,
 	mrd_rdx2345_if from_mem,
 	mrd_rdx2345_if to_mem
 );
@@ -174,11 +175,11 @@ end
 // end
 
 
-//---------- Temp!!!-----------------
-// logic dft_val_t;
-// logic signed [18-1:0] dft_real_t [0:4];
-// logic signed [18-1:0] dft_imag_t [0:4];
-// logic [3:0] exp_out_t;
+logic inverse_r;
+always@(posedge clk) begin
+	if (!rst_n) inverse_r <= 0;
+	else inverse_r <= (sop)? inverse : inverse_r;
+end
 
 mrd_rdx5_3_4_2_v2
 rdx5_3_4_2_v2 (
@@ -189,6 +190,7 @@ rdx5_3_4_2_v2 (
 	.din_real  (from_mem_d_real),
 	.din_imag  (from_mem_d_imag),
 	.factor (from_mem_factor),
+	.inverse (inverse_r),
 
 	.margin_in (margin_in),
 	.exp_in (exp_in),
@@ -264,6 +266,7 @@ twdl (
 	.twdl_demontr  (from_mem.twdl_demontr),
 	.twdl_quotient (from_mem.quotient),
 	.twdl_remainder (from_mem.remainder),
+	.inverse (inverse_r),
 
 	.in_val  (dft_val),
 	.din_real  (dft_real),
