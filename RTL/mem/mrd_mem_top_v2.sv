@@ -47,7 +47,8 @@ module mrd_mem_top_v2 (
 
 	mrd_st_if  out_data,
 	mrd_rdx2345_if  out_rdx2345_data,
-	output logic [2:0] fsm
+	output logic [2:0] fsm,
+	output sink_ready
 );
 
 // logic [11:0]  dftpts;
@@ -169,6 +170,7 @@ assign fsm_lastRd_source = (fsm==Source || cnt_stage==ctrl.NumOfFactors-3'd1);
 assign out_rdx2345_data.quotient = ctrl.quotient[cnt_stage];
 assign out_rdx2345_data.remainder = ctrl.remainder[cnt_stage];
 
+assign sink_ready = (fsm==Idle);
 //-------------------------------------------
 //--------------  7 RAMs --------------------
 //-------------------------------------------

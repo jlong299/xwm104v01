@@ -187,7 +187,7 @@ top_inst(
 	.inverse  (1'b0),
 
 	.source_valid  (source_valid),
-	.source_ready  (1'b1),
+	// .source_ready  (1'b1),
 	.source_sop  (source_sop),
 	.source_eop  (source_eop),
 	.source_real  (source_real),

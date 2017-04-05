@@ -2,7 +2,7 @@
 
 // interface dft_st_if (input bit clk);
 interface mrd_st_if ();
-	logic valid, ready, sop, eop;
+	logic valid, sop, eop;
 	logic [17:0] din_real, din_imag;
 	logic [18-1:0] dout_real, dout_imag;
 	logic [3:0] exp;

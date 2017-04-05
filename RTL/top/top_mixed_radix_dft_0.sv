@@ -13,7 +13,6 @@ module top_mixed_radix_dft_0 (
 	inverse,
 
 	source_valid,
-	source_ready,
 	source_sop,
 	source_eop,
 	source_real,
@@ -35,7 +34,7 @@ input [5:0] size;
 input inverse;
 
 output reg source_valid;
-input  source_ready;
+// input  source_ready;
 output reg source_sop;
 output reg source_eop;
 output reg [17:0] source_real;
@@ -62,7 +61,7 @@ assign sink_st.din_imag = sink_imag;
 // assign sink_st.dftpts = dftpts_in;
 assign sink_st.size = size;
 // assign sink_st.inverse = inverse;
-assign sink_ready = sink_st.ready;
+// assign sink_ready = sink_st.ready;
 
 assign source_valid = source_st.valid;
 assign source_sop = source_st.sop;
@@ -71,7 +70,7 @@ assign source_real = source_st.dout_real;
 assign source_imag = source_st.dout_imag;
 assign source_exp = source_st.exp;
 // assign dftpts_out = source_st.dftpts;
-assign source_st.ready = source_ready;
+// assign source_st.ready = source_ready;
 
 mrd_rdx2345_if rdx2345_to_mem();
 mrd_rdx2345_if mem_to_rdx2345();
@@ -92,7 +91,8 @@ mem0 (
 
 	.out_data ( source_st ),
 	.out_rdx2345_data ( mem_to_rdx2345 ),
-	.fsm (fsm)
+	.fsm (fsm),
+	.sink_ready (sink_ready)
 	);
 
 //Radix 2/3/4/5 core  &  twiddle CORDIC
