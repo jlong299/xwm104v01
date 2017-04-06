@@ -6,17 +6,17 @@ module mrd_FSMsink #(parameter
 	input rst_n,
 
 	input [2:0] fsm,
-	input [2:0] fsm_r,
 	
 	mrd_ctrl_if  ctrl,
 	mrd_st_if  in_data,
 	mrd_mem_wr wrRAM_FSMsink,
 
-	output logic sink_3_4
+	output logic sink_3_4,
+	output logic overTime
 );
 // parameter Idle = 3'd0, Sink = 3'd1, Wait_to_rd = 3'd2,
 //   			Rd = 3'd3,  Wait_wr_end = 3'd4,  Source = 3'd5;
-localparam Rd = 3'd3;
+localparam Sink = 3'd1;
 logic [wADDR-1:0]  bank_addr_sink_pre;
 logic [2:0]  bank_index_sink, bank_index_sink_pre;
 logic [11:0]  addr_sink_CTA;
@@ -68,11 +68,14 @@ begin
 	endcase
 end
 
+logic [11:0] cnt_overTime;
 always@(posedge clk)
 begin 
 	if(!rst_n)  begin
 		sink_3_4 <= 0;
 		cnt_sink <= 0;
+		cnt_overTime <= 0;
+		overTime <= 0;
 	end
 	else begin
 		cnt_sink <= (in_data.valid)? cnt_sink+12'd1 : 12'd0;
@@ -81,6 +84,9 @@ begin
 			(ctrl.twdl_demontr[0][11:2] + ctrl.twdl_demontr[0][11:1] - 12'd1))
 			sink_3_4 <= 1'b1;
 		else sink_3_4 <= 1'b0;
+
+		cnt_overTime <= (fsm==Sink)? cnt_overTime + 12'd1 : 12'd0;
+		overTime <= (cnt_overTime==12'd2047)? 1'b1 : 1'b0;
 	end
 end
 

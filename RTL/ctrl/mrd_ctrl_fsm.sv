@@ -60,7 +60,7 @@ module mrd_ctrl_fsm (
 	input [2:0] fsm,
 	input sink_sop,
 	// input [11:0]  dftpts,
-	input [5:0] size,
+	input unsigned [5:0] size,
 
 	mrd_ctrl_if  ctrl_to_mem
 );
@@ -104,8 +104,8 @@ logic [63:0] q_ROM;
 always@(posedge clk) begin
 if (!rst_n) rdaddr_ROM <= 0;//0;
 else 
-	if (sink_sop) rdaddr_ROM <= {size,1'b0};
-	else if (sink_sop_r1) rdaddr_ROM <= {size,1'b1};
+	if (sink_sop) rdaddr_ROM <= (size <= 6'd33)? {size,1'b0} : 7'd0;
+	else if (sink_sop_r1) rdaddr_ROM <= {rdaddr_ROM[6:1],1'b1};
 	else rdaddr_ROM <= rdaddr_ROM;
 end
 

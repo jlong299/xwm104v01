@@ -63,7 +63,7 @@ logic [2:0] bank_index_source;
 logic [0:4][11:0]  twdl_numrtr;
 logic [0:5][11:0]  twdl_demontr;
 logic [2:0]  cnt_stage;
-logic sink_3_4;
+logic sink_3_4, overTime;
 logic wr_end, rd_end;
 logic fsm_lastRd_source,  source_end;
 
@@ -134,7 +134,7 @@ begin
 		case (fsm)
 		Idle : fsm <= (in_data.sop)? Sink : Idle;
 
-		Sink : fsm <= (sink_3_4)? Rd : Sink;
+		Sink : fsm <= (sink_3_4)? Rd : (overTime)? Idle : Sink;
 
 		Rd : fsm <= (rd_end)? Wait_wr_end : Rd;
 		Wait_wr_end : begin
@@ -252,13 +252,13 @@ mrd_FSMsink_inst (
 	rst_n,
 
 	fsm,
-	fsm_r,
 
 	ctrl,
 	in_data,
 	wrRAM_FSMsink,
 
-	sink_3_4
+	sink_3_4,
+	overTime
 );
 
 //------------------------------------------------
