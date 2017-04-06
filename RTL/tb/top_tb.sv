@@ -18,7 +18,7 @@ logic signed [17:0]  source_real, source_imag;
 logic [3:0] source_exp;
 logic [3:0]  cnt_sink_sop;
 
-integer 	data_file, scan_file, wr_file;
+integer 	data_file, scan_file, wr_file, wr_file_latency;
 logic [31:0] 	captured_data, captured_data_imag;
 logic [15:0]  cnt_file_end; 
 
@@ -32,6 +32,12 @@ initial begin
 	wr_file = $fopen("top_result.dat","w");
 	if (wr_file == 0) begin
 		$display("top_result handle was NULL");
+		$finish;
+	end
+
+	wr_file_latency = $fopen("latency_result.dat","w");
+	if (wr_file_latency == 0) begin
+		$display("latency_result handle was NULL");
 		$finish;
 	end
 end
@@ -196,14 +202,55 @@ top_inst(
 	// .dftpts_out  ()
 );
 
+logic [0:33][15:0] latency_xlx;
+assign latency_xlx[0:33] = '{
+	16'd75,
+	16'd122,
+	16'd152,
+	16'd176,
+	16'd227,
+	16'd271,
+	16'd325,
+	16'd373,
+	16'd418,
+	16'd457,
+	16'd592,
+	16'd565,
+	16'd732,
+	16'd736,
+	16'd918,
+	16'd955,
+	16'd1074,
+	16'd1191,
+	16'd1158,
+	16'd1362,
+	16'd1509,
+	16'd1773,
+	16'd1734,
+	16'd1962,
+	16'd2225,
+	16'd2265,
+	16'd2214,
+	16'd2855,
+	16'd2952,
+	16'd2901,
+	16'd3359,
+	16'd3716,
+	16'd3671,
+	16'd3792
+};
+logic [6:0] cnt_xlx;
 
-logic [15:0]  cnt_val_debug, cnt_close_file;
+logic [15:0]  cnt_val_debug, cnt_close_file, cnt_latency;
 logic signed [29:0]  real_adj, imag_adj;
 always@(posedge clk)
 begin
 	if (!rst_n) begin
 		cnt_val_debug <= 0;
 		cnt_close_file <= 0;
+
+		cnt_latency <= 0;
+		cnt_xlx <= 0;
 	end
 	else
 	begin
@@ -224,6 +271,12 @@ begin
 			cnt_close_file <= (rd_file_end)? cnt_close_file+1 : 0;
 			if (cnt_close_file == 16'd3200)
 				$fclose(wr_file);
+
+			cnt_latency <= (sink_sop) ? 16'd0 : cnt_latency + 16'd1;
+			if (source_eop) begin 
+				$fwrite(wr_file_latency, "%d %d\n", cnt_latency, latency_xlx[cnt_xlx]);
+				cnt_xlx <= cnt_xlx + 2'd1;
+			end
 	end
 
 end
