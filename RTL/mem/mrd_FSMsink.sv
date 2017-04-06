@@ -12,7 +12,8 @@ module mrd_FSMsink #(parameter
 	mrd_mem_wr wrRAM_FSMsink,
 
 	output logic sink_3_4,
-	output logic overTime
+	output logic overTime,
+	output logic twdl_sop_sink
 );
 // parameter Idle = 3'd0, Sink = 3'd1, Wait_to_rd = 3'd2,
 //   			Rd = 3'd3,  Wait_wr_end = 3'd4,  Source = 3'd5;
@@ -76,6 +77,7 @@ begin
 		cnt_sink <= 0;
 		cnt_overTime <= 0;
 		overTime <= 0;
+		twdl_sop_sink <= 0;
 	end
 	else begin
 		cnt_sink <= (in_data.valid)? cnt_sink+12'd1 : 12'd0;
@@ -87,6 +89,8 @@ begin
 
 		cnt_overTime <= (fsm==Sink)? cnt_overTime + 12'd1 : 12'd0;
 		overTime <= (cnt_overTime==12'd2047)? 1'b1 : 1'b0;
+
+		twdl_sop_sink <= (cnt_sink==ctrl.twdl_demontr[0][11:2] + ctrl.twdl_demontr[0][11:1] - 12'd5);
 	end
 end
 

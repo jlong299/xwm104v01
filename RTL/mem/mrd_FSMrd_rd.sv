@@ -21,7 +21,9 @@ module mrd_FSMrd_rd #(parameter
 	mrd_mem_rd rdRAM_FSMrd,
 	mrd_rdx2345_if out_rdx2345_data,
 
-	output rd_end
+	output rd_end,
+	output logic twdl_sop_rd,
+	output logic twdl_sop_rd_2
 );
 // parameter Idle = 3'd0, Sink = 3'd1, Wait_to_rd = 3'd2,
 //   			Rd = 3'd3,  Wait_wr_end = 3'd4,  Source = 3'd5;
@@ -34,7 +36,7 @@ logic [0:4][11:0]  addrs_butterfly, addrs_butterfly_mux;
 logic [11:0]  cnt_rd_stop;
 logic [11:0]  twdl_numrtr_1;
 
-logic [11:0] cnt_FSMrd;
+logic [11:0] cnt_FSMrd, cnt_FSMrd_2;
 logic [in_dly-1:1] rden_r; //////
 logic rden_r0;
 
@@ -51,6 +53,9 @@ begin
 	if (!rst_n)
 	begin
 		rden_r <= 0;
+		cnt_FSMrd <= 0;
+		twdl_sop_rd_2 <= 0;
+		cnt_FSMrd_2 <= 0;
 	end
 	else
 	begin
@@ -63,6 +68,16 @@ begin
 			cnt_FSMrd <= 0;
 		//////
 		rden_r[in_dly-1:1] <= {rden_r[in_dly-2:1], rden_r0};
+
+		if (fsm == Rd && fsm_r != Rd)
+			cnt_FSMrd_2 <= 12'd1;
+		else if (cnt_FSMrd_2 != 12'd0)
+			cnt_FSMrd_2 <= (cnt_FSMrd_2==cnt_rd_stop+12'd15) ? 
+		                       12'd0 : cnt_FSMrd_2 + 12'd1;
+		else
+			cnt_FSMrd_2 <= 0;
+			
+		twdl_sop_rd_2 <= (cnt_FSMrd_2==cnt_rd_stop+12'd15);
 	end
 end
 
@@ -213,7 +228,8 @@ end
 assign out_rdx2345_data.valid = rden_r[in_dly-1];
 assign out_rdx2345_data.bank_index = bank_index_rd_rr;
 assign out_rdx2345_data.bank_addr = bank_addr_rd_rr;
-assign out_rdx2345_data.twdl_sop = (~rden_r[in_dly-3]) & rden_r[in_dly-4];
+// assign twdl_sop_rd = (~rden_r[in_dly-3]) & rden_r[in_dly-4];
+assign twdl_sop_rd = (~rden_r[in_dly-4]) & rden_r[in_dly-5];
 
 // always@(posedge clk) begin
 // 		out_rdx2345_data.twdl_numrtr[0] <= twdl_numrtr_r0[0];
@@ -230,10 +246,50 @@ assign out_rdx2345_data.twdl_sop = (~rden_r[in_dly-3]) & rden_r[in_dly-4];
 // end
 
 // assign	out_rdx2345_data.twdl_numrtr_1 = twdl_numrtr_1;
-assign	out_rdx2345_data.twdl_numrtr_1 = (cnt_stage < 3'd5)? twdl_demontr[cnt_stage+3'd1] : twdl_demontr[cnt_stage];
+// assign	out_rdx2345_data.twdl_numrtr_1 = (cnt_stage < 3'd5)? twdl_demontr[cnt_stage+3'd1] : twdl_demontr[cnt_stage];
 
-always@(posedge clk) out_rdx2345_data.twdl_demontr <= 
-                         twdl_demontr[cnt_stage];
+// always@(posedge clk) out_rdx2345_data.twdl_demontr <= 
+//                          twdl_demontr[cnt_stage];
+
+// logic [2:0] cnt_twdlStage;
+// always@(posedge clk) begin
+// 	if (!rst_n) begin
+// 		out_rdx2345_data.twdl_numrtr_1 <= 0;
+// 	    out_rdx2345_data.twdl_demontr <= 0;
+// 	    out_rdx2345_data.quotient <= 0;
+// 	    out_rdx2345_data.remainder <= 0;
+// 	    cnt_twdlStage <= 0;
+// 	end
+// 	else begin
+// 		if (fsm==Idle && fsm_r!=Idle) begin
+// 			out_rdx2345_data.twdl_numrtr_1 <= 0;
+// 			out_rdx2345_data.twdl_demontr <= 0;
+// 			out_rdx2345_data.quotient <= 0;
+// 			out_rdx2345_data.remainder <= 0;
+// 			cnt_twdlStage <= 0;
+// 		end
+// 		else begin
+// 			if (twdl_sop_rd) begin
+// 				if (cnt_twdlStage==3'd5)
+// 					out_rdx2345_data.twdl_numrtr_1 <= 0;
+// 				else
+// 					out_rdx2345_data.twdl_numrtr_1 <= ctrl.twdl_demontr[cnt_twdlStage+3'd1];
+// 				out_rdx2345_data.twdl_demontr <= ctrl.twdl_demontr[cnt_twdlStage];
+// 				out_rdx2345_data.quotient <= ctrl.quotient[cnt_twdlStage];
+// 				out_rdx2345_data.remainder <= ctrl.remainder[cnt_twdlStage];
+// 				cnt_twdlStage <= cnt_twdlStage+3'd1;
+// 			end
+// 			else begin
+// 				out_rdx2345_data.twdl_numrtr_1 <= out_rdx2345_data.twdl_numrtr_1;
+// 				out_rdx2345_data.twdl_demontr <= out_rdx2345_data.twdl_demontr;
+// 				out_rdx2345_data.quotient <= out_rdx2345_data.quotient;
+// 				out_rdx2345_data.remainder <= out_rdx2345_data.remainder;
+// 				cnt_twdlStage <= cnt_twdlStage;
+// 			end
+// 		end
+// 	end
+// end
+
 always@(posedge clk) out_rdx2345_data.factor <= (fsm==Rd || fsm==Wait_wr_end)?
                                       Nf[cnt_stage] : 3'd1 ;
 //////
