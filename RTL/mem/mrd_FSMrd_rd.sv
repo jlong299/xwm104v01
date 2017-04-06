@@ -213,6 +213,7 @@ end
 assign out_rdx2345_data.valid = rden_r[in_dly-1];
 assign out_rdx2345_data.bank_index = bank_index_rd_rr;
 assign out_rdx2345_data.bank_addr = bank_addr_rd_rr;
+assign out_rdx2345_data.twdl_sop = (~rden_r[in_dly-3]) & rden_r[in_dly-4];
 
 // always@(posedge clk) begin
 // 		out_rdx2345_data.twdl_numrtr[0] <= twdl_numrtr_r0[0];
@@ -228,11 +229,12 @@ assign out_rdx2345_data.bank_addr = bank_addr_rd_rr;
 // 	end
 // end
 
-assign	out_rdx2345_data.twdl_numrtr_1 = twdl_numrtr_1;
+// assign	out_rdx2345_data.twdl_numrtr_1 = twdl_numrtr_1;
+assign	out_rdx2345_data.twdl_numrtr_1 = (cnt_stage < 3'd5)? twdl_demontr[cnt_stage+3'd1] : twdl_demontr[cnt_stage];
 
 always@(posedge clk) out_rdx2345_data.twdl_demontr <= 
                          twdl_demontr[cnt_stage];
-assign out_rdx2345_data.factor = (fsm==Rd || fsm==Wait_wr_end)?
+always@(posedge clk) out_rdx2345_data.factor <= (fsm==Rd || fsm==Wait_wr_end)?
                                       Nf[cnt_stage] : 3'd1 ;
 //////
 assign  rd_end =  (rden_r[in_dly-1:in_dly-2]==2'b10);  

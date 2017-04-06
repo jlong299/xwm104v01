@@ -9,6 +9,7 @@ module coeff_twdl_CTA #(parameter
 	input clk,
 	input rst_n,
 
+	input twdl_sop,
 	input [wDataIn-1:0] numerator,
 	input [wDataIn-1:0] demoninator,
   	input [20-1:0] twdl_quotient,
@@ -53,13 +54,25 @@ logic [wDataIn-1:0]  remainder;
 logic [20-1:0]  quotient_temp;
 logic [12-1:0]  remainder_temp, remainder_remain;
 logic remainder_carry_in;
+logic [12-1:0] cnt_numerator;
+always@(posedge clk) begin
+	if (!rst_n) begin
+		cnt_numerator <= 0;
+	end
+	else begin
+		if (twdl_sop)
+			cnt_numerator <= 12'd1;
+		else 
+			cnt_numerator <= (cnt_numerator == numerator-12'd1)? 12'd0 : cnt_numerator+12'd1;
+	end
+end
 always@(posedge clk) begin
 	if (!rst_n) begin
 		quotient <= 0;
 		remainder <= 0;
 	end
 	else begin
-		if (numerator==12'd0) begin
+		if (twdl_sop==1'b1 || cnt_numerator==12'd0) begin
 			quotient <= 0;
 			remainder <= 0;
 		end

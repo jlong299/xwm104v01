@@ -27,7 +27,7 @@ interface mrd_rdx2345_if ();
 	logic [0:4][2:0]  bank_index;
 	logic [0:4][7:0]  bank_addr;
 
-	// logic [0:4][11:0]  twdl_numrtr;
+	logic twdl_sop;
 	logic [11:0]  twdl_numrtr_1;
 	logic [11:0]  twdl_demontr; 
 

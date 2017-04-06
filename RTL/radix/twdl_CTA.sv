@@ -8,6 +8,7 @@ module twdl_CTA #(parameter
 	input rst_n,  
 
 	input [2:0]  factor,
+	input twdl_sop,
 	input [11:0]  twdl_numrtr_1,
 	input [11:0]  twdl_demontr,
 	input [20-1:0] twdl_quotient,
@@ -90,6 +91,7 @@ coeff_twdl_CTA_inst	(
 	.clk (clk),
 	.rst_n (rst_n),
 
+	.twdl_sop (twdl_sop),
 	.numerator (twdl_numrtr_1),
 	.demoninator (twdl_demontr),
 	.twdl_quotient (twdl_quotient),

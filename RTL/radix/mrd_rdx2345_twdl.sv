@@ -262,6 +262,7 @@ twdl (
 	.rst_n  (rst_n),
 
 	.factor  (from_mem.factor),
+	.twdl_sop (from_mem.twdl_sop),
 	.twdl_numrtr_1  (from_mem.twdl_numrtr_1),
 	.twdl_demontr  (from_mem.twdl_demontr),
 	.twdl_quotient (from_mem.quotient),
