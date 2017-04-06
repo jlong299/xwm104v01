@@ -21,6 +21,8 @@ logic [15:0]  cnt0;
 localparam logic [15:0] gap = 16'd3000;
 localparam logic [11:0] dftpts = 12'd1200;
 
+logic [5:0] size;
+
 always@(posedge clk) 
 begin
 	if (!rst_n)
@@ -33,6 +35,7 @@ begin
 		dftpts_in <= 0;
 		inverse <= 0;
 		cnt0 <= 0;
+		size <= 0;
 	end
 	else
 	begin
@@ -59,6 +62,8 @@ begin
 			sink_imag <= 0;
 		end
 
+		size <= (sink_sop)? size + 6'd1 : size;
+
 	end
 end
 
@@ -74,17 +79,17 @@ top_inst(
 	.sink_eop  (sink_eop),
 	.sink_real  (sink_real),
 	.sink_imag  (sink_imag),
-	.dftpts_in  (dftpts_in),
+	.size  (size),
 	.inverse  (inverse),
 
 	.source_valid  (source_valid),
-	.source_ready  (1'b1),
+	// .source_ready  (1'b1),
 	.source_sop  (source_sop),
 	.source_eop  (source_eop),
 	.source_real  (source_real),
 	.source_imag  (source_imag),
-	.source_exp (source_exp),
-	.dftpts_out  ()
+	.source_exp (source_exp)
+	// .dftpts_out  ()
 );
 
 

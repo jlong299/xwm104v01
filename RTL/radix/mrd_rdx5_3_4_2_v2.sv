@@ -20,7 +20,7 @@ module mrd_rdx5_3_4_2_v2
 
 logic unsigned [1:0] worst_case_growth;
 logic unsigned [1:0] word_growth;
-logic [2+2:0] val_r;
+logic [5:0] val_r;
 logic signed [18-1:0] p1_x0_r, p1_x0_i; //1.17
 logic signed [20-1:0] p1_x1_r, p1_x1_i; //3.17
 logic signed [19-1:0] wir1_p1_x1_r, wir1_p1_x1_i, wir1_p1_x2_r, wir1_p1_x2_i, wir1_p1_x3_r, wir1_p1_x3_i, wir1_p1_x4_r, wir1_p1_x4_i;
@@ -329,7 +329,7 @@ wire signed [24-1:0] wir0_p3_x1_r, wir0_p3_x1_i;
 logic signed [25-1:0] wir1_p3_x1_r, wir1_p3_x1_i, wir1_p3_x2_r, wir1_p3_x2_i, 
                      wir1_p3_x3_r, wir1_p3_x3_i, wir1_p3_x4_r, wir1_p3_x4_i;             
 logic signed [25-1:0] wir2_p3_x1_r, wir2_p3_x1_i, wir2_p3_x2_r, wir2_p3_x2_i, 
-                     wir2_p3_x3_r, wir2_p3_x3_i, wir2_p3_x4_r, wir2_p3_x4_i;             
+                     wir2_p3_x3_r, wir2_p3_x3_i, wir2_p3_x4_r, wir2_p3_x4_i;         
 
 assign wir0_p3_x1_r = {p2_x1_r,1'b0};
 assign wir0_p3_x1_i = {p2_x1_i,1'b0};
@@ -346,50 +346,68 @@ assign wir0_p3_x1_i = {p2_x1_i,1'b0};
 // assign wir1_p3_x4_r = (factor==3'd5)? wir_p2_x3_r + wir_p2_x5_r : 0;
 // assign wir1_p3_x4_i = (factor==3'd5)? wir_p2_x3_i + wir_p2_x5_i : 0;
 
-always@(*) begin
+logic signed [21-1:0] p2_x0_r_dly, p2_x0_i_dly; //4.17
+always@(posedge clk) begin
+	if (!rst_n) begin
+		p2_x0_r_dly <= 0;
+		p2_x0_i_dly <= 0;
+		wir1_p3_x1_r <= 0;
+		wir1_p3_x1_i <= 0;
+		wir1_p3_x2_r <= 0;
+		wir1_p3_x2_i <= 0;
+		wir1_p3_x3_r <= 0;
+		wir1_p3_x3_i <= 0;
+		wir1_p3_x4_r <= 0;
+		wir1_p3_x4_i <= 0;
+	end
+	else begin
 	case (factor) 
 		3'd5 : begin
-			wir1_p3_x1_r = wir0_p3_x1_r + wir_p2_x2_r;
-			wir1_p3_x1_i = wir0_p3_x1_i + wir_p2_x2_i;
-			wir1_p3_x2_r = wir_p2_x4_r + wir_p2_x5_r;
-			wir1_p3_x2_i = wir_p2_x4_i + wir_p2_x5_i;
-			wir1_p3_x3_r = wir0_p3_x1_r - wir_p2_x2_r;
-			wir1_p3_x3_i = wir0_p3_x1_i - wir_p2_x2_i;
-			wir1_p3_x4_r = wir_p2_x3_r + wir_p2_x5_r;
-			wir1_p3_x4_i = wir_p2_x3_i + wir_p2_x5_i;
+			wir1_p3_x1_r <= wir0_p3_x1_r + wir_p2_x2_r;
+			wir1_p3_x1_i <= wir0_p3_x1_i + wir_p2_x2_i;
+			wir1_p3_x2_r <= wir_p2_x4_r + wir_p2_x5_r;
+			wir1_p3_x2_i <= wir_p2_x4_i + wir_p2_x5_i;
+			wir1_p3_x3_r <= wir0_p3_x1_r - wir_p2_x2_r;
+			wir1_p3_x3_i <= wir0_p3_x1_i - wir_p2_x2_i;
+			wir1_p3_x4_r <= wir_p2_x3_r + wir_p2_x5_r;
+			wir1_p3_x4_i <= wir_p2_x3_i + wir_p2_x5_i;
 		end
 		3'd3 : begin
-			wir1_p3_x1_r = wir0_p3_x1_r + wir_p2_x2_r;
-			wir1_p3_x1_i = wir0_p3_x1_i + wir_p2_x2_i;
-			wir1_p3_x2_r = 0;
-			wir1_p3_x2_i = 0;
-			wir1_p3_x3_r = wir0_p3_x1_r - wir_p2_x2_r;
-			wir1_p3_x3_i = wir0_p3_x1_i - wir_p2_x2_i;
-			wir1_p3_x4_r = 0;
-			wir1_p3_x4_i = 0;
+			wir1_p3_x1_r <= wir0_p3_x1_r + wir_p2_x2_r;
+			wir1_p3_x1_i <= wir0_p3_x1_i + wir_p2_x2_i;
+			wir1_p3_x2_r <= 0;
+			wir1_p3_x2_i <= 0;
+			wir1_p3_x3_r <= wir0_p3_x1_r - wir_p2_x2_r;
+			wir1_p3_x3_i <= wir0_p3_x1_i - wir_p2_x2_i;
+			wir1_p3_x4_r <= 0;
+			wir1_p3_x4_i <= 0;
 		end
 		3'd4 : begin
-			wir1_p3_x1_r = { {3{wir1_p1_x1_r[18]}}, wir1_p1_x1_r,3'b0};  //2.17 --> 5.20
-			wir1_p3_x1_i = { {3{wir1_p1_x1_i[18]}}, wir1_p1_x1_i,3'b0};
-			wir1_p3_x2_r = { {3{wir1_p1_x2_r[18]}}, wir1_p1_x2_r,3'b0};
-			wir1_p3_x2_i = { {3{wir1_p1_x2_i[18]}}, wir1_p1_x2_i,3'b0};
-			wir1_p3_x3_r = { {3{wir1_p1_x3_r[18]}}, wir1_p1_x3_r,3'b0};
-			wir1_p3_x3_i = { {3{wir1_p1_x3_i[18]}}, wir1_p1_x3_i,3'b0};
-			wir1_p3_x4_r = { {3{wir1_p1_x4_r[18]}}, wir1_p1_x4_r,3'b0};
-			wir1_p3_x4_i = { {3{wir1_p1_x4_i[18]}}, wir1_p1_x4_i,3'b0};
+			wir1_p3_x1_r <= { {3{wir1_p1_x1_r[18]}}, wir1_p1_x1_r,3'b0};  //2.17 --> 5.20
+			wir1_p3_x1_i <= { {3{wir1_p1_x1_i[18]}}, wir1_p1_x1_i,3'b0};
+			wir1_p3_x2_r <= { {3{wir1_p1_x2_r[18]}}, wir1_p1_x2_r,3'b0};
+			wir1_p3_x2_i <= { {3{wir1_p1_x2_i[18]}}, wir1_p1_x2_i,3'b0};
+			wir1_p3_x3_r <= { {3{wir1_p1_x3_r[18]}}, wir1_p1_x3_r,3'b0};
+			wir1_p3_x3_i <= { {3{wir1_p1_x3_i[18]}}, wir1_p1_x3_i,3'b0};
+			wir1_p3_x4_r <= { {3{wir1_p1_x4_r[18]}}, wir1_p1_x4_r,3'b0};
+			wir1_p3_x4_i <= { {3{wir1_p1_x4_i[18]}}, wir1_p1_x4_i,3'b0};
 		end
 		default : begin // case 3'd4, 3'd2
-			wir1_p3_x1_r = { {3{wir1_p1_x1_r[18]}}, wir1_p1_x1_r,3'b0};  //2.17 --> 5.20
-			wir1_p3_x1_i = { {3{wir1_p1_x1_i[18]}}, wir1_p1_x1_i,3'b0};
-			wir1_p3_x2_r = { {3{wir1_p1_x2_r[18]}}, wir1_p1_x2_r,3'b0};
-			wir1_p3_x2_i = { {3{wir1_p1_x2_i[18]}}, wir1_p1_x2_i,3'b0};
-			wir1_p3_x3_r = { {3{wir1_p1_x3_r[18]}}, wir1_p1_x3_r,3'b0};
-			wir1_p3_x3_i = { {3{wir1_p1_x3_i[18]}}, wir1_p1_x3_i,3'b0};
-			wir1_p3_x4_r = { {3{wir1_p1_x4_r[18]}}, wir1_p1_x4_r,3'b0};
-			wir1_p3_x4_i = { {3{wir1_p1_x4_i[18]}}, wir1_p1_x4_i,3'b0};
+			wir1_p3_x1_r <= { {3{wir1_p1_x1_r[18]}}, wir1_p1_x1_r,3'b0};  //2.17 --> 5.20
+			wir1_p3_x1_i <= { {3{wir1_p1_x1_i[18]}}, wir1_p1_x1_i,3'b0};
+			wir1_p3_x2_r <= { {3{wir1_p1_x2_r[18]}}, wir1_p1_x2_r,3'b0};
+			wir1_p3_x2_i <= { {3{wir1_p1_x2_i[18]}}, wir1_p1_x2_i,3'b0};
+			wir1_p3_x3_r <= { {3{wir1_p1_x3_r[18]}}, wir1_p1_x3_r,3'b0};
+			wir1_p3_x3_i <= { {3{wir1_p1_x3_i[18]}}, wir1_p1_x3_i,3'b0};
+			wir1_p3_x4_r <= { {3{wir1_p1_x4_r[18]}}, wir1_p1_x4_r,3'b0};
+			wir1_p3_x4_i <= { {3{wir1_p1_x4_i[18]}}, wir1_p1_x4_i,3'b0};
 		end
 	endcase
+	p2_x0_r_dly <= p2_x0_r;
+	p2_x0_i_dly <= p2_x0_i;
+	end
 end
+
 
 always@(*) begin
 	if (factor==3'd2) begin
@@ -445,8 +463,8 @@ begin
 		p3_x4_i <= 0;
 	end
 	else begin
-		p3_x0_r <= {p2_x0_r, 3'b000};
-		p3_x0_i <= {p2_x0_i, 3'b000};
+		p3_x0_r <= {p2_x0_r_dly, 3'b000};
+		p3_x0_i <= {p2_x0_i_dly, 3'b000};
 		p3_x1_r <= wir2_p3_x1_r[23:0];
 		p3_x1_i <= wir2_p3_x1_i[23:0];
 		p3_x2_r <= wir2_p3_x2_r[23:0];
@@ -553,11 +571,11 @@ begin
 	end
 	else begin
 		// {out_val, val_r} <= {val_r, in_val};
-		val_r <= {val_r[3:0], in_val};
+		val_r <= {val_r[4:0], in_val};
 		if (factor==3'd3 || factor==3'd5)
-			out_val <= val_r[4];
+			out_val <= val_r[5];
 		else
-			out_val <= val_r[1];
+			out_val <= val_r[2];
 
 		dout_real_t[0] <= (wir2_p4_x0_r[5])? wir2_p4_x0_r[23:6]+2'sd1 : wir2_p4_x0_r[23:6]; 
 		dout_imag_t[0] <= (wir2_p4_x0_i[5])? wir2_p4_x0_i[23:6]+2'sd1 : wir2_p4_x0_i[23:6]; 
@@ -575,9 +593,9 @@ begin
 		dout_imag_t[4] <= (wir2_p4_x4_i[5])? wir2_p4_x4_i[23:6]+2'sd1 : wir2_p4_x4_i[23:6]; 
 
 		if (factor==3'd3 || factor==3'd5) 
-			exp_out <= (val_r[1+2])? exp_in + word_growth : exp_out; 
+			exp_out <= (val_r[4])? exp_in + word_growth : exp_out; 
 		else
-			exp_out <= (val_r[0])? exp_in + word_growth : exp_out; 
+			exp_out <= (val_r[1])? exp_in + word_growth : exp_out; 
 	end
 end
 
