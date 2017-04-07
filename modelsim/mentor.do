@@ -66,7 +66,10 @@ add wave -radix unsigned {sim:/top_tb/top_inst/mem0/out_rdx2345_data/*}
 add wave -radix signed {sim:/top_tb/top_inst/mem0/out_rdx2345_data/d_real}
 add wave -radix signed {sim:/top_tb/top_inst/mem0/out_rdx2345_data/d_imag}
 
-add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/coeff_twdl_CTA_inst/*}
+# add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/coeff_twdl_CTA_inst/*}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/*}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/din_real}
+add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/dout_real}
 
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/in_rdx2345_data/*}
 add wave -radix signed {sim:/top_tb/top_inst/mem0/in_rdx2345_data/d_real}
@@ -110,4 +113,4 @@ view structure
 view signals
 
 # run 800us
-run 100us
+run 20us
