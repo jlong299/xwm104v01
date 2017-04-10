@@ -59,6 +59,9 @@ add wave -radix unsigned sim:/top_tb/top_inst/ctrl_fsm/ctrl_to_mem/*
 
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/fsm}
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/cnt_stage}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem0/fsm_lastRd_source}
+add wave -radix unsigned {sim:/top_tb/top_inst/mem0/cnt_twdlStage}
+
 
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/mrd_FSMrd_rd_inst/*}
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/twdl_sop_temp}
@@ -113,4 +116,4 @@ view structure
 view signals
 
 # run 800us
-run 20us
+run 800us

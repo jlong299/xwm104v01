@@ -67,7 +67,7 @@ end
 endgenerate
 
 always@(posedge clk) begin
-	if (twdl_demontr==12'd3)
+	if (twdl_demontr==12'd3 || twdl_demontr==12'd1)
 		out_val <= in_val;
 	else
 		out_val <= (factor==3'd3 || factor==3'd5)? valid_r[delay_twdl-5+3] : valid_r[delay_twdl_42-5+3] ;

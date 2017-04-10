@@ -324,7 +324,7 @@ always@(posedge clk) begin
 				out_rdx2345_data.twdl_demontr <= ctrl.twdl_demontr[cnt_twdlStage];
 				out_rdx2345_data.quotient <= ctrl.quotient[cnt_twdlStage];
 				out_rdx2345_data.remainder <= ctrl.remainder[cnt_twdlStage];
-				cnt_twdlStage <= cnt_twdlStage+3'd1;
+				cnt_twdlStage <= (cnt_twdlStage==3'd5)? 3'd5 : cnt_twdlStage+3'd1;
 			end
 			else begin
 				out_rdx2345_data.twdl_numrtr_1 <= out_rdx2345_data.twdl_numrtr_1;
