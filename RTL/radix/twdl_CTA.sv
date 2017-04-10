@@ -122,14 +122,34 @@ coeff_twdl_CTA_inst	(
 	.dout_imag (tw_imag[1:4])
 );
 
-assign tw_real_t[1] = tw_real[1];
-assign tw_real_t[2] = (factor==3'd2)? 16'sd16384 : tw_real[2];
-assign tw_real_t[3] = (factor==3'd2)? tw_real[1] : tw_real[3];
-assign tw_real_t[4] = tw_real[4];
-assign tw_imag_t[1] = tw_imag[1];
-assign tw_imag_t[2] = (factor==3'd2)? 16'sd0 : tw_imag[2];
-assign tw_imag_t[3] = (factor==3'd2)? tw_imag[1] : tw_imag[3];
-assign tw_imag_t[4] = tw_imag[4];
+always@(posedge clk) begin
+	if (!rst_n) begin
+		for (j=1; j<=4; j++) begin
+			tw_real_t[j] <= 0;
+			tw_imag_t[j] <= 0;
+		end
+	end
+	else begin
+		tw_real_t[1] <= tw_real[1];
+		tw_real_t[2] <= (factor==3'd2)? 16'sd16384 : tw_real[2];
+		tw_real_t[3] <= (factor==3'd2)? tw_real[1] : tw_real[3];
+		tw_real_t[4] <= tw_real[4];
+
+		if (inverse == 1'b0) begin // FFT
+			tw_imag_t[1] <= tw_imag[1];
+			tw_imag_t[2] <= (factor==3'd2)? 16'sd0 : tw_imag[2];
+			tw_imag_t[3] <= (factor==3'd2)? tw_imag[1] : tw_imag[3];
+			tw_imag_t[4] <= tw_imag[4];
+		end
+		else begin // IFFT
+			tw_imag_t[1] <= -tw_imag[1];
+			tw_imag_t[2] <= (factor==3'd2)? 16'sd0 : -tw_imag[2];
+			tw_imag_t[3] <= (factor==3'd2)? -tw_imag[1] : -tw_imag[3];
+			tw_imag_t[4] <= -tw_imag[4];
+		end
+	end
+end
+
 
 logic signed [wDataInOut-1:0]  d_real_r_r [0:4];
 logic signed [wDataInOut-1:0]  d_imag_r_r [0:4];
