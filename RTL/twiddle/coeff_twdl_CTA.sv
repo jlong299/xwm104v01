@@ -72,7 +72,8 @@ always@(posedge clk) begin
 		remainder <= 0;
 	end
 	else begin
-		if (twdl_sop==1'b1 || cnt_numerator==12'd0) begin
+		// if (twdl_sop==1'b1 || cnt_numerator==12'd0) begin
+		if (twdl_sop==1'b1 || cnt_numerator==12'd0 || demoninator==12'd3 || demoninator==12'd1 ) begin
 			quotient <= 0;
 			remainder <= 0;
 		end

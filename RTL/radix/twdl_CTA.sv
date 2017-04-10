@@ -67,9 +67,9 @@ end
 endgenerate
 
 always@(posedge clk) begin
-	if (twdl_demontr==12'd3 || twdl_demontr==12'd1)
-		out_val <= in_val;
-	else
+	// if (twdl_demontr==12'd3 || twdl_demontr==12'd1)
+	// 	out_val <= in_val;
+	// else
 		out_val <= (factor==3'd3 || factor==3'd5)? valid_r[delay_twdl-5+3] : valid_r[delay_twdl_42-5+3] ;
 end
 always@(posedge clk)
@@ -234,22 +234,22 @@ begin
 	end
 	else
 	begin
-		if (twdl_demontr==12'd3) begin
-			if (in_val) begin
-				// dout_real_t[i] <= din_real[i]*tw_real_An; 
-				dout_real_t[i] <= { {2{din_real[i][17]}}, din_real[i], 14'b0}; 
-				dout_imag_t[i] <= { {2{din_imag[i][17]}}, din_imag[i], 14'b0};
-			end
-			else begin
-				dout_real_t[i] <= 0;
-				dout_imag_t[i] <= 0;
-			end
-			// dout_real_t_p0[i] <= 0;
-			// dout_real_t_p1[i] <= 0;
-			// dout_imag_t_p0[i] <= 0;
-			// dout_imag_t_p1[i] <= 0;
-		end
-		else begin
+		// if (twdl_demontr==12'd3) begin
+		// 	if (in_val) begin
+		// 		// dout_real_t[i] <= din_real[i]*tw_real_An; 
+		// 		dout_real_t[i] <= { {2{din_real[i][17]}}, din_real[i], 14'b0}; 
+		// 		dout_imag_t[i] <= { {2{din_imag[i][17]}}, din_imag[i], 14'b0};
+		// 	end
+		// 	else begin
+		// 		dout_real_t[i] <= 0;
+		// 		dout_imag_t[i] <= 0;
+		// 	end
+		// 	// dout_real_t_p0[i] <= 0;
+		// 	// dout_real_t_p1[i] <= 0;
+		// 	// dout_imag_t_p0[i] <= 0;
+		// 	// dout_imag_t_p1[i] <= 0;
+		// end
+		// else begin
 			// if (valid_r[delay_twdl-6+3]) begin
 			// 	// dout_real_t[i] <= d_real_r[i][delay_twdl-5]*tw_real[i] 
 			// 	//                   - d_imag_r[i][delay_twdl-5]*tw_imag[i];
@@ -268,7 +268,7 @@ begin
 			// end
 			dout_real_t[i] <= dout_real_t_p0[i] - dout_real_t_p1[i];
 			dout_imag_t[i] <= dout_imag_t_p0[i] + dout_imag_t_p1[i];
-		end
+		// end
 	end
 end
 
@@ -295,18 +295,18 @@ begin
 	end
 	else
 	begin
-		if (twdl_demontr==12'd3) begin
-			if (in_val) begin
-				// dout_real_t[i] <= din_real[i]*tw_real_An; 
-				dout_real[0] <= din_real[0]; 
-				dout_imag[0] <= din_imag[0];
-			end
-			else begin
-				dout_real[0] <= 0;
-				dout_imag[0] <= 0;
-			end
-		end
-		else begin
+		// if (twdl_demontr==12'd3) begin
+		// 	if (in_val) begin
+		// 		// dout_real_t[i] <= din_real[i]*tw_real_An; 
+		// 		dout_real[0] <= din_real[0]; 
+		// 		dout_imag[0] <= din_imag[0];
+		// 	end
+		// 	else begin
+		// 		dout_real[0] <= 0;
+		// 		dout_imag[0] <= 0;
+		// 	end
+		// end
+		// else begin
 			if  (  ((factor==3'd3 || factor==3'd5) && valid_r[delay_twdl-5+3] ) 
 				|| ((factor==3'd4 || factor==3'd2) && valid_r[delay_twdl_42-5+3])  )
 			begin
@@ -317,7 +317,7 @@ begin
 				dout_real[0] <= 0;
 				dout_imag[0] <= 0;
 			end
-		end
+		// end
 		d_real_r2 <= d_real_r_r[0];
 		d_imag_r2 <= d_imag_r_r[0];
 	end
@@ -325,9 +325,11 @@ end
 
 always@(*) begin
 	if (factor==3'd3 || factor==3'd5)
-		rdreq_ff_addr = (twdl_demontr==12'd3)? in_val : valid_r[delay_twdl-5+3];
+		// rdreq_ff_addr = (twdl_demontr==12'd3)? in_val : valid_r[delay_twdl-5+3];
+		rdreq_ff_addr =  valid_r[delay_twdl-5+3];
 	else
-		rdreq_ff_addr = (twdl_demontr==12'd3)? in_val : valid_r[delay_twdl_42-5+3];
+		// rdreq_ff_addr = (twdl_demontr==12'd3)? in_val : valid_r[delay_twdl_42-5+3];
+		rdreq_ff_addr =  valid_r[delay_twdl_42-5+3];
 end
 
 assign sclr_ff_addr = sclr;

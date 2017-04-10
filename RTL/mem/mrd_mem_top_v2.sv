@@ -367,7 +367,7 @@ mrd_FSMrd_wr_inst (
 // Output       |---------------------|------------------------------|  
 //                     1/3                      2/3 
 mrd_FSMsource #(
-	.dly_addr_source (9)
+	.dly_addr_source (9+6-1)
 	)
 mrd_FSMsource_inst (
 	clk,
