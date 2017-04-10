@@ -2,7 +2,7 @@
 
 //Claire Barnes
 
-module CORDIC(clock, cosine, sine, x_start, y_start, angle);
+module CORDIC(clock, cosine, sine, x_start, y_start, angle, atan_table);
 
   parameter width = 16;
   parameter w_angle = 20;
@@ -15,8 +15,11 @@ module CORDIC(clock, cosine, sine, x_start, y_start, angle);
   // Outputs
   output signed  [width-1:0] sine, cosine;
 
-  // Generate table of atan values
-  logic signed [w_angle-1:0] atan_table [0:30];
+  input signed [w_angle-1:0] atan_table [0:30];
+
+
+  // // Generate table of atan values
+  // logic signed [w_angle-1:0] atan_table [0:30];
                           
   // assign atan_table[00] = 'b00100000000000000000000000000000; // 45.000 degrees -> atan(2^0)
   // assign atan_table[01] = 'b00010010111001000000010100011101; // 26.565 degrees -> atan(2^-1)
@@ -49,38 +52,6 @@ module CORDIC(clock, cosine, sine, x_start, y_start, angle);
   // assign atan_table[28] = 'b00000000000000000000000000000010;
   // assign atan_table[29] = 'b00000000000000000000000000000001;
   // assign atan_table[30] = 'b00000000000000000000000000000000;
-
-  assign atan_table[00] = 'b00100000000000000000; // 45.000 degrees -> atan(2^0)
-  assign atan_table[01] = 'b00010010111001000000; // 26.565 degrees -> atan(2^-1)
-  assign atan_table[02] = 'b00001001111110110011; // 14.036 degrees -> atan(2^-2)
-  assign atan_table[03] = 'b00000101000100010001; // atan(2^-3)
-  assign atan_table[04] = 'b00000010100010110000;
-  assign atan_table[05] = 'b00000001010001011101;
-  assign atan_table[06] = 'b00000000101000101111;
-  assign atan_table[07] = 'b00000000010100010111;
-  assign atan_table[08] = 'b00000000001010001011;
-  assign atan_table[09] = 'b00000000000101000101;
-  assign atan_table[10] = 'b00000000000010100010;
-  assign atan_table[11] = 'b00000000000001010001;
-  assign atan_table[12] = 'b00000000000000101000;
-  assign atan_table[13] = 'b00000000000000010100;
-  assign atan_table[14] = 'b00000000000000001010;
-  assign atan_table[15] = 'b00000000000000000101;
-  assign atan_table[16] = 'b00000000000000000010;
-  assign atan_table[17] = 'b00000000000000000001;
-  // assign atan_table[18] = 'b00000000000000000000;
-  // assign atan_table[19] = 'b00000000000000000000;
-  // assign atan_table[20] = 'b00000000000000000000;
-  // assign atan_table[21] = 'b00000000000000000000;
-  // assign atan_table[22] = 'b00000000000000000000;
-  // assign atan_table[23] = 'b00000000000000000000;
-  // assign atan_table[24] = 'b00000000000000000000;
-  // assign atan_table[25] = 'b00000000000000000000;
-  // assign atan_table[26] = 'b00000000000000000000;
-  // assign atan_table[27] = 'b00000000000000000000;
-  // assign atan_table[28] = 'b00000000000000000000;
-  // assign atan_table[29] = 'b00000000000000000000;
-  // assign atan_table[30] = 'b00000000000000000000;
 
   reg signed [width:0] x [0:width-1];
   reg signed [width:0] y [0:width-1];

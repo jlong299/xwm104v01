@@ -15,13 +15,14 @@ module coeff_twdl_CTA #(parameter
   	input [20-1:0] twdl_quotient,
   	input [12-1:0] twdl_remainder,
 
-	output signed [wDataOut-1:0] dout_real,
-	output signed [wDataOut-1:0] dout_imag
+	output signed [wDataOut-1:0] dout_real [0:3],
+	output signed [wDataOut-1:0] dout_imag [0:3]
 );
 
 // logic [31:0] quotient, quotient_round;
 logic [20-1:0] quotient;
-logic signed [wDataOut-1:0]  cosine, sine;
+logic signed [wDataOut-1:0]  cosine [0:3];
+logic signed [wDataOut-1:0]  sine [0:3];
 logic [wDataIn-1:0]  remainder;
 
 // divider_pipe0  #(
@@ -96,10 +97,62 @@ assign remainder_remain = (remainder_temp < demoninator)? remainder_temp : remai
 // localparam An = 32000/1.647;
 // localparam An = 16384/1.647;
 logic [wDataOut-1:0]  xin = An;
-CORDIC
-cordic_inst(clk, cosine, sine, xin, 16'd0, quotient);
 
-assign dout_real = cosine;
-assign dout_imag = - sine;
+logic [20-1:0] quotient_r [0:3];
+always@(posedge clk) begin
+	if (!rst_n) begin
+		quotient_r[0] <= 0;
+		quotient_r[1] <= 0;
+		quotient_r[2] <= 0;
+		quotient_r[3] <= 0;
+	end
+	else begin
+		quotient_r[0] <= quotient;
+		quotient_r[1] <= quotient + quotient;
+		quotient_r[2] <= quotient + {quotient,1'b0};
+		quotient_r[3] <= {quotient,1'b0} + {quotient,1'b0};
+	end
+end
+
+
+  // Generate table of atan values
+  logic signed [20-1:0] atan_table [0:30];
+ 
+  assign atan_table[00] = 'b00100000000000000000; // 45.000 degrees -> atan(2^0)
+  assign atan_table[01] = 'b00010010111001000000; // 26.565 degrees -> atan(2^-1)
+  assign atan_table[02] = 'b00001001111110110011; // 14.036 degrees -> atan(2^-2)
+  assign atan_table[03] = 'b00000101000100010001; // atan(2^-3)
+  assign atan_table[04] = 'b00000010100010110000;
+  assign atan_table[05] = 'b00000001010001011101;
+  assign atan_table[06] = 'b00000000101000101111;
+  assign atan_table[07] = 'b00000000010100010111;
+  assign atan_table[08] = 'b00000000001010001011;
+  assign atan_table[09] = 'b00000000000101000101;
+  assign atan_table[10] = 'b00000000000010100010;
+  assign atan_table[11] = 'b00000000000001010001;
+  assign atan_table[12] = 'b00000000000000101000;
+  assign atan_table[13] = 'b00000000000000010100;
+  assign atan_table[14] = 'b00000000000000001010;
+  assign atan_table[15] = 'b00000000000000000101;
+  assign atan_table[16] = 'b00000000000000000010;
+  assign atan_table[17] = 'b00000000000000000001;
+
+CORDIC
+cordic_inst(clk, cosine[0], sine[0], xin, 16'd0, quotient_r[0], atan_table);
+CORDIC
+cordic_inst1(clk, cosine[1], sine[1], xin, 16'd0, quotient_r[1], atan_table);
+CORDIC
+cordic_inst2(clk, cosine[2], sine[2], xin, 16'd0, quotient_r[2], atan_table);
+CORDIC
+cordic_inst3(clk, cosine[3], sine[3], xin, 16'd0, quotient_r[3], atan_table);
+
+assign dout_real[0] = cosine[0];
+assign dout_imag[0] = - sine[0];
+assign dout_real[1] = cosine[1];
+assign dout_imag[1] = - sine[1];
+assign dout_real[2] = cosine[2];
+assign dout_imag[2] = - sine[2];
+assign dout_real[3] = cosine[3];
+assign dout_imag[3] = - sine[3];
 
 endmodule
