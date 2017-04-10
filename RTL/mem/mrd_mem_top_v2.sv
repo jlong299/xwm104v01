@@ -240,7 +240,7 @@ always@(posedge clk) begin
 end
 always@(posedge clk) out_data.exp <= in_rdx2345_data.exp;
 
-logic twdl_sop_sink, twdl_sop_rd, twdl_sop_rd_2;
+logic twdl_sop_sink, twdl_sop_rd;
 //------------------------------------------------
 //------------------ 1st stage: Sink -------------
 //------------------------------------------------
@@ -290,52 +290,9 @@ mrd_FSMrd_rd_inst (
 	out_rdx2345_data,
 
 	rd_end,
-	twdl_sop_rd,
-	twdl_sop_rd_2
+	twdl_sop_rd
 );
-// assign out_rdx2345_data.twdl_sop = twdl_sop_rd;
-logic twdl_sop_temp;
-assign twdl_sop_temp = twdl_sop_sink | twdl_sop_rd_2;
-assign out_rdx2345_data.twdl_sop = twdl_sop_sink | twdl_sop_rd_2;
 
-logic [2:0] cnt_twdlStage;
-always@(posedge clk) begin
-	if (!rst_n) begin
-		out_rdx2345_data.twdl_numrtr_1 <= 0;
-	    out_rdx2345_data.twdl_demontr <= 0;
-	    out_rdx2345_data.quotient <= 0;
-	    out_rdx2345_data.remainder <= 0;
-	    cnt_twdlStage <= 0;
-	end
-	else begin
-		if (fsm==Idle && fsm_r!=Idle) begin
-			out_rdx2345_data.twdl_numrtr_1 <= 0;
-			out_rdx2345_data.twdl_demontr <= 0;
-			out_rdx2345_data.quotient <= 0;
-			out_rdx2345_data.remainder <= 0;
-			cnt_twdlStage <= 0;
-		end
-		else begin
-			if (out_rdx2345_data.twdl_sop) begin
-				if (cnt_twdlStage==3'd5)
-					out_rdx2345_data.twdl_numrtr_1 <= 0;
-				else
-					out_rdx2345_data.twdl_numrtr_1 <= ctrl.twdl_demontr[cnt_twdlStage+3'd1];
-				out_rdx2345_data.twdl_demontr <= ctrl.twdl_demontr[cnt_twdlStage];
-				out_rdx2345_data.quotient <= ctrl.quotient[cnt_twdlStage];
-				out_rdx2345_data.remainder <= ctrl.remainder[cnt_twdlStage];
-				cnt_twdlStage <= (cnt_twdlStage==3'd5)? 3'd5 : cnt_twdlStage+3'd1;
-			end
-			else begin
-				out_rdx2345_data.twdl_numrtr_1 <= out_rdx2345_data.twdl_numrtr_1;
-				out_rdx2345_data.twdl_demontr <= out_rdx2345_data.twdl_demontr;
-				out_rdx2345_data.quotient <= out_rdx2345_data.quotient;
-				out_rdx2345_data.remainder <= out_rdx2345_data.remainder;
-				cnt_twdlStage <= cnt_twdlStage;
-			end
-		end
-	end
-end
 
 //------------------------------------------------
 //------------------ 3rd stage: Write ------------
@@ -389,6 +346,51 @@ mrd_FSMsource_inst (
 	bank_index_source,
 	source_end
 );
+
+//-----------------------------------------------------------------------
+//----------  Parameters to calculate twiddle factors --------
+//----------  twdl_sop indicates when to start to calc twiddle factors --
+//-----------------------------------------------------------------------
+assign out_rdx2345_data.twdl_sop = twdl_sop_sink | twdl_sop_rd;
+
+logic [2:0] cnt_twdlStage;
+always@(posedge clk) begin
+	if (!rst_n) begin
+		out_rdx2345_data.twdl_numrtr <= 0;
+	    out_rdx2345_data.twdl_demontr <= 0;
+	    out_rdx2345_data.twdl_quotient <= 0;
+	    out_rdx2345_data.twdl_remainder <= 0;
+	    cnt_twdlStage <= 0;
+	end
+	else begin
+		if (fsm==Idle && fsm_r!=Idle) begin
+			out_rdx2345_data.twdl_numrtr <= 0;
+			out_rdx2345_data.twdl_demontr <= 0;
+			out_rdx2345_data.twdl_quotient <= 0;
+			out_rdx2345_data.twdl_remainder <= 0;
+			cnt_twdlStage <= 0;
+		end
+		else begin
+			if (out_rdx2345_data.twdl_sop) begin
+				if (cnt_twdlStage==3'd5)
+					out_rdx2345_data.twdl_numrtr <= 0;
+				else
+					out_rdx2345_data.twdl_numrtr <= ctrl.twdl_demontr[cnt_twdlStage+3'd1];
+				out_rdx2345_data.twdl_demontr <= ctrl.twdl_demontr[cnt_twdlStage];
+				out_rdx2345_data.twdl_quotient <= ctrl.quotient[cnt_twdlStage];
+				out_rdx2345_data.twdl_remainder <= ctrl.remainder[cnt_twdlStage];
+				cnt_twdlStage <= (cnt_twdlStage==3'd5)? 3'd5 : cnt_twdlStage+3'd1;
+			end
+			else begin
+				out_rdx2345_data.twdl_numrtr <= out_rdx2345_data.twdl_numrtr;
+				out_rdx2345_data.twdl_demontr <= out_rdx2345_data.twdl_demontr;
+				out_rdx2345_data.twdl_quotient <= out_rdx2345_data.twdl_quotient;
+				out_rdx2345_data.twdl_remainder <= out_rdx2345_data.twdl_remainder;
+				cnt_twdlStage <= cnt_twdlStage;
+			end
+		end
+	end
+end
 
 
 endmodule

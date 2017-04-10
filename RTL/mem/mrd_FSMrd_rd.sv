@@ -22,8 +22,7 @@ module mrd_FSMrd_rd #(parameter
 	mrd_rdx2345_if out_rdx2345_data,
 
 	output rd_end,
-	output logic twdl_sop_rd,
-	output logic twdl_sop_rd_2
+	output logic twdl_sop_rd
 );
 // parameter Idle = 3'd0, Sink = 3'd1, Wait_to_rd = 3'd2,
 //   			Rd = 3'd3,  Wait_wr_end = 3'd4,  Source = 3'd5;
@@ -54,7 +53,7 @@ begin
 	begin
 		rden_r <= 0;
 		cnt_FSMrd <= 0;
-		twdl_sop_rd_2 <= 0;
+		twdl_sop_rd <= 0;
 		cnt_FSMrd_2 <= 0;
 	end
 	else
@@ -77,7 +76,7 @@ begin
 		else
 			cnt_FSMrd_2 <= 0;
 			
-		twdl_sop_rd_2 <= (cnt_FSMrd_2==cnt_rd_stop+12'd16);
+		twdl_sop_rd <= (cnt_FSMrd_2==cnt_rd_stop+12'd16);
 	end
 end
 
@@ -228,67 +227,6 @@ end
 assign out_rdx2345_data.valid = rden_r[in_dly-1];
 assign out_rdx2345_data.bank_index = bank_index_rd_rr;
 assign out_rdx2345_data.bank_addr = bank_addr_rd_rr;
-// assign twdl_sop_rd = (~rden_r[in_dly-3]) & rden_r[in_dly-4];
-assign twdl_sop_rd = (~rden_r[in_dly-4]) & rden_r[in_dly-5];
-
-// always@(posedge clk) begin
-// 		out_rdx2345_data.twdl_numrtr[0] <= twdl_numrtr_r0[0];
-// 		out_rdx2345_data.twdl_numrtr[1] <= twdl_numrtr_r0[1];
-// 		out_rdx2345_data.twdl_numrtr[4] <= twdl_numrtr_r0[4];
-// 	if (cnt_stage == stage_of_rdx2) begin
-// 		out_rdx2345_data.twdl_numrtr[2] <= twdl_numrtr_r0[0];
-// 		out_rdx2345_data.twdl_numrtr[3] <= twdl_numrtr_r0[1];
-// 	end
-// 	else begin
-// 		out_rdx2345_data.twdl_numrtr[2] <= twdl_numrtr_r0[2];
-// 		out_rdx2345_data.twdl_numrtr[3] <= twdl_numrtr_r0[3];
-// 	end
-// end
-
-// assign	out_rdx2345_data.twdl_numrtr_1 = twdl_numrtr_1;
-// assign	out_rdx2345_data.twdl_numrtr_1 = (cnt_stage < 3'd5)? twdl_demontr[cnt_stage+3'd1] : twdl_demontr[cnt_stage];
-
-// always@(posedge clk) out_rdx2345_data.twdl_demontr <= 
-//                          twdl_demontr[cnt_stage];
-
-// logic [2:0] cnt_twdlStage;
-// always@(posedge clk) begin
-// 	if (!rst_n) begin
-// 		out_rdx2345_data.twdl_numrtr_1 <= 0;
-// 	    out_rdx2345_data.twdl_demontr <= 0;
-// 	    out_rdx2345_data.quotient <= 0;
-// 	    out_rdx2345_data.remainder <= 0;
-// 	    cnt_twdlStage <= 0;
-// 	end
-// 	else begin
-// 		if (fsm==Idle && fsm_r!=Idle) begin
-// 			out_rdx2345_data.twdl_numrtr_1 <= 0;
-// 			out_rdx2345_data.twdl_demontr <= 0;
-// 			out_rdx2345_data.quotient <= 0;
-// 			out_rdx2345_data.remainder <= 0;
-// 			cnt_twdlStage <= 0;
-// 		end
-// 		else begin
-// 			if (twdl_sop_rd) begin
-// 				if (cnt_twdlStage==3'd5)
-// 					out_rdx2345_data.twdl_numrtr_1 <= 0;
-// 				else
-// 					out_rdx2345_data.twdl_numrtr_1 <= ctrl.twdl_demontr[cnt_twdlStage+3'd1];
-// 				out_rdx2345_data.twdl_demontr <= ctrl.twdl_demontr[cnt_twdlStage];
-// 				out_rdx2345_data.quotient <= ctrl.quotient[cnt_twdlStage];
-// 				out_rdx2345_data.remainder <= ctrl.remainder[cnt_twdlStage];
-// 				cnt_twdlStage <= cnt_twdlStage+3'd1;
-// 			end
-// 			else begin
-// 				out_rdx2345_data.twdl_numrtr_1 <= out_rdx2345_data.twdl_numrtr_1;
-// 				out_rdx2345_data.twdl_demontr <= out_rdx2345_data.twdl_demontr;
-// 				out_rdx2345_data.quotient <= out_rdx2345_data.quotient;
-// 				out_rdx2345_data.remainder <= out_rdx2345_data.remainder;
-// 				cnt_twdlStage <= cnt_twdlStage;
-// 			end
-// 		end
-// 	end
-// end
 
 always@(posedge clk) out_rdx2345_data.factor <= (fsm==Rd || fsm==Wait_wr_end)?
                                       Nf[cnt_stage] : 3'd1 ;

@@ -12,8 +12,8 @@ localparam  wDFTout = 18;
 localparam  wDFTin = 18;
 
 // localparam  delay_twdl = 25;
-localparam  delay_twdl = 6-3;
-localparam  delay_twdl_42 = 6-3+3;
+localparam  delay_twdl = 3;
+localparam  delay_twdl_42 = 3+3;
 
 // logic [0:4][2:0]  bank_index_r [0 : delay_twdl-1];
 // logic [0:4][7:0]  bank_addr_r [0 : delay_twdl-1];
@@ -263,10 +263,10 @@ twdl (
 
 	.factor  (from_mem.factor),
 	.twdl_sop (from_mem.twdl_sop),
-	.twdl_numrtr_1  (from_mem.twdl_numrtr_1),
+	.twdl_numrtr  (from_mem.twdl_numrtr),
 	.twdl_demontr  (from_mem.twdl_demontr),
-	.twdl_quotient (from_mem.quotient),
-	.twdl_remainder (from_mem.remainder),
+	.twdl_quotient (from_mem.twdl_quotient),
+	.twdl_remainder (from_mem.twdl_remainder),
 	.inverse (inverse_r),
 
 	.in_val  (dft_val),
