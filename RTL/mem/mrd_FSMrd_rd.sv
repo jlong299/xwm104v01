@@ -72,12 +72,12 @@ begin
 		if (fsm == Rd && fsm_r != Rd)
 			cnt_FSMrd_2 <= 12'd1;
 		else if (cnt_FSMrd_2 != 12'd0)
-			cnt_FSMrd_2 <= (cnt_FSMrd_2==cnt_rd_stop+12'd18) ? 
+			cnt_FSMrd_2 <= (cnt_FSMrd_2==cnt_rd_stop+12'd12) ? 
 		                       12'd0 : cnt_FSMrd_2 + 12'd1;
 		else
 			cnt_FSMrd_2 <= 0;
 			
-		twdl_sop_rd_2 <= (cnt_FSMrd_2==cnt_rd_stop+12'd18);
+		twdl_sop_rd_2 <= (cnt_FSMrd_2==cnt_rd_stop+12'd12);
 	end
 end
 
