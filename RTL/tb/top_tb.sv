@@ -274,7 +274,7 @@ begin
 
 			cnt_latency <= (sink_sop) ? 16'd0 : cnt_latency + 16'd1;
 			if (source_eop) begin 
-				$fwrite(wr_file_latency, "%d %d\n", cnt_latency, latency_xlx[cnt_xlx]);
+				$fwrite(wr_file_latency, "%d %d\n", cnt_latency+16'd1, latency_xlx[cnt_xlx]);
 				cnt_xlx <= cnt_xlx + 1'd1;
 			end
 	end

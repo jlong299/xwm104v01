@@ -101,6 +101,8 @@ begin
 	else	valid_r <= {valid_r[delay_twdl_42-2:0], in_val};
 end
 
+logic signed [15:0] tw_real_1, tw_imag_1, tw_real_3, tw_imag_3;
+
 localparam An = 16384;
 localparam An_adj = 16384/1.647;
 
@@ -119,9 +121,48 @@ coeff_twdl_CTA_inst	(
 	.twdl_quotient (twdl_quotient),
 	.twdl_remainder (twdl_remainder),
 
-	.dout_real (tw_real[1:4]),
-	.dout_imag (tw_imag[1:4])
+	.dout_real_1 (tw_real_1),
+	.dout_imag_1 (tw_imag_1),
+	.dout_real_3 (tw_real_3),
+	.dout_imag_3 (tw_imag_3)
 );
+
+//-----------------------------------------------------
+// tw_real_2 = tw_real_1*tw_real_3 + tw_imag_1*tw_imag_3;
+// tw_imag_2 = -tw_imag_1*tw_real_3 + tw_real_1*tw_imag_3;
+// tw_real_4 = tw_real_1*tw_real_3 - tw_imag_1*tw_imag_3;
+// tw_imag_4 = tw_imag_1*tw_real_3 + tw_real_1*tw_imag_3;
+//-----------------------------------------------------
+logic signed [29:0] t_r_2 , t_i_2, t_r_4, t_i_4;
+logic signed [29:0] r1_r3, i1_i3, i1_r3, r1_i3;
+logic signed [15:0] tw_real_1_r, tw_imag_1_r, tw_real_3_r, tw_imag_3_r;
+
+always@(posedge clk) begin
+	r1_r3 <= tw_real_1*tw_real_3;
+	i1_i3 <= tw_imag_1*tw_imag_3;
+	i1_r3 <= tw_imag_1*tw_real_3;
+	r1_i3 <= tw_real_1*tw_imag_3;
+
+	t_r_2 <= r1_r3 + i1_i3;
+	t_i_2 <= -i1_r3 + r1_i3;
+	t_r_4 <= r1_r3 - i1_i3;
+	t_i_4 <= i1_r3 + r1_i3;
+
+	tw_real_1_r <= tw_real_1;
+	tw_imag_1_r <= tw_imag_1;
+	tw_real_3_r <= tw_real_3;
+	tw_imag_3_r <= tw_imag_3;
+	tw_real[1] <= tw_real_1_r;
+	tw_imag[1] <= tw_imag_1_r;
+	tw_real[3] <= tw_real_3_r;
+	tw_imag[3] <= tw_imag_3_r;
+end
+
+assign tw_real[2] = t_r_2[29:14];
+assign tw_imag[2] = t_i_2[29:14];
+assign tw_real[4] = t_r_4[29:14];
+assign tw_imag[4] = t_i_4[29:14];
+
 
 always@(posedge clk) begin
 	if (!rst_n) begin

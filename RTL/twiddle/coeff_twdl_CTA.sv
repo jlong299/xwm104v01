@@ -15,8 +15,10 @@ module coeff_twdl_CTA #(parameter
   	input [20-1:0] twdl_quotient,
   	input [12-1:0] twdl_remainder,
 
-	output signed [wDataOut-1:0] dout_real [0:3],
-	output signed [wDataOut-1:0] dout_imag [0:3]
+	output signed [wDataOut-1:0] dout_real_1,
+	output signed [wDataOut-1:0] dout_imag_1,
+	output signed [wDataOut-1:0] dout_real_3,
+	output signed [wDataOut-1:0] dout_imag_3
 );
 
 // logic [31:0] quotient, quotient_round;
@@ -102,15 +104,15 @@ logic [20-1:0] quotient_r [0:3];
 always@(posedge clk) begin
 	if (!rst_n) begin
 		quotient_r[0] <= 0;
-		quotient_r[1] <= 0;
+		//quotient_r[1] <= 0;
 		quotient_r[2] <= 0;
-		quotient_r[3] <= 0;
+		//quotient_r[3] <= 0;
 	end
 	else begin
 		quotient_r[0] <= quotient;
-		quotient_r[1] <= quotient + quotient;
+		//quotient_r[1] <= quotient + quotient;
 		quotient_r[2] <= quotient + {quotient,1'b0};
-		quotient_r[3] <= {quotient,1'b0} + {quotient,1'b0};
+		//quotient_r[3] <= {quotient,1'b0} + {quotient,1'b0};
 	end
 end
 
@@ -139,20 +141,13 @@ end
 
 CORDIC
 cordic_inst(clk, cosine[0], sine[0], xin, 16'd0, quotient_r[0], atan_table);
-CORDIC
-cordic_inst1(clk, cosine[1], sine[1], xin, 16'd0, quotient_r[1], atan_table);
+
 CORDIC
 cordic_inst2(clk, cosine[2], sine[2], xin, 16'd0, quotient_r[2], atan_table);
-CORDIC
-cordic_inst3(clk, cosine[3], sine[3], xin, 16'd0, quotient_r[3], atan_table);
 
-assign dout_real[0] = cosine[0];
-assign dout_imag[0] = - sine[0];
-assign dout_real[1] = cosine[1];
-assign dout_imag[1] = - sine[1];
-assign dout_real[2] = cosine[2];
-assign dout_imag[2] = - sine[2];
-assign dout_real[3] = cosine[3];
-assign dout_imag[3] = - sine[3];
+assign dout_real_1= cosine[0];
+assign dout_imag_1 = - sine[0];
+assign dout_real_3 = cosine[2];
+assign dout_imag_3 = - sine[2];
 
 endmodule
