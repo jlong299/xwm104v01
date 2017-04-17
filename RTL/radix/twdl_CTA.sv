@@ -133,15 +133,45 @@ coeff_twdl_CTA_inst	(
 // tw_real_4 = tw_real_1*tw_real_3 - tw_imag_1*tw_imag_3;
 // tw_imag_4 = tw_imag_1*tw_real_3 + tw_real_1*tw_imag_3;
 //-----------------------------------------------------
-logic signed [29:0] t_r_2 , t_i_2, t_r_4, t_i_4;
-logic signed [29:0] r1_r3, i1_i3, i1_r3, r1_i3;
+logic signed [31:0] t_r_2 , t_i_2, t_r_4, t_i_4;
+logic signed [31:0] r1_r3, i1_i3, i1_r3, r1_i3;
 logic signed [15:0] tw_real_1_r, tw_imag_1_r, tw_real_3_r, tw_imag_3_r;
+logic signed [15:0] tw_real_1_r2, tw_imag_1_r2, tw_real_3_r2, tw_imag_3_r2;
+
+// Pipeline : 2    20170417
+lpm_mult_16_mrd u0 (
+	.dataa  (tw_real_1),  //  mult_input.dataa
+	.datab  (tw_real_3),  //            .datab
+	.clock  (clk),  //            .clock
+	.result (r1_r3)  // mult_output.result
+);
+
+lpm_mult_16_mrd u1 (
+	.dataa  (tw_imag_1),  //  mult_input.dataa
+	.datab  (tw_imag_3),  //            .datab
+	.clock  (clk),  //            .clock
+	.result (i1_i3)  // mult_output.result
+);
+
+lpm_mult_16_mrd u2 (
+	.dataa  (tw_imag_1),  //  mult_input.dataa
+	.datab  (tw_real_3),  //            .datab
+	.clock  (clk),  //            .clock
+	.result (i1_r3)  // mult_output.result
+);
+
+lpm_mult_16_mrd u3 (
+	.dataa  (tw_real_1),  //  mult_input.dataa
+	.datab  (tw_imag_3),  //            .datab
+	.clock  (clk),  //            .clock
+	.result (r1_i3)  // mult_output.result
+);
 
 always@(posedge clk) begin
-	r1_r3 <= tw_real_1*tw_real_3;
-	i1_i3 <= tw_imag_1*tw_imag_3;
-	i1_r3 <= tw_imag_1*tw_real_3;
-	r1_i3 <= tw_real_1*tw_imag_3;
+	// r1_r3 <= tw_real_1*tw_real_3;
+	// i1_i3 <= tw_imag_1*tw_imag_3;
+	// i1_r3 <= tw_imag_1*tw_real_3;
+	// r1_i3 <= tw_real_1*tw_imag_3;
 
 	t_r_2 <= r1_r3 + i1_i3;
 	t_i_2 <= -i1_r3 + r1_i3;
@@ -152,10 +182,14 @@ always@(posedge clk) begin
 	tw_imag_1_r <= tw_imag_1;
 	tw_real_3_r <= tw_real_3;
 	tw_imag_3_r <= tw_imag_3;
-	tw_real[1] <= tw_real_1_r;
-	tw_imag[1] <= tw_imag_1_r;
-	tw_real[3] <= tw_real_3_r;
-	tw_imag[3] <= tw_imag_3_r;
+	tw_real_1_r2 <= tw_real_1_r;
+	tw_imag_1_r2 <= tw_imag_1_r;
+	tw_real_3_r2 <= tw_real_3_r;
+	tw_imag_3_r2 <= tw_imag_3_r;
+	tw_real[1] <= tw_real_1_r2;
+	tw_imag[1] <= tw_imag_1_r2;
+	tw_real[3] <= tw_real_3_r2;
+	tw_imag[3] <= tw_imag_3_r2;
 end
 
 assign tw_real[2] = t_r_2[29:14];
