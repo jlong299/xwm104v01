@@ -1,0 +1,48 @@
+set_global_assignment -entity "altmult_complex_18_mrd" -library "altmult_complex_18_mrd" -name IP_TOOL_NAME "Qsys"
+set_global_assignment -entity "altmult_complex_18_mrd" -library "altmult_complex_18_mrd" -name IP_TOOL_VERSION "15.1"
+set_global_assignment -entity "altmult_complex_18_mrd" -library "altmult_complex_18_mrd" -name IP_TOOL_ENV "Qsys"
+set_global_assignment -library "altmult_complex_18_mrd" -name SOPCINFO_FILE [file join $::quartus(qip_path) "../altmult_complex_18_mrd.sopcinfo"]
+set_global_assignment -entity "altmult_complex_18_mrd" -library "altmult_complex_18_mrd" -name SLD_INFO "QSYS_NAME altmult_complex_18_mrd HAS_SOPCINFO 1 GENERATION_ID 1492414402"
+set_global_assignment -library "altmult_complex_18_mrd" -name MISC_FILE [file join $::quartus(qip_path) "altmult_complex_18_mrd.cmp"]
+set_global_assignment -library "altmult_complex_18_mrd" -name SLD_FILE [file join $::quartus(qip_path) "altmult_complex_18_mrd.debuginfo"]
+set_global_assignment -entity "altmult_complex_18_mrd" -library "altmult_complex_18_mrd" -name IP_TARGETED_DEVICE_FAMILY "Arria 10"
+set_global_assignment -entity "altmult_complex_18_mrd" -library "altmult_complex_18_mrd" -name IP_GENERATED_DEVICE_FAMILY "{Arria 10}"
+set_global_assignment -entity "altmult_complex_18_mrd" -library "altmult_complex_18_mrd" -name IP_QSYS_MODE "STANDALONE"
+set_global_assignment -name SYNTHESIS_ONLY_QIP ON
+set_global_assignment -library "altmult_complex_18_mrd" -name MISC_FILE [file join $::quartus(qip_path) "../altmult_complex_18_mrd.qsys"]
+set_global_assignment -entity "altmult_complex_18_mrd" -library "altmult_complex_18_mrd" -name IP_COMPONENT_NAME "YWx0bXVsdF9jb21wbGV4XzE4X21yZA=="
+set_global_assignment -entity "altmult_complex_18_mrd" -library "altmult_complex_18_mrd" -name IP_COMPONENT_DISPLAY_NAME "YWx0bXVsdF9jb21wbGV4XzE4X21yZA=="
+set_global_assignment -entity "altmult_complex_18_mrd" -library "altmult_complex_18_mrd" -name IP_COMPONENT_REPORT_HIERARCHY "On"
+set_global_assignment -entity "altmult_complex_18_mrd" -library "altmult_complex_18_mrd" -name IP_COMPONENT_INTERNAL "Off"
+set_global_assignment -entity "altmult_complex_18_mrd" -library "altmult_complex_18_mrd" -name IP_COMPONENT_VERSION "MS4w"
+set_global_assignment -entity "altmult_complex_18_mrd" -library "altmult_complex_18_mrd" -name IP_COMPONENT_PARAMETER "QVVUT19HRU5FUkFUSU9OX0lE::MTQ5MjQxNDQwMg==::QXV0byBHRU5FUkFUSU9OX0lE"
+set_global_assignment -entity "altmult_complex_18_mrd" -library "altmult_complex_18_mrd" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0VfRkFNSUxZ::QXJyaWEgMTA=::QXV0byBERVZJQ0VfRkFNSUxZ"
+set_global_assignment -entity "altmult_complex_18_mrd" -library "altmult_complex_18_mrd" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0U=::MTBBWDExNVUzRjQ1RTJTR0Uz::QXV0byBERVZJQ0U="
+set_global_assignment -entity "altmult_complex_18_mrd" -library "altmult_complex_18_mrd" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0VfU1BFRURHUkFERQ==::Mg==::QXV0byBERVZJQ0VfU1BFRURHUkFERQ=="
+set_global_assignment -entity "altmult_complex_18_mrd_altmult_complex_151_id3q2ma" -library "altmult_complex_18_mrd_altmult_complex_151" -name IP_COMPONENT_NAME "YWx0bXVsdF9jb21wbGV4XzE4X21yZF9hbHRtdWx0X2NvbXBsZXhfMTUxX2lkM3EybWE="
+set_global_assignment -entity "altmult_complex_18_mrd_altmult_complex_151_id3q2ma" -library "altmult_complex_18_mrd_altmult_complex_151" -name IP_COMPONENT_DISPLAY_NAME "QUxUTVVMVF9DT01QTEVY"
+set_global_assignment -entity "altmult_complex_18_mrd_altmult_complex_151_id3q2ma" -library "altmult_complex_18_mrd_altmult_complex_151" -name IP_COMPONENT_REPORT_HIERARCHY "Off"
+set_global_assignment -entity "altmult_complex_18_mrd_altmult_complex_151_id3q2ma" -library "altmult_complex_18_mrd_altmult_complex_151" -name IP_COMPONENT_INTERNAL "Off"
+set_global_assignment -entity "altmult_complex_18_mrd_altmult_complex_151_id3q2ma" -library "altmult_complex_18_mrd_altmult_complex_151" -name IP_COMPONENT_AUTHOR "QWx0ZXJhIENvcnBvcmF0aW9u"
+set_global_assignment -entity "altmult_complex_18_mrd_altmult_complex_151_id3q2ma" -library "altmult_complex_18_mrd_altmult_complex_151" -name IP_COMPONENT_VERSION "MTUuMQ=="
+set_global_assignment -entity "altmult_complex_18_mrd_altmult_complex_151_id3q2ma" -library "altmult_complex_18_mrd_altmult_complex_151" -name IP_COMPONENT_DESCRIPTION "VGhlIEFMVEVSQV9NVUxUX0NPTVBMRVggbWVnYWZ1bmN0aW9uIGFsbG93cyB5b3UgdG8gaW1wbGVtZW50IGEgbXVsdGlwbGllci1jb21wbGV4"
+set_global_assignment -entity "altmult_complex_18_mrd_altmult_complex_151_id3q2ma" -library "altmult_complex_18_mrd_altmult_complex_151" -name IP_COMPONENT_PARAMETER "REVWSUNFX0ZBTUlMWQ==::QXJyaWEgMTA=::RGV2aWNlIGZhbWlseQ=="
+set_global_assignment -entity "altmult_complex_18_mrd_altmult_complex_151_id3q2ma" -library "altmult_complex_18_mrd_altmult_complex_151" -name IP_COMPONENT_PARAMETER "Q0JYX0FVVE9fQkxBQ0tCT1g=::QUxM::Q0JYX0FVVE9fQkxBQ0tCT1g="
+set_global_assignment -entity "altmult_complex_18_mrd_altmult_complex_151_id3q2ma" -library "altmult_complex_18_mrd_altmult_complex_151" -name IP_COMPONENT_PARAMETER "V0lEVEhfQQ==::MTg=::SG93IHdpZGUgc2hvdWxkIHRoZSBBIGlucHV0IGJ1c2VzIGJlPw=="
+set_global_assignment -entity "altmult_complex_18_mrd_altmult_complex_151_id3q2ma" -library "altmult_complex_18_mrd_altmult_complex_151" -name IP_COMPONENT_PARAMETER "V0lEVEhfQg==::MTY=::SG93IHdpZGUgc2hvdWxkIHRoZSBCIGlucHV0IGJ1c2VzIGJlPw=="
+set_global_assignment -entity "altmult_complex_18_mrd_altmult_complex_151_id3q2ma" -library "altmult_complex_18_mrd_altmult_complex_151" -name IP_COMPONENT_PARAMETER "V0lEVEhfUkVTVUxU::MzQ=::SG93IHdpZGUgc2hvdWxkIHRoZSAncmVzdWx0JyBvdXRwdXQgYnVzIGJlPw=="
+set_global_assignment -entity "altmult_complex_18_mrd_altmult_complex_151_id3q2ma" -library "altmult_complex_18_mrd_altmult_complex_151" -name IP_COMPONENT_PARAMETER "UkVQUkVTRU5UQVRJT05fQQ==::MQ==::V2hhdCBpcyB0aGUgcmVwcmVzZW50YXRpb24gZm9ybWF0IGZvciBBIGlucHV0cz8="
+set_global_assignment -entity "altmult_complex_18_mrd_altmult_complex_151_id3q2ma" -library "altmult_complex_18_mrd_altmult_complex_151" -name IP_COMPONENT_PARAMETER "UkVQUkVTRU5UQVRJT05fQg==::MQ==::V2hhdCBpcyB0aGUgcmVwcmVzZW50YXRpb24gZm9ybWF0IGZvciBCIGlucHV0cz8="
+set_global_assignment -entity "altmult_complex_18_mrd_altmult_complex_151_id3q2ma" -library "altmult_complex_18_mrd_altmult_complex_151" -name IP_COMPONENT_PARAMETER "R1VJX0RZTkFNSUNfQ09NUExFWA==::ZmFsc2U=::RHluYW1pYyBDb21wbGV4IE1vZGU="
+set_global_assignment -entity "altmult_complex_18_mrd_altmult_complex_151_id3q2ma" -library "altmult_complex_18_mrd_altmult_complex_151" -name IP_COMPONENT_PARAMETER "SU1QTEVNRU5UQVRJT05fU1RZTEU=::QVVUTw==::V2hpY2ggaW1wbGVtZW50YXRpb24gc3R5bGUgc2hvdWxkIGJlIHVzZWQ/"
+set_global_assignment -entity "altmult_complex_18_mrd_altmult_complex_151_id3q2ma" -library "altmult_complex_18_mrd_altmult_complex_151" -name IP_COMPONENT_PARAMETER "UElQRUxJTkU=::Mg==::T3V0cHV0IGxhdGVuY3k="
+set_global_assignment -entity "altmult_complex_18_mrd_altmult_complex_151_id3q2ma" -library "altmult_complex_18_mrd_altmult_complex_151" -name IP_COMPONENT_PARAMETER "R1VJX1VTRV9BQ0xS::ZmFsc2U=::Q3JlYXRlIGFuIGFzeW5jaHJvbm91cyBDbGVhciBpbnB1dD8="
+set_global_assignment -entity "altmult_complex_18_mrd_altmult_complex_151_id3q2ma" -library "altmult_complex_18_mrd_altmult_complex_151" -name IP_COMPONENT_PARAMETER "R1VJX1VTRV9DTEtFTg==::ZmFsc2U=::Q3JlYXRlIGEgQ2xvY2sgRW5hYmxlIGlucHV0Pw=="
+
+set_global_assignment -library "altmult_complex_18_mrd" -name VERILOG_FILE [file join $::quartus(qip_path) "synth/altmult_complex_18_mrd.v"]
+set_global_assignment -library "altmult_complex_18_mrd" -name VERILOG_FILE [file join $::quartus(qip_path) "synth/altmult_complex_18_mrd_cfg.v"]
+set_global_assignment -library "altmult_complex_18_mrd_altmult_complex_151" -name VERILOG_FILE [file join $::quartus(qip_path) "altmult_complex_151/synth/altmult_complex_18_mrd_altmult_complex_151_id3q2ma.v"]
+
+set_global_assignment -entity "altmult_complex_18_mrd_altmult_complex_151_id3q2ma" -library "altmult_complex_18_mrd_altmult_complex_151" -name IP_TOOL_NAME "altmult_complex"
+set_global_assignment -entity "altmult_complex_18_mrd_altmult_complex_151_id3q2ma" -library "altmult_complex_18_mrd_altmult_complex_151" -name IP_TOOL_VERSION "15.1"
+set_global_assignment -entity "altmult_complex_18_mrd_altmult_complex_151_id3q2ma" -library "altmult_complex_18_mrd_altmult_complex_151" -name IP_TOOL_ENV "Qsys"

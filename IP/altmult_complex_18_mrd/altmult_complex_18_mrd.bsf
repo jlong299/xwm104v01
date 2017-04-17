@@ -1,0 +1,100 @@
+/*
+WARNING: Do NOT edit the input and output ports in this file in a text
+editor if you plan to continue editing the block that represents it in
+the Block Editor! File corruption is VERY likely to occur.
+*/
+/*
+Copyright (C) 1991-2015 Altera Corporation. All rights reserved.
+Your use of Altera Corporation's design tools, logic functions 
+and other software and tools, and its AMPP partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Altera Program License 
+Subscription Agreement, the Altera Quartus Prime License Agreement,
+the Altera MegaCore Function License Agreement, or other 
+applicable license agreement, including, without limitation, 
+that your use is for the sole purpose of programming logic 
+devices manufactured by Altera and sold by Altera or its 
+authorized distributors.  Please refer to the applicable 
+agreement for further details.
+*/
+(header "symbol" (version "1.1"))
+(symbol
+	(rect 0 0 336 168)
+	(text "altmult_complex_18_mrd" (rect 95 -1 195 11)(font "Arial" (font_size 10)))
+	(text "inst" (rect 8 152 20 164)(font "Arial" ))
+	(port
+		(pt 0 72)
+		(input)
+		(text "dataa_real[17..0]" (rect 0 0 64 12)(font "Arial" (font_size 8)))
+		(text "dataa_real[17..0]" (rect 4 61 106 72)(font "Arial" (font_size 8)))
+		(line (pt 0 72)(pt 96 72)(line_width 3))
+	)
+	(port
+		(pt 0 88)
+		(input)
+		(text "dataa_imag[17..0]" (rect 0 0 69 12)(font "Arial" (font_size 8)))
+		(text "dataa_imag[17..0]" (rect 4 77 106 88)(font "Arial" (font_size 8)))
+		(line (pt 0 88)(pt 96 88)(line_width 3))
+	)
+	(port
+		(pt 0 104)
+		(input)
+		(text "datab_real[15..0]" (rect 0 0 64 12)(font "Arial" (font_size 8)))
+		(text "datab_real[15..0]" (rect 4 93 106 104)(font "Arial" (font_size 8)))
+		(line (pt 0 104)(pt 96 104)(line_width 3))
+	)
+	(port
+		(pt 0 120)
+		(input)
+		(text "datab_imag[15..0]" (rect 0 0 69 12)(font "Arial" (font_size 8)))
+		(text "datab_imag[15..0]" (rect 4 109 106 120)(font "Arial" (font_size 8)))
+		(line (pt 0 120)(pt 96 120)(line_width 3))
+	)
+	(port
+		(pt 0 136)
+		(input)
+		(text "clock" (rect 0 0 20 12)(font "Arial" (font_size 8)))
+		(text "clock" (rect 4 125 34 136)(font "Arial" (font_size 8)))
+		(line (pt 0 136)(pt 96 136)(line_width 1))
+	)
+	(port
+		(pt 336 72)
+		(output)
+		(text "result_real[33..0]" (rect 0 0 66 12)(font "Arial" (font_size 8)))
+		(text "result_real[33..0]" (rect 252 61 360 72)(font "Arial" (font_size 8)))
+		(line (pt 336 72)(pt 224 72)(line_width 3))
+	)
+	(port
+		(pt 336 88)
+		(output)
+		(text "result_imag[33..0]" (rect 0 0 70 12)(font "Arial" (font_size 8)))
+		(text "result_imag[33..0]" (rect 248 77 356 88)(font "Arial" (font_size 8)))
+		(line (pt 336 88)(pt 224 88)(line_width 3))
+	)
+	(drawing
+		(text "complex_input" (rect 14 43 106 99)(font "Arial" (color 128 0 0)(font_size 9)))
+		(text "dataa_real" (rect 101 67 262 144)(font "Arial" (color 0 0 0)))
+		(text "dataa_imag" (rect 101 83 262 176)(font "Arial" (color 0 0 0)))
+		(text "datab_real" (rect 101 99 262 208)(font "Arial" (color 0 0 0)))
+		(text "datab_imag" (rect 101 115 262 240)(font "Arial" (color 0 0 0)))
+		(text "clk" (rect 101 131 220 272)(font "Arial" (color 0 0 0)))
+		(text "complex_output" (rect 225 43 534 99)(font "Arial" (color 128 0 0)(font_size 9)))
+		(text "result_real" (rect 175 67 416 144)(font "Arial" (color 0 0 0)))
+		(text "result_imag" (rect 171 83 408 176)(font "Arial" (color 0 0 0)))
+		(text " system " (rect 301 152 650 314)(font "Arial" ))
+		(line (pt 96 32)(pt 224 32)(line_width 1))
+		(line (pt 224 32)(pt 224 152)(line_width 1))
+		(line (pt 96 152)(pt 224 152)(line_width 1))
+		(line (pt 96 32)(pt 96 152)(line_width 1))
+		(line (pt 97 52)(pt 97 140)(line_width 1))
+		(line (pt 98 52)(pt 98 140)(line_width 1))
+		(line (pt 223 52)(pt 223 92)(line_width 1))
+		(line (pt 222 52)(pt 222 92)(line_width 1))
+		(line (pt 0 0)(pt 336 0)(line_width 1))
+		(line (pt 336 0)(pt 336 168)(line_width 1))
+		(line (pt 0 168)(pt 336 168)(line_width 1))
+		(line (pt 0 0)(pt 0 168)(line_width 1))
+	)
+)

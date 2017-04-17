@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pinplan
+ variation_name="altmult_complex_0"
+ megafunction_name="ALTMULT_COMPLEX"
+ intended_family="Arria 10"
+ specifies="all_ports">
+ <global>
+  <pin name="dataa_real[17..0]" direction="input" scope="external" />
+  <pin name="dataa_imag[17..0]" direction="input" scope="external" />
+  <pin name="datab_real[15..0]" direction="input" scope="external" />
+  <pin name="datab_imag[15..0]" direction="input" scope="external" />
+  <pin name="clock" direction="input" scope="external" />
+  <pin name="result_real[33..0]" direction="output" scope="external" />
+  <pin name="result_imag[33..0]" direction="output" scope="external" />
+ </global>
+</pinplan>

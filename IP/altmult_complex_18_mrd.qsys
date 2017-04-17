@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<system name="$${FILENAME}">
+ <component
+   name="$${FILENAME}"
+   displayName="$${FILENAME}"
+   version="1.0"
+   description=""
+   tags="INTERNAL_COMPONENT=true"
+   categories="System" />
+ <parameter name="bonusData"><![CDATA[bonusData 
+{
+   element altmult_complex_0
+   {
+      datum _sortIndex
+      {
+         value = "0";
+         type = "int";
+      }
+   }
+}
+]]></parameter>
+ <parameter name="clockCrossingAdapter" value="HANDSHAKE" />
+ <parameter name="device" value="10AX115U3F45E2SGE3" />
+ <parameter name="deviceFamily" value="Arria 10" />
+ <parameter name="deviceSpeedGrade" value="2" />
+ <parameter name="fabricMode" value="QSYS" />
+ <parameter name="generateLegacySim" value="false" />
+ <parameter name="generationId" value="0" />
+ <parameter name="globalResetBus" value="false" />
+ <parameter name="hdlLanguage" value="VERILOG" />
+ <parameter name="hideFromIPCatalog" value="true" />
+ <parameter name="lockedInterfaceDefinition" value="" />
+ <parameter name="maxAdditionalLatency" value="1" />
+ <parameter name="projectName" value="" />
+ <parameter name="sopcBorderPoints" value="false" />
+ <parameter name="systemHash" value="0" />
+ <parameter name="testBenchDutName" value="" />
+ <parameter name="timeStamp" value="0" />
+ <parameter name="useTestBenchNamingPattern" value="false" />
+ <instanceScript></instanceScript>
+ <interface
+   name="complex_input"
+   internal="altmult_complex_0.complex_input"
+   type="conduit"
+   dir="end">
+  <port name="dataa_real" internal="dataa_real" />
+  <port name="dataa_imag" internal="dataa_imag" />
+  <port name="datab_real" internal="datab_real" />
+  <port name="datab_imag" internal="datab_imag" />
+  <port name="clock" internal="clock" />
+ </interface>
+ <interface
+   name="complex_output"
+   internal="altmult_complex_0.complex_output"
+   type="conduit"
+   dir="end">
+  <port name="result_real" internal="result_real" />
+  <port name="result_imag" internal="result_imag" />
+ </interface>
+ <module
+   name="altmult_complex_0"
+   kind="altmult_complex"
+   version="15.1"
+   enabled="1"
+   autoexport="1">
+  <parameter name="CBX_AUTO_BLACKBOX" value="ALL" />
+  <parameter name="DEVICE_FAMILY" value="Arria 10" />
+  <parameter name="GUI_DYNAMIC_COMPLEX" value="false" />
+  <parameter name="GUI_USE_ACLR" value="false" />
+  <parameter name="GUI_USE_CLKEN" value="false" />
+  <parameter name="IMPLEMENTATION_STYLE" value="AUTO" />
+  <parameter name="PIPELINE" value="2" />
+  <parameter name="REPRESENTATION_A" value="1" />
+  <parameter name="REPRESENTATION_B" value="1" />
+  <parameter name="WIDTH_A" value="18" />
+  <parameter name="WIDTH_B" value="16" />
+  <parameter name="WIDTH_RESULT" value="34" />
+ </module>
+ <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
+ <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
+ <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />
+ <interconnectRequirement for="$system" name="qsys_mm.maxAdditionalLatency" value="1" />
+</system>

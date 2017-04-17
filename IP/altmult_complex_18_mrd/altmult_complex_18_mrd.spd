@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simPackage>
+ <file
+   path="altmult_complex_151/sim/altmult_complex_18_mrd_altmult_complex_151_id3q2ma.v"
+   type="VERILOG"
+   library="altmult_complex_18_mrd_altmult_complex_151" />
+ <file
+   path="sim/altmult_complex_18_mrd.v"
+   type="VERILOG"
+   hasInlineConfiguration="true" />
+ <topLevel name="altmult_complex_18_mrd" />
+ <deviceFamily name="arria10" />
+</simPackage>

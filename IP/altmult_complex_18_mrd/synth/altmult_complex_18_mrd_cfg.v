@@ -1,0 +1,5 @@
+config altmult_complex_18_mrd_cfg;
+		design altmult_complex_18_mrd;
+		instance altmult_complex_18_mrd.altmult_complex_0 use altmult_complex_18_mrd_altmult_complex_151.altmult_complex_18_mrd_altmult_complex_151_id3q2ma;
+endconfig
+

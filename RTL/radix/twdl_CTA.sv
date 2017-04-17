@@ -252,6 +252,46 @@ begin
 	end
 end
 
+// altmult_complex_18_mrd u20 (
+// 		.dataa_real  (d_real_r[1]),  //  complex_input.dataa_real
+// 		.dataa_imag  (d_imag_r[1]),  //               .dataa_imag
+// 		.datab_real  (tw_real_t[1]),  //               .datab_real
+// 		.datab_imag  (tw_imag_t[1]),  //               .datab_imag
+// 		.clock       (clk),       //               .clk
+// 		.result_real (dout_real_t[1]), // complex_output.result_real
+// 		.result_imag (dout_imag_t[1])  //               .result_imag
+// 	);
+// altmult_complex_18_mrd u21 (
+// 		.dataa_real  (d_real_r[2]),  //  complex_input.dataa_real
+// 		.dataa_imag  (d_imag_r[2]),  //               .dataa_imag
+// 		.datab_real  (tw_real_t[2]),  //               .datab_real
+// 		.datab_imag  (tw_imag_t[2]),  //               .datab_imag
+// 		.clock       (clk),       //               .clk
+// 		.result_real (dout_real_t[2]), // complex_output.result_real
+// 		.result_imag (dout_imag_t[2])  //               .result_imag
+// 	);
+// altmult_complex_18_mrd u22 (
+// 		.dataa_real  (d_real_r[3]),  //  complex_input.dataa_real
+// 		.dataa_imag  (d_imag_r[3]),  //               .dataa_imag
+// 		.datab_real  (tw_real_t[3]),  //               .datab_real
+// 		.datab_imag  (tw_imag_t[3]),  //               .datab_imag
+// 		.clock       (clk),       //               .clk
+// 		.result_real (dout_real_t[3]), // complex_output.result_real
+// 		.result_imag (dout_imag_t[3])  //               .result_imag
+// 	);
+// altmult_complex_18_mrd u23 (
+// 		.dataa_real  (d_real_r[4]),  //  complex_input.dataa_real
+// 		.dataa_imag  (d_imag_r[4]),  //               .dataa_imag
+// 		.datab_real  (tw_real_t[4]),  //               .datab_real
+// 		.datab_imag  (tw_imag_t[4]),  //               .datab_imag
+// 		.clock       (clk),       //               .clk
+// 		.result_real (dout_real_t[4]), // complex_output.result_real
+// 		.result_imag (dout_imag_t[4])  //               .result_imag
+// 	);
+
+// generate
+// for (i=1; i<5; i++) begin : gen1
+
 // 1.17*2.14   An = 16384 = 2^14
 assign dout_real[i] = (dout_real_t[i][13])? 
                       dout_real_t[i][wDataInOut+14-1:14] + 2'sd1

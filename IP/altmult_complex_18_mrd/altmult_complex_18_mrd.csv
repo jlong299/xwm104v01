@@ -1,0 +1,18 @@
+# system info altmult_complex_18_mrd on 2017.04.17.15:33:18
+system_info:
+name,value
+DEVICE,10AX115U3F45E2SGE3
+DEVICE_FAMILY,Arria 10
+GENERATION_ID,1492414398
+#
+#
+# Files generated for altmult_complex_18_mrd on 2017.04.17.15:33:18
+files:
+filepath,kind,attributes,module,is_top
+sim/altmult_complex_18_mrd.v,VERILOG,CONTAINS_INLINE_CONFIGURATION,altmult_complex_18_mrd,true
+altmult_complex_151/sim/altmult_complex_18_mrd_altmult_complex_151_id3q2ma.v,VERILOG,,altmult_complex_18_mrd_altmult_complex_151_id3q2ma,false
+#
+# Map from instance-path to kind of module
+instances:
+instancePath,module
+altmult_complex_18_mrd.altmult_complex_0,altmult_complex_18_mrd_altmult_complex_151_id3q2ma

@@ -1,0 +1,72 @@
+Info: Starting: Create simulation model
+Info: qsys-generate C:\work\pj104\code\1702\Mixed_Radix_DFT\IP\altmult_complex_18_mrd.qsys --simulation=VERILOG --allow-mixed-language-simulation --output-directory=C:\work\pj104\code\1702\Mixed_Radix_DFT\IP\altmult_complex_18_mrd --family="Arria 10" --part=10AX115U3F45E2SGE3
+Progress: Loading IP/altmult_complex_18_mrd.qsys
+Progress: Reading input file
+Progress: Adding altmult_complex_0 [altmult_complex 15.1]
+Progress: Parameterizing module altmult_complex_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+: altmult_complex_18_mrd.altmult_complex_0: Targeting device family: Arria 10.
+Info: altmult_complex_18_mrd: "Transforming system: altmult_complex_18_mrd"
+Info: altmult_complex_18_mrd: Running transform generation_view_transform
+Info: altmult_complex_18_mrd: Running transform generation_view_transform took 0.000s
+Info: altmult_complex_0: Running transform generation_view_transform
+Info: altmult_complex_0: Running transform generation_view_transform took 0.000s
+Info: altmult_complex_18_mrd: Running transform merlin_avalon_transform
+Info: altmult_complex_18_mrd: Running transform merlin_avalon_transform took 0.038s
+Info: altmult_complex_18_mrd: "Naming system components in system: altmult_complex_18_mrd"
+Info: altmult_complex_18_mrd: "Processing generation queue"
+Info: altmult_complex_18_mrd: "Generating: altmult_complex_18_mrd"
+Info: altmult_complex_18_mrd: "Generating: altmult_complex_18_mrd_altmult_complex_151_hg3ahuy"
+Info: altmult_complex_0: Generating top-level entity altmult_complex_18_mrd_altmult_complex_151_hg3ahuy.
+Info: altmult_complex_18_mrd: Done "altmult_complex_18_mrd" with 2 modules, 2 files
+Info: qsys-generate succeeded.
+Info: Finished: Create simulation model
+Info: Starting: Create Modelsim Project.
+Info: sim-script-gen --spd=C:\work\pj104\code\1702\Mixed_Radix_DFT\IP\altmult_complex_18_mrd\altmult_complex_18_mrd.spd --output-directory=C:/work/pj104/code/1702/Mixed_Radix_DFT/IP/altmult_complex_18_mrd/sim/ --use-relative-paths=true
+Info: Doing: ip-make-simscript --spd=C:\work\pj104\code\1702\Mixed_Radix_DFT\IP\altmult_complex_18_mrd\altmult_complex_18_mrd.spd --output-directory=C:/work/pj104/code/1702/Mixed_Radix_DFT/IP/altmult_complex_18_mrd/sim/ --use-relative-paths=true
+Info: Generating the following file(s) for MODELSIM simulator in C:/work/pj104/code/1702/Mixed_Radix_DFT/IP/altmult_complex_18_mrd/sim/ directory:
+Info: 	mentor/msim_setup.tcl
+Info: Generating the following file(s) for VCS simulator in C:/work/pj104/code/1702/Mixed_Radix_DFT/IP/altmult_complex_18_mrd/sim/ directory:
+Info: 	synopsys/vcs/vcs_setup.sh
+Info: Generating the following file(s) for VCSMX simulator in C:/work/pj104/code/1702/Mixed_Radix_DFT/IP/altmult_complex_18_mrd/sim/ directory:
+Info: 	synopsys/vcsmx/synopsys_sim.setup
+Info: 	synopsys/vcsmx/vcsmx_setup.sh
+Info: Generating the following file(s) for NCSIM simulator in C:/work/pj104/code/1702/Mixed_Radix_DFT/IP/altmult_complex_18_mrd/sim/ directory:
+Info: 	cadence/cds.lib
+Info: 	cadence/hdl.var
+Info: 	cadence/ncsim_setup.sh
+Info: 	1 .cds.lib files in cadence/cds_libs/ directory
+Info: Generating the following file(s) for RIVIERA simulator in C:/work/pj104/code/1702/Mixed_Radix_DFT/IP/altmult_complex_18_mrd/sim/ directory:
+Info: 	aldec/rivierapro_setup.tcl
+Info: For information on how to simulate your IP, see the explanatory comments in the simulator-specific subdirectories under C:/work/pj104/code/1702/Mixed_Radix_DFT/IP/altmult_complex_18_mrd/sim/.
+Info: Finished: Create Modelsim Project.
+Info: 
+Info: Starting: Create HDL design files for synthesis
+Info: qsys-generate C:\work\pj104\code\1702\Mixed_Radix_DFT\IP\altmult_complex_18_mrd.qsys --synthesis=VERILOG --output-directory=C:\work\pj104\code\1702\Mixed_Radix_DFT\IP\altmult_complex_18_mrd --family="Arria 10" --part=10AX115U3F45E2SGE3
+Progress: Loading IP/altmult_complex_18_mrd.qsys
+Progress: Reading input file
+Progress: Adding altmult_complex_0 [altmult_complex 15.1]
+Progress: Parameterizing module altmult_complex_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+: altmult_complex_18_mrd.altmult_complex_0: Targeting device family: Arria 10.
+Info: altmult_complex_18_mrd: "Transforming system: altmult_complex_18_mrd"
+Info: altmult_complex_18_mrd: Running transform generation_view_transform
+Info: altmult_complex_18_mrd: Running transform generation_view_transform took 0.000s
+Info: altmult_complex_0: Running transform generation_view_transform
+Info: altmult_complex_0: Running transform generation_view_transform took 0.000s
+Info: altmult_complex_18_mrd: Running transform merlin_avalon_transform
+Info: altmult_complex_18_mrd: Running transform merlin_avalon_transform took 0.007s
+Info: altmult_complex_18_mrd: "Naming system components in system: altmult_complex_18_mrd"
+Info: altmult_complex_18_mrd: "Processing generation queue"
+Info: altmult_complex_18_mrd: "Generating: altmult_complex_18_mrd"
+Info: altmult_complex_18_mrd: "Generating: altmult_complex_18_mrd_altmult_complex_151_hg3ahuy"
+Info: altmult_complex_0: Generating top-level entity altmult_complex_18_mrd_altmult_complex_151_hg3ahuy.
+Info: altmult_complex_18_mrd: Done "altmult_complex_18_mrd" with 2 modules, 3 files
+Info: qsys-generate succeeded.
+Info: Finished: Create HDL design files for synthesis
