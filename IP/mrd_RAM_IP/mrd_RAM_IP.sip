@@ -5,4 +5,4 @@ set_global_assignment -library "lib_mrd_RAM_IP" -name SPD_FILE [file join $::qua
 set_global_assignment -library "lib_mrd_RAM_IP" -name MISC_FILE [file join $::quartus(sip_path) "../mrd_RAM_IP.qsys"]
 
 set_global_assignment -library "lib_mrd_RAM_IP" -name MISC_FILE [file join $::quartus(sip_path) "sim/mrd_RAM_IP.v"]
-set_global_assignment -library "lib_mrd_RAM_IP" -name MISC_FILE [file join $::quartus(sip_path) "ram_2port_151/sim/mrd_RAM_IP_ram_2port_151_hhdwfsy.v"]
+set_global_assignment -library "lib_mrd_RAM_IP" -name MISC_FILE [file join $::quartus(sip_path) "ram_2port_151/sim/mrd_RAM_IP_ram_2port_151_hwholfq.v"]

@@ -81,6 +81,8 @@ logic [2:0] from_mem_factor;
 genvar i;
 integer j;
 
+// assign	from_mem_d_real = from_mem.d_real;
+// assign	from_mem_d_imag = from_mem.d_imag;
 always@(posedge clk) begin
 	from_mem_valid <= from_mem.valid;
 	from_mem_d_real <= from_mem.d_real;

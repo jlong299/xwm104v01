@@ -224,19 +224,21 @@ assign rdRAM.rdaddr[i]= (fsm==Rd)? rdRAM_FSMrd.rdaddr[i] : rdRAM_FSMsource.rdadd
 assign rdRAM.rden[i] = (fsm==Rd)? rdRAM_FSMrd.rden[i] : 
                  (rdRAM_FSMsource.rden[i] & fsm_lastRd_source);
                  // (rdRAM_FSMsource_rden_r1[i] & fsm_lastRd_source);
-assign rdRAM_FSMrd.dout_real[i] = (fsm==Rd)? rdRAM.dout_real[i] : 18'd0;
-assign rdRAM_FSMrd.dout_imag[i] = (fsm==Rd)? rdRAM.dout_imag[i] : 18'd0;
+assign rdRAM_FSMrd.dout_real[i] = (fsm_r==Rd)? rdRAM.dout_real[i] : 18'd0;
+assign rdRAM_FSMrd.dout_imag[i] = (fsm_r==Rd)? rdRAM.dout_imag[i] : 18'd0;
 end
 endgenerate 
 
 logic [17:0] out_data_real_r, out_data_imag_r;
+logic [2:0] bank_index_source_r;
+always@(posedge clk) bank_index_source_r <= bank_index_source;
 always@(posedge clk) begin
-	 out_data_real_r <= rdRAM.dout_real[bank_index_source] ;
-	 out_data_imag_r <= rdRAM.dout_imag[bank_index_source] ;
+	 out_data_real_r <= rdRAM.dout_real[bank_index_source_r] ;
+	 out_data_imag_r <= rdRAM.dout_imag[bank_index_source_r] ;
 	 out_data.dout_real <= (fsm_lastRd_source && in_rdx2345_data.valid)? 
-            in_rdx2345_data.d_real[0] : out_data_real_r ;
+            in_rdx2345_data.d_real[0] : rdRAM.dout_real[bank_index_source_r] ;
 	 out_data.dout_imag <= (fsm_lastRd_source && in_rdx2345_data.valid)? 
-            in_rdx2345_data.d_imag[0] : out_data_imag_r ;
+            in_rdx2345_data.d_imag[0] : rdRAM.dout_imag[bank_index_source_r] ;
 end
 always@(posedge clk) out_data.exp <= in_rdx2345_data.exp;
 
@@ -324,7 +326,7 @@ mrd_FSMrd_wr_inst (
 // Output       |---------------------|------------------------------|  
 //                     1/3                      2/3 
 mrd_FSMsource #(
-	.dly_addr_source (9+6-1-3)
+	.dly_addr_source (11+1)
 	)
 mrd_FSMsource_inst (
 	clk,

@@ -15,7 +15,7 @@ module CORDIC_v02(clock, cosine, sine, x_start, y_start, angle, atan_table);
   // Outputs
   output signed  [width-1:0] sine, cosine;
 
-  input signed [w_angle-1:0] atan_table [0:13];
+  input signed [w_angle-1:0] atan_table [0:12];
 
 
   // // Generate table of atan values
@@ -53,9 +53,9 @@ module CORDIC_v02(clock, cosine, sine, x_start, y_start, angle, atan_table);
   // assign atan_table[29] = 'b00000000000000000000000000000001;
   // assign atan_table[30] = 'b00000000000000000000000000000000;
 
-  reg signed [width:0] x [0:14];
-  reg signed [width:0] y [0:14];
-  reg signed    [w_angle-1:0] z [0:14];
+  reg signed [width:0] x [0:13];
+  reg signed [width:0] y [0:13];
+  reg signed    [w_angle-1:0] z [0:13];
 
 
   // make sure rotation angle is in -pi/2 to pi/2 range
@@ -94,7 +94,7 @@ module CORDIC_v02(clock, cosine, sine, x_start, y_start, angle, atan_table);
   genvar i;
 
   generate
-  for (i=0; i < 14; i=i+1)
+  for (i=0; i <= 12; i=i+1)
   begin: xyz
     wire z_sign;
     wire signed [width:0] x_shr, y_shr;
@@ -116,8 +116,8 @@ module CORDIC_v02(clock, cosine, sine, x_start, y_start, angle, atan_table);
   endgenerate
 
   // assign output
-  assign cosine = x[14][width-1:0];
-  assign sine = y[14][width-1:0];
+  assign cosine = x[13][width-1:0];
+  assign sine = y[13][width-1:0];
 
 endmodule
 

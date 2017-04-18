@@ -269,6 +269,7 @@ end
 // assign wir1_p2_x5_r = p1r_x5_i * coeff5_n ; //1.17
 // assign wir1_p2_x5_i = p1r_x5_r * coeff[5] ;
 
+// lpm_mult : pipeline = 2
 lpm_mult_18_mrd u0 (
 	.dataa  (p1_x2_r),  //  mult_input.dataa
 	.datab  (coeff[2]),  //            .datab

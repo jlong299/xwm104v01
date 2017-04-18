@@ -2,7 +2,7 @@
 # 
 preplace inst mrd_RAM_IP -pg 1 -lvl 1 -y 40 -regy -20
 preplace inst mrd_RAM_IP.ram_2port_0 -pg 1 -lvl 1 -y 30
-preplace netloc EXPORT<net_container>mrd_RAM_IP</net_container>(SLAVE)ram_2port_0.ram_output,(SLAVE)mrd_RAM_IP.ram_output) 1 0 1 NJ
+preplace netloc EXPORT<net_container>mrd_RAM_IP</net_container>(SLAVE)mrd_RAM_IP.ram_output,(SLAVE)ram_2port_0.ram_output) 1 0 1 NJ
 preplace netloc EXPORT<net_container>mrd_RAM_IP</net_container>(SLAVE)ram_2port_0.ram_input,(SLAVE)mrd_RAM_IP.ram_input) 1 0 1 NJ
 levelinfo -pg 1 0 80 230
 levelinfo -hier mrd_RAM_IP 90 120 220

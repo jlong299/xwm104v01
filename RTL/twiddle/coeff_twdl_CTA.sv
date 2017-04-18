@@ -139,7 +139,7 @@ end
   // assign atan_table[16] = 'b00000000000000000010;
   // assign atan_table[17] = 'b00000000000000000001;
 
-  logic signed [20-1:0] atan_table [0:13];
+  logic signed [20-1:0] atan_table [0:12];
 
   assign atan_table[00] = 'b00100000000000000000; // 45.000 degrees -> atan(2^0)
   assign atan_table[01] = 'b00010010111001000000; // 26.565 degrees -> atan(2^-1)
@@ -154,7 +154,7 @@ end
   assign atan_table[10] = 'b00000000000010100010;
   assign atan_table[11] = 'b00000000000001010001;
   assign atan_table[12] = 'b00000000000000101000;
-  assign atan_table[13] = 'b00000000000000010100;
+  // assign atan_table[13] = 'b00000000000000010100;
 
 
 CORDIC_v02

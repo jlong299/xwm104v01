@@ -12,7 +12,7 @@
 # or its authorized distributors. Please refer to the applicable 
 # agreement for further details.
 
-# ACDS 15.1 185 win32 2017.03.09.17:07:35
+# ACDS 15.1 185 win32 2017.04.18.11:04:31
 
 # ----------------------------------------
 # vcsmx - auto-generated simulation script
@@ -59,7 +59,7 @@
 # within the Quartus project, and generate a unified
 # script which supports all the Altera IP within the design.
 # ----------------------------------------
-# ACDS 15.1 185 win32 2017.03.09.17:07:35
+# ACDS 15.1 185 win32 2017.04.18.11:04:31
 # ----------------------------------------
 # initialize variables
 TOP_LEVEL_NAME="mrd_RAM_IP"
@@ -131,7 +131,7 @@ fi
 # ----------------------------------------
 # compile design files in correct order
 if [ $SKIP_COM -eq 0 ]; then
-  vlogan +v2k $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/../ram_2port_151/sim/mrd_RAM_IP_ram_2port_151_hhdwfsy.v" -work mrd_RAM_IP_ram_2port_151
+  vlogan +v2k $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/../ram_2port_151/sim/mrd_RAM_IP_ram_2port_151_hwholfq.v" -work mrd_RAM_IP_ram_2port_151
   vlogan +v2k $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/mrd_RAM_IP.v"                                                                          
 fi
 

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="mrd_RAM_IP" kind="mrd_RAM_IP" version="1.0" fabric="QSYS">
  <!-- Format version 15.1 185 (Future versions may contain additional information.) -->
- <!-- 2017.03.09.17:07:36 -->
+ <!-- 2017.04.18.11:04:31 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1489050456</value>
+  <value>1492484671</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -295,7 +295,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="GUI_READ_OUTPUT_QB">
    <type>boolean</type>
-   <value>false</value>
+   <value>true</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>

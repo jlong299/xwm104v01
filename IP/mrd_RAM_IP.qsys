@@ -113,7 +113,7 @@
   <parameter name="GUI_RDW_B_MODE" value="New Data" />
   <parameter name="GUI_READ_INPUT_RDADDRESS" value="true" />
   <parameter name="GUI_READ_OUTPUT_QA" value="true" />
-  <parameter name="GUI_READ_OUTPUT_QB" value="false" />
+  <parameter name="GUI_READ_OUTPUT_QB" value="true" />
   <parameter name="GUI_SCLR_READ_OUTPUT_QA" value="false" />
   <parameter name="GUI_SCLR_READ_OUTPUT_QB" value="false" />
   <parameter name="GUI_VAR_WIDTH" value="false" />

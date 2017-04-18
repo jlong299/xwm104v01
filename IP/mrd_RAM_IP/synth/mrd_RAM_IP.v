@@ -13,7 +13,7 @@ module mrd_RAM_IP (
 		output wire [35:0] q          // ram_output.dataout
 	);
 
-	mrd_RAM_IP_ram_2port_151_hhdwfsy ram_2port_0 (
+	mrd_RAM_IP_ram_2port_151_hwholfq ram_2port_0 (
 		.data      (data),      //  ram_input.datain
 		.wraddress (wraddress), //           .wraddress
 		.rdaddress (rdaddress), //           .rdaddress

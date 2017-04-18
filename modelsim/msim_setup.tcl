@@ -150,7 +150,7 @@ alias dev_com {
 # Compile the design files in correct order
 alias com {
   echo "\[exec\] com"
-  eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/mrd_RAM_IP/ram_2port_151/sim/mrd_RAM_IP_ram_2port_151_hhdwfsy.v" -work ram_2port_151
+  eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/mrd_RAM_IP/ram_2port_151/sim/mrd_RAM_IP_ram_2port_151_hwholfq.v" -work ram_2port_151
   eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/mrd_RAM_IP/sim/mrd_RAM_IP.v"                                                               
   eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/ff_rdx_data/fifo_151/sim/ff_rdx_data_fifo_151_efv2tfa.v" 
   eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/ff_rdx_data/sim/ff_rdx_data.v"                                                            
@@ -162,8 +162,8 @@ alias com {
   eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/lpm_mult_16_mrd/sim/lpm_mult_16_mrd.v"                                                            
   eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/lpm_mult_18_mrd/lpm_mult_151/sim/lpm_mult_18_mrd_lpm_mult_151_jtuoava.v" 
   eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/lpm_mult_18_mrd/sim/lpm_mult_18_mrd.v"                                                            
-  eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/altmult_complex_18_mrd/altmult_complex_151/sim/altmult_complex_18_mrd_altmult_complex_151_id3q2ma.v" 
-  eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/altmult_complex_18_mrd/sim/altmult_complex_18_mrd.v"                                                            
+  # eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/altmult_complex_18_mrd/altmult_complex_151/sim/altmult_complex_18_mrd_altmult_complex_151_id3q2ma.v" 
+  # eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/altmult_complex_18_mrd/sim/altmult_complex_18_mrd.v"                                                            
 }
 
 # ----------------------------------------

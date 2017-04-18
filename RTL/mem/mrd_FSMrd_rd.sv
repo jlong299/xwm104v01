@@ -29,7 +29,7 @@ module mrd_FSMrd_rd #(parameter
 localparam Idle = 3'd0, Rd = 3'd3, Wait_wr_end = 3'd4, Source = 3'd5;
 
 logic [0:4][mrd_mem_pkt::wADDR-1:0]  bank_addr_rd, bank_addr_rd_r, bank_addr_rd_rr;
-logic [0:4][2:0]  bank_index_rd, bank_index_rd_r, bank_index_rd_rr,
+logic [0:4][2:0]  bank_index_rd, bank_index_rd_r, bank_index_rd_rr, bank_index_rd_rrr,
                   div7_rmdr_rd;
 logic [0:4][11:0]  addrs_butterfly, addrs_butterfly_mux;
 logic [11:0]  cnt_rd_stop;
@@ -71,12 +71,12 @@ begin
 		if (fsm == Rd && fsm_r != Rd)
 			cnt_FSMrd_2 <= 12'd1;
 		else if (cnt_FSMrd_2 != 12'd0)
-			cnt_FSMrd_2 <= (cnt_FSMrd_2==cnt_rd_stop+12'd13) ? 
+			cnt_FSMrd_2 <= (cnt_FSMrd_2==cnt_rd_stop+12'd16) ? 
 		                       12'd0 : cnt_FSMrd_2 + 12'd1;
 		else
 			cnt_FSMrd_2 <= 0;
 			
-		twdl_sop_rd <= (cnt_FSMrd_2==cnt_rd_stop+12'd13);
+		twdl_sop_rd <= (cnt_FSMrd_2==cnt_rd_stop+12'd16);
 	end
 end
 
@@ -187,6 +187,7 @@ begin
 	begin
 		bank_index_rd_r <= 0;
 		bank_index_rd_rr <= 0;
+		bank_index_rd_rrr <= 0;
 		bank_addr_rd_r <= 0;
 		bank_addr_rd_rr <= 0;
 	end
@@ -194,6 +195,7 @@ begin
 	begin
 		bank_index_rd_r <= bank_index_rd;
 		bank_index_rd_rr <= bank_index_rd_r;
+		bank_index_rd_rrr <= bank_index_rd_rr;
 		bank_addr_rd_r <= bank_addr_rd;
 		bank_addr_rd_rr <= bank_addr_rd_r;
 	end
@@ -204,29 +206,66 @@ generate
 	for (k=0; k<3; k++) begin : rd_out
 	always@(*)
 	begin
-		out_rdx2345_data.d_real[k] = rdRAM_FSMrd.dout_real[(bank_index_rd_rr[k])]; 
-		out_rdx2345_data.d_imag[k] = rdRAM_FSMrd.dout_imag[(bank_index_rd_rr[k])]; 
+		out_rdx2345_data.d_real[k] = rdRAM_FSMrd.dout_real[(bank_index_rd_rrr[k])]; 
+		out_rdx2345_data.d_imag[k] = rdRAM_FSMrd.dout_imag[(bank_index_rd_rrr[k])]; 
 	end
 	end
 endgenerate
+
+logic [17:0] din_real_r_final, din_imag_r_final;
+// logic [2:0] cnt_stage_r;
+always@(posedge clk) begin
+	din_real_r_final <= din_real_r[in_dly];
+	din_imag_r_final <= din_imag_r[in_dly];
+	// cnt_stage_r <= cnt_stage;
+end
  
 always@(*)
 begin
 	////// change in_dly in mrd_mem_top_v2.sv
-	out_rdx2345_data.d_real[3] = (fsm==Rd && cnt_stage==3'd0)? din_real_r[in_dly] :
+	out_rdx2345_data.d_real[3] = (fsm_r==Rd && cnt_stage==3'd0)? din_real_r_final :
 	        // {{(30-18){din_real_r[in_dly][17]}}, din_real_r[in_dly]} : 
-	        rdRAM_FSMrd.dout_real[(bank_index_rd_rr[3])]; 
-	out_rdx2345_data.d_imag[3] = (fsm==Rd && cnt_stage==3'd0)? din_imag_r[in_dly] :
+	        rdRAM_FSMrd.dout_real[(bank_index_rd_rrr[3])]; 
+	out_rdx2345_data.d_imag[3] = (fsm_r==Rd && cnt_stage==3'd0)? din_imag_r_final :
 	        // {{(30-18){din_imag_r[in_dly][17]}}, din_imag_r[in_dly]} : 
-	        rdRAM_FSMrd.dout_imag[(bank_index_rd_rr[3])]; 
+	        rdRAM_FSMrd.dout_imag[(bank_index_rd_rrr[3])]; 
 
-	out_rdx2345_data.d_real[4] = rdRAM_FSMrd.dout_real[(bank_index_rd_rr[4])]; 
-	out_rdx2345_data.d_imag[4] = rdRAM_FSMrd.dout_imag[(bank_index_rd_rr[4])]; 
+	out_rdx2345_data.d_real[4] = rdRAM_FSMrd.dout_real[(bank_index_rd_rrr[4])]; 
+	out_rdx2345_data.d_imag[4] = rdRAM_FSMrd.dout_imag[(bank_index_rd_rrr[4])]; 
 end
 //////
-assign out_rdx2345_data.valid = rden_r[in_dly-1];
-assign out_rdx2345_data.bank_index = bank_index_rd_rr;
-assign out_rdx2345_data.bank_addr = bank_addr_rd_rr;
+always@(posedge clk) out_rdx2345_data.valid <= rden_r[in_dly-1];
+always@(posedge clk) out_rdx2345_data.bank_index <= bank_index_rd_rr;
+always@(posedge clk) out_rdx2345_data.bank_addr <= bank_addr_rd_rr;
+
+// generate
+// 	for (k=0; k<3; k++) begin : rd_out
+// 	always@(posedge clk)
+// 	begin
+// 		out_rdx2345_data.d_real[k] <= rdRAM_FSMrd.dout_real[(bank_index_rd_rr[k])]; 
+// 		out_rdx2345_data.d_imag[k] <= rdRAM_FSMrd.dout_imag[(bank_index_rd_rr[k])]; 
+// 	end
+// 	end
+// endgenerate
+ 
+// always@(posedge clk)
+// begin
+// 	////// change in_dly in mrd_mem_top_v2.sv
+// 	out_rdx2345_data.d_real[3] <= (fsm==Rd && cnt_stage==3'd0)? din_real_r[in_dly] :
+// 	        // {{(30-18){din_real_r[in_dly][17]}}, din_real_r[in_dly]} : 
+// 	        rdRAM_FSMrd.dout_real[(bank_index_rd_rr[3])]; 
+// 	out_rdx2345_data.d_imag[3] <= (fsm==Rd && cnt_stage==3'd0)? din_imag_r[in_dly] :
+// 	        // {{(30-18){din_imag_r[in_dly][17]}}, din_imag_r[in_dly]} : 
+// 	        rdRAM_FSMrd.dout_imag[(bank_index_rd_rr[3])]; 
+
+// 	out_rdx2345_data.d_real[4] <= rdRAM_FSMrd.dout_real[(bank_index_rd_rr[4])]; 
+// 	out_rdx2345_data.d_imag[4] <= rdRAM_FSMrd.dout_imag[(bank_index_rd_rr[4])]; 
+// end
+// //////
+// always@(posedge clk) out_rdx2345_data.valid <= rden_r[in_dly-1];
+// always@(posedge clk) out_rdx2345_data.bank_index <= bank_index_rd_rr;
+// always@(posedge clk) out_rdx2345_data.bank_addr <= bank_addr_rd_rr;
+
 
 always@(posedge clk) out_rdx2345_data.factor <= (fsm==Rd || fsm==Wait_wr_end)?
                                       Nf[cnt_stage] : 3'd1 ;
