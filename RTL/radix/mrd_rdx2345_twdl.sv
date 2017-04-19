@@ -327,7 +327,8 @@ always@(posedge clk) begin
 		else
 			margin_out <= 0;
 
-		margin_in <= (valid_r==2'b10)? margin_out : margin_in;
+		if (sop) margin_in <= 0;
+		else	margin_in <= (valid_r==2'b10)? margin_out : margin_in;
 	end
 end
 

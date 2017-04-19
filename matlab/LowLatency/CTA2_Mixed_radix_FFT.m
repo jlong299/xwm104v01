@@ -73,7 +73,7 @@ outf_FFT = fopen('../../modelsim/matlab_result.dat','w');
 %  Loop  from  12*1  to  12*100
 % for m_len = 1:20:100   % The end of loop body is at the end of this file
 m_len = 0;
-while(m_len<100 )
+while(m_len<10 )
     m_len = m_len+1;
 %     if (m_len==3) 
 %         m_len = 96; 
@@ -112,8 +112,8 @@ end
 % e.g. If N=1200  = 4*4*5*5*3,  NumOfFactors=5,  ena=[1,1,1,1,1,0]
 
 %------------- gen test source data -------------------
-x_real=round((2*rand(1,N)-1)*1024);
-x_imag=round((2*rand(1,N)-1)*1024);
+x_real=round((2*rand(1,N)-1)*8192);
+x_imag=round((2*rand(1,N)-1)*8192);
 
 x = x_real + 1j*x_imag;
 % x = [0:1:m_len*12-1];
