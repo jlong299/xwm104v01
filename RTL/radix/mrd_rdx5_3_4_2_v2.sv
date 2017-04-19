@@ -32,65 +32,137 @@ logic signed [18-1:0] din_real_0_r, din_imag_0_r;
 
 assign worst_case_growth = (factor==3'd5 || factor==3'd4)? 2'd3 : 2'd2;
 
-//---------- 1st pipeline -------------
+//--------------------------------------------------------
+//---------- pipeline 1 ----------------------------------
+//--------------------------------------------------------
 logic signed [18-1:0] din_real_t [0:4];
 logic signed [18-1:0] din_imag_t [0:4]; 
+// always@(*) begin
+// 	case (factor)
+// 	3'd5 : begin
+// 		din_real_t[0] = din_real[0];
+// 		din_imag_t[0] = din_imag[0];
+// 		din_real_t[1] = din_real[1];
+// 		din_imag_t[1] = din_imag[1];
+// 		din_real_t[2] = din_real[2];
+// 		din_imag_t[2] = din_imag[2];
+// 		din_real_t[3] = din_real[4];
+// 		din_imag_t[3] = din_imag[4];
+// 		din_real_t[4] = din_real[3];
+// 		din_imag_t[4] = din_imag[3];
+// 	end
+// 	3'd3 : begin
+// 		din_real_t[0] = din_real[0];
+// 		din_imag_t[0] = din_imag[0];
+// 		din_real_t[1] = din_real[1];
+// 		din_imag_t[1] = din_imag[1];
+// 		din_real_t[2] = din_real[2];
+// 		din_imag_t[2] = din_imag[2];
+// 		din_real_t[3] = 0;
+// 		din_imag_t[3] = 0;
+// 		din_real_t[4] = 0;
+// 		din_imag_t[4] = 0;
+// 	end
+// 	3'd4 : begin
+// 		din_real_t[0] = 0;
+// 		din_imag_t[0] = 0;
+// 		din_real_t[1] = din_real[0];
+// 		din_imag_t[1] = din_imag[0];
+// 		din_real_t[2] = din_real[1];
+// 		din_imag_t[2] = din_imag[1];
+// 		din_real_t[3] = din_real[2];
+// 		din_imag_t[3] = din_imag[2];
+// 		din_real_t[4] = din_real[3];
+// 		din_imag_t[4] = din_imag[3];
+// 	end
+// 	3'd2 : begin
+// 		din_real_t[0] = 0;
+// 		din_imag_t[0] = 0;
+// 		din_real_t[1] = din_real[0];
+// 		din_imag_t[1] = din_imag[0];
+// 		din_real_t[2] = din_real[2];
+// 		din_imag_t[2] = din_imag[2];
+// 		din_real_t[3] = din_real[1];
+// 		din_imag_t[3] = din_imag[1];
+// 		din_real_t[4] = din_real[3];
+// 		din_imag_t[4] = din_imag[3];
+// 	end
+// 	default : begin
+// 		din_real_t = din_real;
+// 		din_imag_t = din_imag;
+// 	end
+// 	endcase
+// end
+
 always@(*) begin
-	case (factor)
-	3'd5 : begin
+	if (factor[0]) begin
 		din_real_t[0] = din_real[0];
 		din_imag_t[0] = din_imag[0];
+	end
+	else begin
+		din_real_t[0] = 0;
+		din_imag_t[0] = 0;
+	end
+end
+always@(*) begin
+	if (factor[1:0]==2'b01) begin
 		din_real_t[1] = din_real[1];
 		din_imag_t[1] = din_imag[1];
+	end
+	else if (factor[1:0]==2'b11) begin
+		din_real_t[1] = din_real[2];
+		din_imag_t[1] = din_imag[2];
+	end
+	else begin
+		din_real_t[1] = din_real[0];
+		din_imag_t[1] = din_imag[0];
+	end
+end
+always@(*) begin
+	if (factor[1]==factor[0]) begin
+		din_real_t[2] = din_real[1];
+		din_imag_t[2] = din_imag[1];
+	end
+	else begin
 		din_real_t[2] = din_real[2];
 		din_imag_t[2] = din_imag[2];
+	end
+end
+always@(*) begin
+	case (factor[1:0])
+	2'b01 : begin
 		din_real_t[3] = din_real[4];
 		din_imag_t[3] = din_imag[4];
-		din_real_t[4] = din_real[3];
-		din_imag_t[4] = din_imag[3];
 	end
-	3'd3 : begin
-		din_real_t[0] = din_real[0];
-		din_imag_t[0] = din_imag[0];
-		din_real_t[1] = din_real[1];
-		din_imag_t[1] = din_imag[1];
-		din_real_t[2] = din_real[2];
-		din_imag_t[2] = din_imag[2];
+	2'b11 : begin
 		din_real_t[3] = 0;
 		din_imag_t[3] = 0;
+	end
+	2'b00 : begin
+		din_real_t[3] = din_real[2];
+		din_imag_t[3] = din_imag[2];
+	end
+	2'b10 : begin
+		din_real_t[3] = din_real[1];
+		din_imag_t[3] = din_imag[1];
+	end
+	// default : begin
+	// 	din_real_t = 0;
+	// 	din_imag_t = 0;
+	// end
+	endcase
+end
+always@(*) begin
+	if (factor[1:0]==2'b11) begin
 		din_real_t[4] = 0;
 		din_imag_t[4] = 0;
 	end
-	3'd4 : begin
-		din_real_t[0] = 0;
-		din_imag_t[0] = 0;
-		din_real_t[1] = din_real[0];
-		din_imag_t[1] = din_imag[0];
-		din_real_t[2] = din_real[1];
-		din_imag_t[2] = din_imag[1];
-		din_real_t[3] = din_real[2];
-		din_imag_t[3] = din_imag[2];
+	else begin
 		din_real_t[4] = din_real[3];
 		din_imag_t[4] = din_imag[3];
 	end
-	3'd2 : begin
-		din_real_t[0] = 0;
-		din_imag_t[0] = 0;
-		din_real_t[1] = din_real[0];
-		din_imag_t[1] = din_imag[0];
-		din_real_t[2] = din_real[2];
-		din_imag_t[2] = din_imag[2];
-		din_real_t[3] = din_real[1];
-		din_imag_t[3] = din_imag[1];
-		din_real_t[4] = din_real[3];
-		din_imag_t[4] = din_imag[3];
-	end
-	default : begin
-		din_real_t = din_real;
-		din_imag_t = din_imag;
-	end
-	endcase
 end
+
 
 always@(posedge clk) begin
 	wir1_p1_x1_r <= din_real_t[1] + din_real_t[3];
@@ -108,16 +180,15 @@ always@(posedge clk) begin
 	din_imag_0_r <= din_imag_t[0];
 end
 
-//---------- 1st+1 pipeline -------------
+//-----------------------------------------------------------------
+//----------  pipeline 2 ---------------------------------------------
+//----------------------------------------------------------------
 assign wir2_p1_x1_r = wir1_p1_x1_r + wir1_p1_x2_r;
-
-assign wir2_p1_x2_r = (factor==3'd5)? wir1_p1_x1_r - wir1_p1_x2_r : -wir1_p1_x1_r + wir1_p1_x2_r;
-
+assign wir2_p1_x2_r = wir1_p1_x1_r - wir1_p1_x2_r;
 assign wir2_p1_x5_r = wir1_p1_x3_r + wir1_p1_x4_r;
+
 assign wir2_p1_x1_i = wir1_p1_x1_i + wir1_p1_x2_i;
-
-assign wir2_p1_x2_i = (factor==3'd5)? wir1_p1_x1_i - wir1_p1_x2_i : -wir1_p1_x1_i + wir1_p1_x2_i;
-
+assign wir2_p1_x2_i = wir1_p1_x1_i - wir1_p1_x2_i;
 assign wir2_p1_x5_i = wir1_p1_x3_i + wir1_p1_x4_i;
 
 integer j;
@@ -158,6 +229,22 @@ begin
 		p1_x3_i <= (wir1_p1_x3_i[0])? wir1_p1_x3_i[18:1]+2'sd1 : wir1_p1_x3_i[18:1];
 		p1_x4_r <= (wir1_p1_x4_r[0])? wir1_p1_x4_r[18:1]+2'sd1 : wir1_p1_x4_r[18:1];
 		p1_x4_i <= (wir1_p1_x4_i[0])? wir1_p1_x4_i[18:1]+2'sd1 : wir1_p1_x4_i[18:1];
+
+		// if (factor==3'd5) begin
+		// p1_x2_r <= wir2_p1_x2_r[19:2];
+		// p1_x2_i <= wir2_p1_x2_i[19:2];
+		// end
+		// else begin // factor==3
+		// p1_x2_r <= wir2_p1_x2_r[18:1];
+		// p1_x2_i <= wir2_p1_x2_i[18:1];
+		// end
+
+		// p1_x5_r <= wir2_p1_x5_r[19:2];
+		// p1_x5_i <= wir2_p1_x5_i[19:2];
+		// p1_x3_r <= wir1_p1_x3_r[18:1];
+		// p1_x3_i <= wir1_p1_x3_i[18:1];
+		// p1_x4_r <= wir1_p1_x4_r[18:1];
+		// p1_x4_i <= wir1_p1_x4_i[18:1];
 	end
 end
 
