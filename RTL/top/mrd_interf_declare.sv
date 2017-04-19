@@ -18,6 +18,7 @@ endinterface
 
 interface mrd_rdx2345_if ();
 	logic [2:0]  factor;
+	logic [2:0]  cnt_stage;
 	logic valid;
 	logic signed [18-1:0] d_real [0:4];
 	logic signed [18-1:0] d_imag [0:4];

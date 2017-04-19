@@ -7,7 +7,9 @@ module mrd_rdx5_3_4_2_v2
 	input signed [18-1:0] din_real [0:4],
 	input signed [18-1:0] din_imag [0:4],
 	input [2:0] factor,
+	input [2:0] cnt_stage,
 	input inverse,
+	input source_eop,
 
 	input unsigned [1:0] margin_in,
 	input unsigned [3:0] exp_in,
@@ -30,7 +32,7 @@ logic signed [18-1:0] p1_x3_r, p1_x3_i, p1_x4_r, p1_x4_i; //2.16
 
 logic signed [18-1:0] din_real_0_r, din_imag_0_r;
 
-assign worst_case_growth = (factor==3'd5 || factor==3'd4)? 2'd3 : 2'd2;
+assign worst_case_growth = (cnt_stage==3'd0)? 2'd2 : (factor==3'd5 || factor==3'd4)? 2'd3 : 2'd2;
 
 //--------------------------------------------------------
 //---------- pipeline 1 ----------------------------------
@@ -214,37 +216,37 @@ begin
 		p1_x1_r <= wir2_p1_x1_r;
 		p1_x1_i <= wir2_p1_x1_i;
 
-		if (factor==3'd5) begin
-		p1_x2_r <= (wir2_p1_x2_r[1])? wir2_p1_x2_r[19:2]+2'sd1 : wir2_p1_x2_r[19:2];
-		p1_x2_i <= (wir2_p1_x2_i[1])? wir2_p1_x2_i[19:2]+2'sd1 : wir2_p1_x2_i[19:2];
-		end
-		else begin // factor==3
-		p1_x2_r <= (wir2_p1_x2_r[0])? wir2_p1_x2_r[18:1]+2'sd1 : wir2_p1_x2_r[18:1];
-		p1_x2_i <= (wir2_p1_x2_i[0])? wir2_p1_x2_i[18:1]+2'sd1 : wir2_p1_x2_i[18:1];
-		end
-
-		p1_x5_r <= (wir2_p1_x5_r[1])? wir2_p1_x5_r[19:2]+2'sd1 : wir2_p1_x5_r[19:2];
-		p1_x5_i <= (wir2_p1_x5_i[1])? wir2_p1_x5_i[19:2]+2'sd1 : wir2_p1_x5_i[19:2];
-		p1_x3_r <= (wir1_p1_x3_r[0])? wir1_p1_x3_r[18:1]+2'sd1 : wir1_p1_x3_r[18:1];
-		p1_x3_i <= (wir1_p1_x3_i[0])? wir1_p1_x3_i[18:1]+2'sd1 : wir1_p1_x3_i[18:1];
-		p1_x4_r <= (wir1_p1_x4_r[0])? wir1_p1_x4_r[18:1]+2'sd1 : wir1_p1_x4_r[18:1];
-		p1_x4_i <= (wir1_p1_x4_i[0])? wir1_p1_x4_i[18:1]+2'sd1 : wir1_p1_x4_i[18:1];
-
 		// if (factor==3'd5) begin
-		// p1_x2_r <= wir2_p1_x2_r[19:2];
-		// p1_x2_i <= wir2_p1_x2_i[19:2];
+		// p1_x2_r <= (wir2_p1_x2_r[1])? wir2_p1_x2_r[19:2]+2'sd1 : wir2_p1_x2_r[19:2];
+		// p1_x2_i <= (wir2_p1_x2_i[1])? wir2_p1_x2_i[19:2]+2'sd1 : wir2_p1_x2_i[19:2];
 		// end
 		// else begin // factor==3
-		// p1_x2_r <= wir2_p1_x2_r[18:1];
-		// p1_x2_i <= wir2_p1_x2_i[18:1];
+		// p1_x2_r <= (wir2_p1_x2_r[0])? wir2_p1_x2_r[18:1]+2'sd1 : wir2_p1_x2_r[18:1];
+		// p1_x2_i <= (wir2_p1_x2_i[0])? wir2_p1_x2_i[18:1]+2'sd1 : wir2_p1_x2_i[18:1];
 		// end
 
-		// p1_x5_r <= wir2_p1_x5_r[19:2];
-		// p1_x5_i <= wir2_p1_x5_i[19:2];
-		// p1_x3_r <= wir1_p1_x3_r[18:1];
-		// p1_x3_i <= wir1_p1_x3_i[18:1];
-		// p1_x4_r <= wir1_p1_x4_r[18:1];
-		// p1_x4_i <= wir1_p1_x4_i[18:1];
+		// p1_x5_r <= (wir2_p1_x5_r[1])? wir2_p1_x5_r[19:2]+2'sd1 : wir2_p1_x5_r[19:2];
+		// p1_x5_i <= (wir2_p1_x5_i[1])? wir2_p1_x5_i[19:2]+2'sd1 : wir2_p1_x5_i[19:2];
+		// p1_x3_r <= (wir1_p1_x3_r[0])? wir1_p1_x3_r[18:1]+2'sd1 : wir1_p1_x3_r[18:1];
+		// p1_x3_i <= (wir1_p1_x3_i[0])? wir1_p1_x3_i[18:1]+2'sd1 : wir1_p1_x3_i[18:1];
+		// p1_x4_r <= (wir1_p1_x4_r[0])? wir1_p1_x4_r[18:1]+2'sd1 : wir1_p1_x4_r[18:1];
+		// p1_x4_i <= (wir1_p1_x4_i[0])? wir1_p1_x4_i[18:1]+2'sd1 : wir1_p1_x4_i[18:1];
+
+		if (factor==3'd5) begin
+		p1_x2_r <= wir2_p1_x2_r[19:2];
+		p1_x2_i <= wir2_p1_x2_i[19:2];
+		end
+		else begin // factor==3
+		p1_x2_r <= wir2_p1_x2_r[18:1];
+		p1_x2_i <= wir2_p1_x2_i[18:1];
+		end
+
+		p1_x5_r <= wir2_p1_x5_r[19:2];
+		p1_x5_i <= wir2_p1_x5_i[19:2];
+		p1_x3_r <= wir1_p1_x3_r[18:1];
+		p1_x3_i <= wir1_p1_x3_i[18:1];
+		p1_x4_r <= wir1_p1_x4_r[18:1];
+		p1_x4_i <= wir1_p1_x4_i[18:1];
 	end
 end
 
@@ -717,25 +719,42 @@ begin
 		else
 			out_val <= val_r[2];
 
-		dout_real_t[0] <= (wir2_p4_x0_r[5])? wir2_p4_x0_r[23:6]+2'sd1 : wir2_p4_x0_r[23:6]; 
-		dout_imag_t[0] <= (wir2_p4_x0_i[5])? wir2_p4_x0_i[23:6]+2'sd1 : wir2_p4_x0_i[23:6]; 
+		// dout_real_t[0] <= (wir2_p4_x0_r[5])? wir2_p4_x0_r[23:6]+2'sd1 : wir2_p4_x0_r[23:6]; 
+		// dout_imag_t[0] <= (wir2_p4_x0_i[5])? wir2_p4_x0_i[23:6]+2'sd1 : wir2_p4_x0_i[23:6]; 
 
-		dout_real_t[1] <= (wir2_p4_x1_r[5])? wir2_p4_x1_r[23:6]+2'sd1 : wir2_p4_x1_r[23:6];
-		dout_imag_t[1] <= (wir2_p4_x1_i[5])? wir2_p4_x1_i[23:6]+2'sd1 : wir2_p4_x1_i[23:6];
+		// dout_real_t[1] <= (wir2_p4_x1_r[5])? wir2_p4_x1_r[23:6]+2'sd1 : wir2_p4_x1_r[23:6];
+		// dout_imag_t[1] <= (wir2_p4_x1_i[5])? wir2_p4_x1_i[23:6]+2'sd1 : wir2_p4_x1_i[23:6];
 
-		dout_real_t[2] <= (wir2_p4_x2_r[5])? wir2_p4_x2_r[23:6]+2'sd1 : wir2_p4_x2_r[23:6];
-		dout_imag_t[2] <= (wir2_p4_x2_i[5])? wir2_p4_x2_i[23:6]+2'sd1 : wir2_p4_x2_i[23:6];
+		// dout_real_t[2] <= (wir2_p4_x2_r[5])? wir2_p4_x2_r[23:6]+2'sd1 : wir2_p4_x2_r[23:6];
+		// dout_imag_t[2] <= (wir2_p4_x2_i[5])? wir2_p4_x2_i[23:6]+2'sd1 : wir2_p4_x2_i[23:6];
 
-		dout_real_t[3] <= (wir2_p4_x3_r[5])? wir2_p4_x3_r[23:6]+2'sd1 : wir2_p4_x3_r[23:6];
-		dout_imag_t[3] <= (wir2_p4_x3_i[5])? wir2_p4_x3_i[23:6]+2'sd1 : wir2_p4_x3_i[23:6];
+		// dout_real_t[3] <= (wir2_p4_x3_r[5])? wir2_p4_x3_r[23:6]+2'sd1 : wir2_p4_x3_r[23:6];
+		// dout_imag_t[3] <= (wir2_p4_x3_i[5])? wir2_p4_x3_i[23:6]+2'sd1 : wir2_p4_x3_i[23:6];
 
-		dout_real_t[4] <= (wir2_p4_x4_r[5])? wir2_p4_x4_r[23:6]+2'sd1 : wir2_p4_x4_r[23:6]; 
-		dout_imag_t[4] <= (wir2_p4_x4_i[5])? wir2_p4_x4_i[23:6]+2'sd1 : wir2_p4_x4_i[23:6]; 
+		// dout_real_t[4] <= (wir2_p4_x4_r[5])? wir2_p4_x4_r[23:6]+2'sd1 : wir2_p4_x4_r[23:6]; 
+		// dout_imag_t[4] <= (wir2_p4_x4_i[5])? wir2_p4_x4_i[23:6]+2'sd1 : wir2_p4_x4_i[23:6]; 
 
-		if (factor==3'd3 || factor==3'd5) 
-			exp_out <= (val_r[4])? exp_in + word_growth : exp_out; 
-		else
-			exp_out <= (val_r[1])? exp_in + word_growth : exp_out; 
+
+		dout_real_t[0] <= wir2_p4_x0_r[23:6]; 
+		dout_imag_t[0] <= wir2_p4_x0_i[23:6]; 
+
+		dout_real_t[1] <= wir2_p4_x1_r[23:6];
+		dout_imag_t[1] <= wir2_p4_x1_i[23:6];
+
+		dout_real_t[2] <= wir2_p4_x2_r[23:6];
+		dout_imag_t[2] <= wir2_p4_x2_i[23:6];
+
+		dout_real_t[3] <= wir2_p4_x3_r[23:6];
+		dout_imag_t[3] <= wir2_p4_x3_i[23:6];
+
+		dout_real_t[4] <= wir2_p4_x4_r[23:6]; 
+		dout_imag_t[4] <= wir2_p4_x4_i[23:6]; 
+
+		// if (factor==3'd3 || factor==3'd5) 
+		// 	exp_out <= (val_r[4])? exp_in + word_growth : exp_out; 
+		// else
+		if (source_eop) exp_out <= 0;
+		else exp_out <= (val_r[1]==1'b1 && val_r[2]==1'b0 )? exp_in + word_growth : exp_out; 
 	end
 end
 

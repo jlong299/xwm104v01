@@ -2,8 +2,9 @@ module mrd_rdx2345_twdl (
 	input clk,    
 	input rst_n,  
 
-	input sop,
+	input sink_sop,
 	input inverse,
+	input source_eop,
 	mrd_rdx2345_if from_mem,
 	mrd_rdx2345_if to_mem
 );
@@ -76,7 +77,7 @@ assign {to_mem.bank_index[4],to_mem.bank_addr[4]} = q[54:44];
 logic from_mem_valid;
 logic signed [18-1:0] from_mem_d_real [0:4];
 logic signed [18-1:0] from_mem_d_imag [0:4];
-logic [2:0] from_mem_factor;
+logic [2:0] from_mem_factor, from_mem_cnt_stage;
 
 genvar i;
 integer j;
@@ -88,6 +89,7 @@ always@(posedge clk) begin
 	from_mem_d_real <= from_mem.d_real;
 	from_mem_d_imag <= from_mem.d_imag;
 	from_mem_factor <= from_mem.factor;
+	from_mem_cnt_stage <= from_mem.cnt_stage;
 end
 
 // mrd_rdx4_2_v2
@@ -146,41 +148,12 @@ end
 // 	);
 
 
-// always@(*)
-// begin
-// 	case (from_mem.factor)
-// 	3'd4 : begin
-// 		dft_real = real_rdx4;
-// 		dft_imag = imag_rdx4;
-//  		dft_val = val_rdx4;
-//  		exp_out = exp_out_rdx4;
-// 	end
-// 	3'd5 : begin
-// 		dft_real = real_rdx5;
-// 		dft_imag = imag_rdx5;
-//  		dft_val = val_rdx5;
-//  		exp_out = exp_out_rdx5;
-// 	end
-// 	3'd3 : begin
-// 		dft_real = real_rdx3;
-// 		dft_imag = imag_rdx3;
-//  		dft_val = val_rdx3;
-//  		exp_out = exp_out_rdx3;
-// 	end
-// 	default : begin
-// 		dft_real = real_rdx4;
-// 		dft_imag = imag_rdx4;
-//  		dft_val = val_rdx4;
-//  		exp_out = exp_out_rdx4;
-// 	end
-// 	endcase
-// end
 
 
 logic inverse_r;
 always@(posedge clk) begin
 	if (!rst_n) inverse_r <= 0;
-	else inverse_r <= (sop)? inverse : inverse_r;
+	else inverse_r <= (sink_sop)? inverse : inverse_r;
 end
 
 mrd_rdx5_3_4_2_v2
@@ -192,7 +165,9 @@ rdx5_3_4_2_v2 (
 	.din_real  (from_mem_d_real),
 	.din_imag  (from_mem_d_imag),
 	.factor (from_mem_factor),
+	.cnt_stage (from_mem_cnt_stage),
 	.inverse (inverse_r),
+	.source_eop (source_eop),
 
 	.margin_in (margin_in),
 	.exp_in (exp_in),
@@ -248,7 +223,7 @@ logic dft_val_r;
 always@(posedge clk) begin
 if (!rst_n) exp_in <= 0;
 else
-	if (sop)  exp_in <= 0; 
+	if (source_eop)  exp_in <= 0; 
 	else exp_in <= ( dft_val & ~dft_val_r)? exp_out : exp_in;
 end
 assign to_mem.exp = exp_in;
@@ -327,7 +302,7 @@ always@(posedge clk) begin
 		else
 			margin_out <= 0;
 
-		if (sop) margin_in <= 0;
+		if (source_eop) margin_in <= 0;
 		else	margin_in <= (valid_r==2'b10)? margin_out : margin_in;
 	end
 end
