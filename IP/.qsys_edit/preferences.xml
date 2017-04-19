@@ -7,8 +7,8 @@
    <irq preferredWidth="34" />
   </columns>
  </systemtable>
- <library expandedCategories="Library,Project" />
- <window width="1100" height="800" x="268" y="217" />
+ <library expandedCategories="Project,Library" />
+ <window width="1100" height="800" x="331" y="125" />
  <generation
    path=""
    block_symbol_file="0"

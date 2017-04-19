@@ -226,14 +226,42 @@ always@(posedge clk) begin
 	end
 end
 
-always@(posedge clk) begin
-	for (j=1; j<=4; j++) begin
-		dout_real_t_p0[j] <= d_real_r[j]*tw_real_t[j];  
-		dout_real_t_p1[j] <= d_imag_r[j]*tw_imag_t[j];
-		dout_imag_t_p0[j] <= d_real_r[j]*tw_imag_t[j];
-		dout_imag_t_p1[j] <= d_imag_r[j]*tw_real_t[j]; // 1.17*2.14
-	end
+// always@(posedge clk) begin
+// 	for (j=1; j<=4; j++) begin
+// 		dout_real_t_p0[j] <= d_real_r[j]*tw_real_t[j];  
+// 		dout_real_t_p1[j] <= d_imag_r[j]*tw_imag_t[j];
+// 		dout_imag_t_p0[j] <= d_real_r[j]*tw_imag_t[j];
+// 		dout_imag_t_p1[j] <= d_imag_r[j]*tw_real_t[j]; // 1.17*2.14
+// 	end
+// end
+generate
+for (i=1; i<5; i++) begin : gent
+	lpm_mult_1816_mrd utest (
+		.dataa  (d_real_r[i]),  //  mult_input.dataa
+		.datab  (tw_real_t[i]),  //            .datab
+		.clock  (clk),  //            .clock
+		.result (dout_real_t_p0[i])  // mult_output.result
+	);
+	lpm_mult_1816_mrd utest2 (
+		.dataa  (d_imag_r[i]),  //  mult_input.dataa
+		.datab  (tw_imag_t[i]),  //            .datab
+		.clock  (clk),  //            .clock
+		.result (dout_real_t_p1[i])  // mult_output.result
+	);
+	lpm_mult_1816_mrd utest3 (
+		.dataa  (d_real_r[i]),  //  mult_input.dataa
+		.datab  (tw_imag_t[i]),  //            .datab
+		.clock  (clk),  //            .clock
+		.result (dout_imag_t_p0[i])  // mult_output.result
+	);
+	lpm_mult_1816_mrd utest4 (
+		.dataa  (d_imag_r[i]),  //  mult_input.dataa
+		.datab  (tw_real_t[i]),  //            .datab
+		.clock  (clk),  //            .clock
+		.result (dout_imag_t_p1[i])  // mult_output.result
+	);
 end
+endgenerate
 
 // assign tw_real_An = An;
 generate
@@ -252,43 +280,6 @@ begin
 	end
 end
 
-// altmult_complex_18_mrd u20 (
-// 		.dataa_real  (d_real_r[1]),  //  complex_input.dataa_real
-// 		.dataa_imag  (d_imag_r[1]),  //               .dataa_imag
-// 		.datab_real  (tw_real_t[1]),  //               .datab_real
-// 		.datab_imag  (tw_imag_t[1]),  //               .datab_imag
-// 		.clock       (clk),       //               .clk
-// 		.result_real (dout_real_t[1]), // complex_output.result_real
-// 		.result_imag (dout_imag_t[1])  //               .result_imag
-// 	);
-// altmult_complex_18_mrd u21 (
-// 		.dataa_real  (d_real_r[2]),  //  complex_input.dataa_real
-// 		.dataa_imag  (d_imag_r[2]),  //               .dataa_imag
-// 		.datab_real  (tw_real_t[2]),  //               .datab_real
-// 		.datab_imag  (tw_imag_t[2]),  //               .datab_imag
-// 		.clock       (clk),       //               .clk
-// 		.result_real (dout_real_t[2]), // complex_output.result_real
-// 		.result_imag (dout_imag_t[2])  //               .result_imag
-// 	);
-// altmult_complex_18_mrd u22 (
-// 		.dataa_real  (d_real_r[3]),  //  complex_input.dataa_real
-// 		.dataa_imag  (d_imag_r[3]),  //               .dataa_imag
-// 		.datab_real  (tw_real_t[3]),  //               .datab_real
-// 		.datab_imag  (tw_imag_t[3]),  //               .datab_imag
-// 		.clock       (clk),       //               .clk
-// 		.result_real (dout_real_t[3]), // complex_output.result_real
-// 		.result_imag (dout_imag_t[3])  //               .result_imag
-// 	);
-// altmult_complex_18_mrd u23 (
-// 		.dataa_real  (d_real_r[4]),  //  complex_input.dataa_real
-// 		.dataa_imag  (d_imag_r[4]),  //               .dataa_imag
-// 		.datab_real  (tw_real_t[4]),  //               .datab_real
-// 		.datab_imag  (tw_imag_t[4]),  //               .datab_imag
-// 		.clock       (clk),       //               .clk
-// 		.result_real (dout_real_t[4]), // complex_output.result_real
-// 		.result_imag (dout_imag_t[4])  //               .result_imag
-// 	);
-
 // generate
 // for (i=1; i<5; i++) begin : gen1
 
@@ -304,6 +295,7 @@ end
 endgenerate
 
 logic signed [wDataInOut-1:0]  d_real_r2, d_imag_r2;
+logic signed [wDataInOut-1:0]  d_real_r3, d_imag_r3;
 always@(posedge clk)
 begin
 	if (!rst_n)  
@@ -312,14 +304,16 @@ begin
 		dout_imag[0] <= 0;
 		d_real_r2 <= 0;
 		d_imag_r2 <= 0;
+		d_real_r3 <= 0;
+		d_imag_r3 <= 0;
 	end
 	else
 	begin
 		if  (  ((factor==3'd3 || factor==3'd5) && valid_r[delay_twdl-2] ) 
 			|| ((factor==3'd4 || factor==3'd2) && valid_r[delay_twdl_42-2])  )
 		begin
-			dout_real[0] <= d_real_r2; 
-			dout_imag[0] <= d_imag_r2;
+			dout_real[0] <= d_real_r3; 
+			dout_imag[0] <= d_imag_r3;
 		end
 		else begin
 			dout_real[0] <= 0;
@@ -327,6 +321,8 @@ begin
 		end
 		d_real_r2 <= d_real_r[0];
 		d_imag_r2 <= d_imag_r[0];
+		d_real_r3 <= d_real_r2;
+		d_imag_r3 <= d_imag_r2;
 	end
 end
 

@@ -1,0 +1,18 @@
+# system info lpm_mult_1816_mrd on 2017.04.18.17:04:46
+system_info:
+name,value
+DEVICE,10AX115U3F45E2SGE3
+DEVICE_FAMILY,Arria 10
+GENERATION_ID,1492506286
+#
+#
+# Files generated for lpm_mult_1816_mrd on 2017.04.18.17:04:46
+files:
+filepath,kind,attributes,module,is_top
+sim/lpm_mult_1816_mrd.v,VERILOG,CONTAINS_INLINE_CONFIGURATION,lpm_mult_1816_mrd,true
+lpm_mult_151/sim/lpm_mult_1816_mrd_lpm_mult_151_lsm6l5i.v,VERILOG,,lpm_mult_1816_mrd_lpm_mult_151_lsm6l5i,false
+#
+# Map from instance-path to kind of module
+instances:
+instancePath,module
+lpm_mult_1816_mrd.lpm_mult_0,lpm_mult_1816_mrd_lpm_mult_151_lsm6l5i
