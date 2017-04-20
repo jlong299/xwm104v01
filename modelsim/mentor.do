@@ -64,10 +64,8 @@ add wave -radix unsigned {sim:/top_tb/top_inst/mem0/cnt_stage}
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/fsm_lastRd_source}
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/cnt_twdlStage}
 
-add wave -radix signed {sim:/top_tb/top_inst/mem0/out_data_real_r}
 add wave -radix signed {sim:/top_tb/top_inst/mem0/out_data/dout_real}
 add wave -radix signed {sim:/top_tb/top_inst/mem0/in_rdx2345_data/d_real[0]}
-
 
 
 add wave -radix unsigned {sim:/top_tb/top_inst/mem0/mrd_FSMrd_rd_inst/*}
@@ -127,4 +125,4 @@ view structure
 view signals
 
 # run 800us
-run 80us
+run 800us

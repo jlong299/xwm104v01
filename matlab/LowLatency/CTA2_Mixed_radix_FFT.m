@@ -78,7 +78,7 @@ while(m_len<100 )
 %     if (m_len==3) 
 %         m_len = 96; 
 %     end
-    % factorize  N 
+%     factorize  N 
     [Nf_temp, err] = factor_2345(m_len);
     if err==1   % m_len can not be factorized to 2,3,4,5
         continue;

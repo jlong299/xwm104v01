@@ -5,7 +5,7 @@
 module CORDIC_v02(clock, cosine, sine, x_start, y_start, angle, atan_table);
 
   parameter width = 16;
-  parameter w_angle = 20;
+  parameter w_angle = 16;
 
   // Inputs
   input clock;

@@ -102,7 +102,7 @@ CTA_addr_trans_inst	(
 genvar  k;
 generate
 for (k=3'd0; k < 3'd5; k=k+3'd1) begin : gen0
-assign addrs_butterfly_mux[k]=(fsm==Rd && cnt_stage < ctrl.NumOfFactors-3'd1)?
+assign addrs_butterfly_mux[k]=(fsm==Rd && cnt_stage != ctrl.NumOfFactors-3'd1)?
                               addrs_butterfly[k] : addrs_butterfly_src[k] ;
 end
 endgenerate
@@ -136,21 +136,58 @@ generate
 	begin
 		if (!rst_n) begin
 			bank_addr_rd[k] <= 0;
-			bank_index_rd[k] <= 0;
+			// bank_index_rd[k] <= 0;
 		end
 		else begin
 			bank_addr_rd[k] <= tt_quotient[k][mrd_mem_pkt::wADDR-1:0];
 			// index 3'd7 means the index is not valid
-			if (cnt_stage == stage_of_rdx2)
-				bank_index_rd[k] <= (k >= 3'd4) ?
-	                          3'd7 : div7_rmdr_rd[k];
-	        else
-				bank_index_rd[k] <= (k >= Nf[cnt_stage]) ?
-	                          3'd7 : div7_rmdr_rd[k];
+			// if (cnt_stage == stage_of_rdx2)
+				// bank_index_rd[k] <= (k >= 3'd4) ?
+	                          // 3'd7 : div7_rmdr_rd[k];
+	        // else
+				// bank_index_rd[k] <= (k >= Nf[cnt_stage]) ?
+	                          // 3'd7 : div7_rmdr_rd[k];
 	    end
 	end
 	end
 endgenerate
+always@(posedge clk)
+begin
+	if (!rst_n) begin
+		bank_index_rd[0] <= 0;
+		bank_index_rd[1] <= 0;
+		bank_index_rd[2] <= 0;
+		bank_index_rd[3] <= 0;
+		bank_index_rd[4] <= 0;
+	end
+	else begin
+		// index 3'd7 means the index is not valid
+		if (cnt_stage == stage_of_rdx2)
+			bank_index_rd[0] <= div7_rmdr_rd[0];
+        else
+			bank_index_rd[0] <= (Nf[cnt_stage] == 3'd0)? 3'd7 : div7_rmdr_rd[0];
+
+		if (cnt_stage == stage_of_rdx2)
+			bank_index_rd[1] <= div7_rmdr_rd[1];
+        else
+			bank_index_rd[1] <= (Nf[cnt_stage] <= 3'd1)? 3'd7 : div7_rmdr_rd[1];
+
+		if (cnt_stage == stage_of_rdx2)
+			bank_index_rd[2] <= div7_rmdr_rd[2];
+        else
+			bank_index_rd[2] <= (Nf[cnt_stage] <= 3'd2)? 3'd7 : div7_rmdr_rd[2];
+
+		if (cnt_stage == stage_of_rdx2)
+			bank_index_rd[3] <= div7_rmdr_rd[3];
+        else
+			bank_index_rd[3] <= (Nf[cnt_stage] <= 3'd3)? 3'd7 : div7_rmdr_rd[3];
+
+		if (cnt_stage == stage_of_rdx2)
+			bank_index_rd[4] <= 3'd7 ;
+        else
+			bank_index_rd[4] <= (Nf[cnt_stage] <= 3'd4)? 3'd7 : div7_rmdr_rd[4];
+    end
+end
 
 generate
 for (k=3'd0; k <= 3'd6; k=k+3'd1) begin : rden_addr_index
@@ -166,7 +203,6 @@ begin
 		if (bank_index_rd[0]== k || bank_index_rd[1]== k ||
 			bank_index_rd[2]== k || bank_index_rd[3]== k ||
 			bank_index_rd[4]== k )
-			//////
 				rdRAM_FSMrd.rden[k] <= rden_r[in_dly-3];
 		else rdRAM_FSMrd.rden[k] <= 1'b0;
 
@@ -223,11 +259,9 @@ end
 always@(*)
 begin
 	////// change in_dly in mrd_mem_top_v2.sv
-	out_rdx2345_data.d_real[3] = (fsm_r==Rd && cnt_stage==3'd0)? din_real_r_final :
-	        // {{(30-18){din_real_r[in_dly][17]}}, din_real_r[in_dly]} : 
+	out_rdx2345_data.d_real[3] = (cnt_stage==3'd0)? din_real_r_final :
 	        rdRAM_FSMrd.dout_real[(bank_index_rd_rrr[3])]; 
-	out_rdx2345_data.d_imag[3] = (fsm_r==Rd && cnt_stage==3'd0)? din_imag_r_final :
-	        // {{(30-18){din_imag_r[in_dly][17]}}, din_imag_r[in_dly]} : 
+	out_rdx2345_data.d_imag[3] = (cnt_stage==3'd0)? din_imag_r_final :
 	        rdRAM_FSMrd.dout_imag[(bank_index_rd_rrr[3])]; 
 
 	out_rdx2345_data.d_real[4] = rdRAM_FSMrd.dout_real[(bank_index_rd_rrr[4])]; 

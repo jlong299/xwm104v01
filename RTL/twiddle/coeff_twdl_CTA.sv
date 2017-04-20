@@ -139,29 +139,29 @@ end
   // assign atan_table[16] = 'b00000000000000000010;
   // assign atan_table[17] = 'b00000000000000000001;
 
-  logic signed [20-1:0] atan_table [0:12];
+  logic signed [16-1:0] atan_table [0:12];
 
-  assign atan_table[00] = 'b00100000000000000000; // 45.000 degrees -> atan(2^0)
-  assign atan_table[01] = 'b00010010111001000000; // 26.565 degrees -> atan(2^-1)
-  assign atan_table[02] = 'b00001001111110110011; // 14.036 degrees -> atan(2^-2)
-  assign atan_table[03] = 'b00000101000100010001; // atan(2^-3)
-  assign atan_table[04] = 'b00000010100010110000;
-  assign atan_table[05] = 'b00000001010001011101;
-  assign atan_table[06] = 'b00000000101000101111;
-  assign atan_table[07] = 'b00000000010100010111;
-  assign atan_table[08] = 'b00000000001010001011;
-  assign atan_table[09] = 'b00000000000101000101;
-  assign atan_table[10] = 'b00000000000010100010;
-  assign atan_table[11] = 'b00000000000001010001;
-  assign atan_table[12] = 'b00000000000000101000;
+  assign atan_table[00] = 'b0010000000000000;//0000; // 45.000 degrees -> atan(2^0)
+  assign atan_table[01] = 'b0001001011100100;//0000; // 26.565 degrees -> atan(2^-1)
+  assign atan_table[02] = 'b0000100111111011;//0011; // 14.036 degrees -> atan(2^-2)
+  assign atan_table[03] = 'b0000010100010001;//0001; // atan(2^-3)
+  assign atan_table[04] = 'b0000001010001011;//0000;
+  assign atan_table[05] = 'b0000000101000101;//1101;
+  assign atan_table[06] = 'b0000000010100010;//1111;
+  assign atan_table[07] = 'b0000000001010001;//0111;
+  assign atan_table[08] = 'b0000000000101000;//1011;
+  assign atan_table[09] = 'b0000000000010100;//0101;
+  assign atan_table[10] = 'b0000000000001010;//0010;
+  assign atan_table[11] = 'b0000000000000101;//0001;
+  assign atan_table[12] = 'b0000000000000010;//1000;
   // assign atan_table[13] = 'b00000000000000010100;
 
 
 CORDIC_v02
-cordic_inst(clk, cosine[0], sine[0], xin, 16'd0, quotient_r[0], atan_table);
+cordic_inst(clk, cosine[0], sine[0], xin, 16'd0, quotient_r[0][19:4], atan_table);
 
 CORDIC_v02
-cordic_inst2(clk, cosine[2], sine[2], xin, 16'd0, quotient_r[2], atan_table);
+cordic_inst2(clk, cosine[2], sine[2], xin, 16'd0, quotient_r[2][19:4], atan_table);
 
 always@(posedge clk) dout_real_1 <= cosine[0];
 always@(posedge clk) dout_imag_1 <= - sine[0];

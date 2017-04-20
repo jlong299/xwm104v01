@@ -85,30 +85,36 @@ begin
 	begin
 		// dftpts <= 0;
 		size <= 0;
-		Nf <= 0;
-		dftpts_div_Nf <= 0;   //  dftpts/Nf
-		twdl_demontr <= 0;
-		stage_of_rdx2 <= 0;
+		// Nf <= 0;
+		// dftpts_div_Nf <= 0;   //  dftpts/Nf
+		// twdl_demontr <= 0;
+		// stage_of_rdx2 <= 0;
 	end
 	else
 	begin
-		if ( fsm == Rd && fsm_r != Rd)
-		begin
-			Nf <= ctrl.Nf;
-			dftpts_div_Nf <= ctrl.dftpts_div_Nf;
-			twdl_demontr <= ctrl.twdl_demontr;
-			stage_of_rdx2 <= ctrl.stage_of_rdx2;
-		end
-		else begin
-			Nf <= Nf;
-			dftpts_div_Nf <= dftpts_div_Nf;
-			twdl_demontr <= twdl_demontr;
-			stage_of_rdx2 <= stage_of_rdx2;
-		end
+		// if ( fsm == Rd && fsm_r != Rd)
+		// begin
+		// 	Nf <= ctrl.Nf;
+		// 	dftpts_div_Nf <= ctrl.dftpts_div_Nf;
+		// 	twdl_demontr <= ctrl.twdl_demontr;
+		// 	stage_of_rdx2 <= ctrl.stage_of_rdx2;
+		// end
+		// else begin
+		// 	Nf <= Nf;
+		// 	dftpts_div_Nf <= dftpts_div_Nf;
+		// 	twdl_demontr <= twdl_demontr;
+		// 	stage_of_rdx2 <= stage_of_rdx2;
+		// end
 		// dftpts <= (in_data.sop)? in_data.dftpts : dftpts;
 		size <= (in_data.sop)? in_data.size : size;
 	end
 end
+
+// Change to combinational logic  to reduce resource 
+assign Nf = ctrl.Nf;
+assign dftpts_div_Nf = ctrl.dftpts_div_Nf;
+assign twdl_demontr = ctrl.twdl_demontr;
+assign stage_of_rdx2 = ctrl.stage_of_rdx2;
 
 //----------------  Input (Sink) registers -------------
 localparam  in_dly = 7;
@@ -175,7 +181,7 @@ always@(posedge clk) sink_ready <= (fsm==Idle);
 //-------------------------------------------
 //--------------  7 RAMs --------------------
 //-------------------------------------------
-wire [23:0] wir_whatever;
+// wire [23:0] wir_whatever;
 genvar i;
 generate
 	for (i=0; i<7; i++) begin : RAM_banks
