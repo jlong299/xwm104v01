@@ -48,7 +48,7 @@ module mrd_mem_top_v2 (
 	mrd_st_if  out_data,
 	mrd_rdx2345_if  out_rdx2345_data,
 	output logic [2:0] fsm,
-	output sink_ready
+	output logic sink_ready
 );
 
 // logic [11:0]  dftpts;
@@ -171,7 +171,7 @@ assign fsm_lastRd_source = (fsm==Source || cnt_stage==ctrl.NumOfFactors-3'd1);
 // always@(posedge clk) out_rdx2345_data.quotient <= ctrl.quotient[cnt_stage];
 // always@(posedge clk) out_rdx2345_data.remainder <= ctrl.remainder[cnt_stage];
 
-assign sink_ready = (fsm==Idle);
+always@(posedge clk) sink_ready <= (fsm==Idle);
 //-------------------------------------------
 //--------------  7 RAMs --------------------
 //-------------------------------------------
@@ -230,12 +230,9 @@ assign rdRAM_FSMrd.dout_imag[i] = (fsm_r==Rd)? rdRAM.dout_imag[i] : 18'd0;
 end
 endgenerate 
 
-logic [17:0] out_data_real_r, out_data_imag_r;
 logic [2:0] bank_index_source_r;
 always@(posedge clk) bank_index_source_r <= bank_index_source;
 always@(posedge clk) begin
-	 out_data_real_r <= rdRAM.dout_real[bank_index_source_r] ;
-	 out_data_imag_r <= rdRAM.dout_imag[bank_index_source_r] ;
 	 out_data.dout_real <= (fsm_lastRd_source && in_rdx2345_data.valid)? 
             in_rdx2345_data.d_real[0] : rdRAM.dout_real[bank_index_source_r] ;
 	 out_data.dout_imag <= (fsm_lastRd_source && in_rdx2345_data.valid)? 

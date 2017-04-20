@@ -42,12 +42,14 @@ output reg [17:0] source_imag;
 output reg [3:0] source_exp;
 // output reg [11:0] dftpts_out;
 
-reg rst_n_sync, rst_n_r0, rst_n_r1;
+reg rst_n_sync, rst_n_r0, rst_n_r1, rst_n_r2, source_eop_r;
 always@(posedge clk)
 begin
-	rst_n_sync <= rst_n_r1;
+	rst_n_sync <= rst_n_r2 & (~source_eop_r);
+	rst_n_r2 <= rst_n_r1;
 	rst_n_r1 <= rst_n_r0;
 	rst_n_r0 <= rst_n;
+	source_eop_r <= source_eop;
 end
 
 mrd_st_if sink_st();

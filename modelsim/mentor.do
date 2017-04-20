@@ -53,6 +53,8 @@ elab
 # vmap       work     ./libraries/work/
 
 add wave -radix signed {sim:/top_tb/*}
+add wave -radix signed {sim:/top_tb/top_inst/rst_n_sync}
+add wave -radix signed {sim:/top_tb/top_inst/sink_ready}
 
 add wave -radix unsigned sim:/top_tb/top_inst/ctrl_fsm/*
 add wave -radix unsigned sim:/top_tb/top_inst/ctrl_fsm/ctrl_to_mem/*
@@ -125,4 +127,4 @@ view structure
 view signals
 
 # run 800us
-run 160us
+run 80us
