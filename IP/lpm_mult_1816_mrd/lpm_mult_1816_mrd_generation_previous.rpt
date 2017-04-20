@@ -15,11 +15,11 @@ Info: lpm_mult_1816_mrd: Running transform generation_view_transform took 0.000s
 Info: lpm_mult_0: Running transform generation_view_transform
 Info: lpm_mult_0: Running transform generation_view_transform took 0.000s
 Info: lpm_mult_1816_mrd: Running transform merlin_avalon_transform
-Info: lpm_mult_1816_mrd: Running transform merlin_avalon_transform took 0.054s
+Info: lpm_mult_1816_mrd: Running transform merlin_avalon_transform took 0.085s
 Info: lpm_mult_1816_mrd: "Naming system components in system: lpm_mult_1816_mrd"
 Info: lpm_mult_1816_mrd: "Processing generation queue"
 Info: lpm_mult_1816_mrd: "Generating: lpm_mult_1816_mrd"
-Info: lpm_mult_1816_mrd: "Generating: lpm_mult_1816_mrd_lpm_mult_151_riek4uq"
+Info: lpm_mult_1816_mrd: "Generating: lpm_mult_1816_mrd_lpm_mult_151_nxloowi"
 Info: lpm_mult_1816_mrd: Done "lpm_mult_1816_mrd" with 2 modules, 2 files
 Info: qsys-generate succeeded.
 Info: Finished: Create simulation model
@@ -64,7 +64,7 @@ Info: lpm_mult_1816_mrd: Running transform merlin_avalon_transform took 0.007s
 Info: lpm_mult_1816_mrd: "Naming system components in system: lpm_mult_1816_mrd"
 Info: lpm_mult_1816_mrd: "Processing generation queue"
 Info: lpm_mult_1816_mrd: "Generating: lpm_mult_1816_mrd"
-Info: lpm_mult_1816_mrd: "Generating: lpm_mult_1816_mrd_lpm_mult_151_riek4uq"
+Info: lpm_mult_1816_mrd: "Generating: lpm_mult_1816_mrd_lpm_mult_151_nxloowi"
 Info: lpm_mult_1816_mrd: Done "lpm_mult_1816_mrd" with 2 modules, 3 files
 Info: qsys-generate succeeded.
 Info: Finished: Create HDL design files for synthesis

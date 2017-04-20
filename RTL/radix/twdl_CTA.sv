@@ -226,6 +226,32 @@ always@(posedge clk) begin
 	end
 end
 
+//------------ Temp -----------------------------
+logic signed [15:0] tw_real_t_r [1:4]; 
+logic signed [15:0] tw_imag_t_r [1:4]; 
+logic signed [wDataInOut-1:0]  d_real_rr [0:4];
+logic signed [wDataInOut-1:0]  d_imag_rr [0:4];
+always@(posedge clk) begin
+	tw_real_t_r[1] <= tw_real_t[1];
+	tw_real_t_r[2] <= tw_real_t[2];
+	tw_real_t_r[3] <= tw_real_t[3];
+	tw_real_t_r[4] <= tw_real_t[4];
+	tw_imag_t_r[1] <= tw_imag_t[1];
+	tw_imag_t_r[2] <= tw_imag_t[2];
+	tw_imag_t_r[3] <= tw_imag_t[3];
+	tw_imag_t_r[4] <= tw_imag_t[4];
+	d_real_rr[1] <= d_real_r[1];
+	d_real_rr[2] <= d_real_r[2];
+	d_real_rr[3] <= d_real_r[3];
+	d_real_rr[4] <= d_real_r[4];
+	d_imag_rr[1] <= d_imag_r[1];
+	d_imag_rr[2] <= d_imag_r[2];
+	d_imag_rr[3] <= d_imag_r[3];
+	d_imag_rr[4] <= d_imag_r[4];
+end
+
+//---------------------------------------------------
+
 // always@(posedge clk) begin
 // 	for (j=1; j<=4; j++) begin
 // 		dout_real_t_p0[j] <= d_real_r[j]*tw_real_t[j];  
@@ -234,54 +260,213 @@ end
 // 		dout_imag_t_p1[j] <= d_imag_r[j]*tw_real_t[j]; // 1.17*2.14
 // 	end
 // end
-generate
-for (i=1; i<5; i++) begin : gent
-	lpm_mult_1816_mrd utest (
-		.dataa  (d_real_r[i]),  //  mult_input.dataa
-		.datab  (tw_real_t[i]),  //            .datab
-		.clock  (clk),  //            .clock
-		.result (dout_real_t_p0[i])  // mult_output.result
-	);
-	lpm_mult_1816_mrd utest2 (
-		.dataa  (d_imag_r[i]),  //  mult_input.dataa
-		.datab  (tw_imag_t[i]),  //            .datab
-		.clock  (clk),  //            .clock
-		.result (dout_real_t_p1[i])  // mult_output.result
-	);
-	lpm_mult_1816_mrd utest3 (
-		.dataa  (d_real_r[i]),  //  mult_input.dataa
-		.datab  (tw_imag_t[i]),  //            .datab
-		.clock  (clk),  //            .clock
-		.result (dout_imag_t_p0[i])  // mult_output.result
-	);
-	lpm_mult_1816_mrd utest4 (
-		.dataa  (d_imag_r[i]),  //  mult_input.dataa
-		.datab  (tw_real_t[i]),  //            .datab
-		.clock  (clk),  //            .clock
-		.result (dout_imag_t_p1[i])  // mult_output.result
-	);
-end
-endgenerate
-
-// assign tw_real_An = An;
-generate
-for (i=1; i<5; i++) begin : gen1
-always@(posedge clk)
-begin
-	if (!rst_n)  
-	begin
-		dout_real_t[i] <= 0;
-		dout_imag_t[i] <= 0;
-	end
-	else
-	begin
-		dout_real_t[i] <= dout_real_t_p0[i] - dout_real_t_p1[i];
-		dout_imag_t[i] <= dout_imag_t_p0[i] + dout_imag_t_p1[i];
-	end
-end
 
 // generate
+// for (i=1; i<5; i++) begin : gent
+// 	// pipeline : 3
+// 	lpm_mult_1816_mrd utest (
+// 		.dataa  (d_real_r[i]),  //  mult_input.dataa
+// 		.datab  (tw_real_t[i]),  //            .datab
+// 		.clock  (clk),  //            .clock
+// 		.result (dout_real_t_p0[i])  // mult_output.result
+// 	);
+// 	lpm_mult_1816_mrd utest2 (
+// 		.dataa  (d_imag_r[i]),  //  mult_input.dataa
+// 		.datab  (tw_imag_t[i]),  //            .datab
+// 		.clock  (clk),  //            .clock
+// 		.result (dout_real_t_p1[i])  // mult_output.result
+// 	);
+// 	lpm_mult_1816_mrd utest3 (
+// 		.dataa  (d_real_r[i]),  //  mult_input.dataa
+// 		.datab  (tw_imag_t[i]),  //            .datab
+// 		.clock  (clk),  //            .clock
+// 		.result (dout_imag_t_p0[i])  // mult_output.result
+// 	);
+// 	lpm_mult_1816_mrd utest4 (
+// 		.dataa  (d_imag_r[i]),  //  mult_input.dataa
+// 		.datab  (tw_real_t[i]),  //            .datab
+// 		.clock  (clk),  //            .clock
+// 		.result (dout_imag_t_p1[i])  // mult_output.result
+// 	);
+// end
+// endgenerate
+
+//----------- Temp -------------------------
+	// pipeline : 3
+	lpm_mult_1816_mrd utest1_1 (
+		.dataa  (d_real_rr[1]),  //  mult_input.dataa
+		.datab  (tw_real_t_r[1]),  //            .datab
+		.clock  (clk),  //            .clock
+		.result (dout_real_t_p0[1])  // mult_output.result
+	);
+	lpm_mult_1816_mrd utest2_1 (
+		.dataa  (d_imag_rr[1]),  //  mult_input.dataa
+		.datab  (tw_imag_t_r[1]),  //            .datab
+		.clock  (clk),  //            .clock
+		.result (dout_real_t_p1[1])  // mult_output.result
+	);
+	lpm_mult_1816_mrd utest3_1 (
+		.dataa  (d_real_rr[1]),  //  mult_input.dataa
+		.datab  (tw_imag_t_r[1]),  //            .datab
+		.clock  (clk),  //            .clock
+		.result (dout_imag_t_p0[1])  // mult_output.result
+	);
+	lpm_mult_1816_mrd utest4_1 (
+		.dataa  (d_imag_rr[1]),  //  mult_input.dataa
+		.datab  (tw_real_t_r[1]),  //            .datab
+		.clock  (clk),  //            .clock
+		.result (dout_imag_t_p1[1])  // mult_output.result
+	);
+
+	// pipeline : 3
+	lpm_mult_1816_mrd utest1_2 (
+		.dataa  (d_real_rr[2]),  //  mult_input.dataa
+		.datab  (tw_real_t_r[2]),  //            .datab
+		.clock  (clk),  //            .clock
+		.result (dout_real_t_p0[2])  // mult_output.result
+	);
+	lpm_mult_1816_mrd utest2_2 (
+		.dataa  (d_imag_rr[2]),  //  mult_input.dataa
+		.datab  (tw_imag_t_r[2]),  //            .datab
+		.clock  (clk),  //            .clock
+		.result (dout_real_t_p1[2])  // mult_output.result
+	);
+	lpm_mult_1816_mrd utest3_2 (
+		.dataa  (d_real_rr[2]),  //  mult_input.dataa
+		.datab  (tw_imag_t_r[2]),  //            .datab
+		.clock  (clk),  //            .clock
+		.result (dout_imag_t_p0[2])  // mult_output.result
+	);
+	lpm_mult_1816_mrd utest4_2 (
+		.dataa  (d_imag_rr[2]),  //  mult_input.dataa
+		.datab  (tw_real_t_r[2]),  //            .datab
+		.clock  (clk),  //            .clock
+		.result (dout_imag_t_p1[2])  // mult_output.result
+	);
+
+	// pipeline : 3
+	lpm_mult_1816_mrd utest1_3 (
+		.dataa  (d_real_rr[3]),  //  mult_input.dataa
+		.datab  (tw_real_t_r[3]),  //            .datab
+		.clock  (clk),  //            .clock
+		.result (dout_real_t_p0[3])  // mult_output.result
+	);
+	lpm_mult_1816_mrd utest2_3 (
+		.dataa  (d_imag_rr[3]),  //  mult_input.dataa
+		.datab  (tw_imag_t_r[3]),  //            .datab
+		.clock  (clk),  //            .clock
+		.result (dout_real_t_p1[3])  // mult_output.result
+	);
+	lpm_mult_1816_mrd utest3_3 (
+		.dataa  (d_real_rr[3]),  //  mult_input.dataa
+		.datab  (tw_imag_t_r[3]),  //            .datab
+		.clock  (clk),  //            .clock
+		.result (dout_imag_t_p0[3])  // mult_output.result
+	);
+	lpm_mult_1816_mrd utest4_3 (
+		.dataa  (d_imag_rr[3]),  //  mult_input.dataa
+		.datab  (tw_real_t_r[3]),  //            .datab
+		.clock  (clk),  //            .clock
+		.result (dout_imag_t_p1[3])  // mult_output.result
+	);
+
+	// pipeline : 3
+	lpm_mult_1816_mrd utest1_4 (
+		.dataa  (d_real_rr[4]),  //  mult_input.dataa
+		.datab  (tw_real_t_r[4]),  //            .datab
+		.clock  (clk),  //            .clock
+		.result (dout_real_t_p0[4])  // mult_output.result
+	);
+	lpm_mult_1816_mrd utest2_4 (
+		.dataa  (d_imag_rr[4]),  //  mult_input.dataa
+		.datab  (tw_imag_t_r[4]),  //            .datab
+		.clock  (clk),  //            .clock
+		.result (dout_real_t_p1[4])  // mult_output.result
+	);
+	lpm_mult_1816_mrd utest3_4 (
+		.dataa  (d_real_rr[4]),  //  mult_input.dataa
+		.datab  (tw_imag_t_r[4]),  //            .datab
+		.clock  (clk),  //            .clock
+		.result (dout_imag_t_p0[4])  // mult_output.result
+	);
+	lpm_mult_1816_mrd utest4_4 (
+		.dataa  (d_imag_rr[4]),  //  mult_input.dataa
+		.datab  (tw_real_t_r[4]),  //            .datab
+		.clock  (clk),  //            .clock
+		.result (dout_imag_t_p1[4])  // mult_output.result
+	);
+//--------------------------------------------
+
+logic signed [wDataTemp-1:0] dout_real_t_p0_r [1:4];
+logic signed [wDataTemp-1:0] dout_real_t_p1_r [1:4];
+logic signed [wDataTemp-1:0] dout_imag_t_p0_r [1:4];
+logic signed [wDataTemp-1:0] dout_imag_t_p1_r [1:4];
+// generate
 // for (i=1; i<5; i++) begin : gen1
+// always@(posedge clk)
+// begin
+// 	// if (!rst_n)  
+// 	// begin
+// 	// 	dout_real_t[i] <= 0;
+// 	// 	dout_imag_t[i] <= 0;
+// 	// end
+// 	// else
+// 	// begin
+// 		dout_real_t[i] <= dout_real_t_p0_r[i] - dout_real_t_p1_r[i];
+// 		dout_imag_t[i] <= dout_imag_t_p0_r[i] + dout_imag_t_p1_r[i];
+// 	// end
+
+// 	dout_real_t_p0_r[i] <= dout_real_t_p0[i];
+// 	dout_real_t_p1_r[i] <= dout_real_t_p1[i];
+// 	dout_imag_t_p0_r[i] <= dout_imag_t_p0[i];
+// 	dout_imag_t_p1_r[i] <= dout_imag_t_p1[i];
+// end
+
+//------------- Temp -------------------
+always@(posedge clk)
+begin
+	dout_real_t[1] <= dout_real_t_p0_r[1] - dout_real_t_p1_r[1];
+	dout_imag_t[1] <= dout_imag_t_p0_r[1] + dout_imag_t_p1_r[1];
+
+	dout_real_t_p0_r[1] <= dout_real_t_p0[1];
+	dout_real_t_p1_r[1] <= dout_real_t_p1[1];
+	dout_imag_t_p0_r[1] <= dout_imag_t_p0[1];
+	dout_imag_t_p1_r[1] <= dout_imag_t_p1[1];
+end
+always@(posedge clk)
+begin
+	dout_real_t[2] <= dout_real_t_p0_r[2] - dout_real_t_p1_r[2];
+	dout_imag_t[2] <= dout_imag_t_p0_r[2] + dout_imag_t_p1_r[2];
+
+	dout_real_t_p0_r[2] <= dout_real_t_p0[2];
+	dout_real_t_p1_r[2] <= dout_real_t_p1[2];
+	dout_imag_t_p0_r[2] <= dout_imag_t_p0[2];
+	dout_imag_t_p1_r[2] <= dout_imag_t_p1[2];
+end
+always@(posedge clk)
+begin
+	dout_real_t[3] <= dout_real_t_p0_r[3] - dout_real_t_p1_r[3];
+	dout_imag_t[3] <= dout_imag_t_p0_r[3] + dout_imag_t_p1_r[3];
+
+	dout_real_t_p0_r[3] <= dout_real_t_p0[3];
+	dout_real_t_p1_r[3] <= dout_real_t_p1[3];
+	dout_imag_t_p0_r[3] <= dout_imag_t_p0[3];
+	dout_imag_t_p1_r[3] <= dout_imag_t_p1[3];
+end
+always@(posedge clk)
+begin
+	dout_real_t[4] <= dout_real_t_p0_r[4] - dout_real_t_p1_r[4];
+	dout_imag_t[4] <= dout_imag_t_p0_r[4] + dout_imag_t_p1_r[4];
+
+	dout_real_t_p0_r[4] <= dout_real_t_p0[4];
+	dout_real_t_p1_r[4] <= dout_real_t_p1[4];
+	dout_imag_t_p0_r[4] <= dout_imag_t_p0[4];
+	dout_imag_t_p1_r[4] <= dout_imag_t_p1[4];
+end
+//-------------------------------------------------------------
+
+generate
+for (i=1; i<5; i++) begin : gen1
 
 // 1.17*2.14   An = 16384 = 2^14
 assign dout_real[i] = (dout_real_t[i][13])? 
@@ -296,6 +481,8 @@ endgenerate
 
 logic signed [wDataInOut-1:0]  d_real_r2, d_imag_r2;
 logic signed [wDataInOut-1:0]  d_real_r3, d_imag_r3;
+logic signed [wDataInOut-1:0]  d_real_r4, d_imag_r4;
+logic signed [wDataInOut-1:0]  d_real_r5, d_imag_r5;
 always@(posedge clk)
 begin
 	if (!rst_n)  
@@ -305,15 +492,19 @@ begin
 		d_real_r2 <= 0;
 		d_imag_r2 <= 0;
 		d_real_r3 <= 0;
-		d_imag_r3 <= 0;
+		d_imag_r3 <= 0;		
+		d_real_r4 <= 0;
+		d_imag_r4 <= 0;
+		d_real_r5 <= 0;
+		d_imag_r5 <= 0;
 	end
 	else
 	begin
 		if  (  ((factor==3'd3 || factor==3'd5) && valid_r[delay_twdl-2] ) 
 			|| ((factor==3'd4 || factor==3'd2) && valid_r[delay_twdl_42-2])  )
 		begin
-			dout_real[0] <= d_real_r3; 
-			dout_imag[0] <= d_imag_r3;
+			dout_real[0] <= d_real_r5; 
+			dout_imag[0] <= d_imag_r5;
 		end
 		else begin
 			dout_real[0] <= 0;
@@ -323,6 +514,10 @@ begin
 		d_imag_r2 <= d_imag_r[0];
 		d_real_r3 <= d_real_r2;
 		d_imag_r3 <= d_imag_r2;
+		d_real_r4 <= d_real_r3;
+		d_imag_r4 <= d_imag_r3;
+		d_real_r5 <= d_real_r4;
+		d_imag_r5 <= d_imag_r4;
 	end
 end
 

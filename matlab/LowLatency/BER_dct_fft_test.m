@@ -16,7 +16,6 @@ while ~feof(outf_m)
     	FPGA_out = fscanf(outf , '%d %d \n', [2 frame_len]);
     	matlab_out = fscanf(outf_m , '%d %d \n', [2 frame_len]);
 
-    	t0 = max(max(abs(FPGA_out - matlab_out)))
     	mse = mean(mean( (abs(FPGA_out - matlab_out)).^2 ));
 %         mean(mean((abs(matlab_out)).^2))
     	t1 = mse/ mean(mean((abs(matlab_out)).^2));

@@ -75,9 +75,9 @@ outf_FFT = fopen('../../modelsim/matlab_result.dat','w');
 m_len = 0;
 while(m_len<100 )
     m_len = m_len+1;
-%     if (m_len==3) 
-%         m_len = 96; 
-%     end
+    if (m_len==3) 
+        m_len = 96; 
+    end
     % factorize  N 
     [Nf_temp, err] = factor_2345(m_len);
     if err==1   % m_len can not be factorized to 2,3,4,5
