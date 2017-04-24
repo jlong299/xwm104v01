@@ -11,3 +11,4 @@ modelsim/libraries/
 RTL/*/*.bak
 IP/*/synth/*.qicache
 modelsim/*.vstf
+IP/.qsys_edit

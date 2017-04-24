@@ -1,8 +1,0 @@
-# # File gsaved with Nlview version 6.3.8  2013-12-19 bk=1.2992 VDI=34 GEI=35
-# 
-preplace inst altmult_complex_18_mrd.altmult_complex_0 -pg 1 -lvl 1 -y 30
-preplace inst altmult_complex_18_mrd -pg 1 -lvl 1 -y 40 -regy -20
-preplace netloc EXPORT<net_container>altmult_complex_18_mrd</net_container>(SLAVE)altmult_complex_0.complex_input,(SLAVE)altmult_complex_18_mrd.complex_input) 1 0 1 NJ
-preplace netloc EXPORT<net_container>altmult_complex_18_mrd</net_container>(SLAVE)altmult_complex_0.complex_output,(SLAVE)altmult_complex_18_mrd.complex_output) 1 0 1 NJ
-levelinfo -pg 1 0 100 300
-levelinfo -hier altmult_complex_18_mrd 110 150 290
