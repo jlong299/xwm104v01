@@ -71,12 +71,12 @@ begin
 		if (fsm == Rd && fsm_r != Rd)
 			cnt_FSMrd_2 <= 12'd1;
 		else if (cnt_FSMrd_2 != 12'd0)
-			cnt_FSMrd_2 <= (cnt_FSMrd_2==cnt_rd_stop+12'd19) ? 
+			cnt_FSMrd_2 <= (cnt_FSMrd_2==cnt_rd_stop+12'd21) ? 
 		                       12'd0 : cnt_FSMrd_2 + 12'd1;
 		else
 			cnt_FSMrd_2 <= 0;
 			
-		twdl_sop_rd <= (cnt_FSMrd_2==cnt_rd_stop+12'd19);
+		twdl_sop_rd <= (cnt_FSMrd_2==cnt_rd_stop+12'd21);
 	end
 end
 
@@ -102,7 +102,10 @@ CTA_addr_trans_inst	(
 genvar  k;
 generate
 for (k=3'd0; k < 3'd5; k=k+3'd1) begin : gen0
-assign addrs_butterfly_mux[k]=(fsm==Rd && cnt_stage != ctrl.NumOfFactors-3'd1)?
+// assign addrs_butterfly_mux[k]=(fsm==Rd && cnt_stage != ctrl.NumOfFactors-3'd1)?
+//                               addrs_butterfly[k] : addrs_butterfly_src[k] ;
+always@(posedge clk)
+ addrs_butterfly_mux[k]<=(fsm==Rd && cnt_stage != ctrl.NumOfFactors-3'd1)?
                               addrs_butterfly[k] : addrs_butterfly_src[k] ;
 end
 endgenerate

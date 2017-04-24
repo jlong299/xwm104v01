@@ -112,8 +112,8 @@ end
 % e.g. If N=1200  = 4*4*5*5*3,  NumOfFactors=5,  ena=[1,1,1,1,1,0]
 
 %------------- gen test source data -------------------
-x_real=round((2*rand(1,N)-1)*1024);
-x_imag=round((2*rand(1,N)-1)*1024);
+x_real=round((2*rand(1,N)-1)*8192);
+x_imag=round((2*rand(1,N)-1)*8192);
 
 x = x_real + 1j*x_imag;
 % x = [0:1:m_len*12-1];

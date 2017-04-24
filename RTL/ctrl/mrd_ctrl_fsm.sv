@@ -376,6 +376,7 @@ always@(posedge clk) begin
 		if (start_calc_param_r[2])  cnt_remd <= 0;
 		else if (index==3'd4) cnt_remd <= 0;
 		else if (flag_index_change) cnt_remd <= 0;
+		// if (start_calc_param_r[2]==1'b1 || index==3'd4 || flag_index_change==1'b1)  cnt_remd <= 0;
 		else cnt_remd <= (remd < ctrl_to_mem.twdl_demontr[index+3'd1] )? cnt_remd : cnt_remd+3'd1;
 
 		if (start_calc_param_r[2])  remd <= ctrl_to_mem.remainder[0];
