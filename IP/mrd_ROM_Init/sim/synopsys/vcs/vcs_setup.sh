@@ -12,7 +12,7 @@
 # or its authorized distributors. Please refer to the applicable 
 # agreement for further details.
 
-# ACDS 15.1 185 win32 2017.04.05.11:11:35
+# ACDS 15.1 185 win32 2017.04.25.13:56:59
 
 # ----------------------------------------
 # vcs - auto-generated simulation script
@@ -54,7 +54,7 @@
 # within the Quartus project, and generate a unified
 # script which supports all the Altera IP within the design.
 # ----------------------------------------
-# ACDS 15.1 185 win32 2017.04.05.11:11:35
+# ACDS 15.1 185 win32 2017.04.25.13:56:59
 # ----------------------------------------
 # initialize variables
 TOP_LEVEL_NAME="mrd_ROM_Init"
@@ -103,7 +103,7 @@ vcs -lca -timescale=1ps/1ps -sverilog +verilog2001ext+.v -ntb_opts dtm $ELAB_OPT
   -v $QUARTUS_INSTALL_DIR/eda/sim_lib/twentynm_hssi_atoms.v \
   -v $QUARTUS_INSTALL_DIR/eda/sim_lib/synopsys/twentynm_hip_atoms_ncrypt.v \
   -v $QUARTUS_INSTALL_DIR/eda/sim_lib/twentynm_hip_atoms.v \
-  $QSYS_SIMDIR/../rom_1port_151/sim/mrd_ROM_Init_rom_1port_151_qacsi6a.v \
+  $QSYS_SIMDIR/../rom_1port_151/sim/mrd_ROM_Init_rom_1port_151_bgifz3i.v \
   $QSYS_SIMDIR/mrd_ROM_Init.v \
   -top $TOP_LEVEL_NAME
 # ----------------------------------------

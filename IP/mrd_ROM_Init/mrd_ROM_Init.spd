@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <simPackage>
  <file
-   path="rom_1port_151/sim/mrd_ROM_Init_rom_1port_151_qacsi6a.v"
+   path="rom_1port_151/sim/mrd_ROM_Init_rom_1port_151_bgifz3i.v"
    type="VERILOG"
    library="mrd_ROM_Init_rom_1port_151" />
  <file

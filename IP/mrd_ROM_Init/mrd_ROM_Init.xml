@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <deploy
- date="2017.04.05.11:11:36"
+ date="2017.04.25.13:57:00"
  outputDirectory="C:/work/pj104/code/1702/Mixed_Radix_DFT/IP/mrd_ROM_Init/">
  <perimeter>
   <parameter
@@ -46,7 +46,7 @@
   </interface>
  </perimeter>
  <entity kind="mrd_ROM_Init" version="1.0" name="mrd_ROM_Init">
-  <parameter name="AUTO_GENERATION_ID" value="1491361895" />
+  <parameter name="AUTO_GENERATION_ID" value="1493099820" />
   <parameter name="AUTO_DEVICE" value="10AX115U3F45E2SGE3" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Arria 10" />
   <parameter name="AUTO_UNIQUE_ID" value="" />
@@ -76,18 +76,18 @@
   </childSourceFiles>
   <messages>
    <message level="Info" culprit="mrd_ROM_Init">"Generating: mrd_ROM_Init"</message>
-   <message level="Info" culprit="mrd_ROM_Init">"Generating: mrd_ROM_Init_rom_1port_151_qacsi6a"</message>
+   <message level="Info" culprit="mrd_ROM_Init">"Generating: mrd_ROM_Init_rom_1port_151_bgifz3i"</message>
   </messages>
  </entity>
  <entity
    kind="rom_1port"
    version="15.1"
-   name="mrd_ROM_Init_rom_1port_151_qacsi6a">
+   name="mrd_ROM_Init_rom_1port_151_bgifz3i">
   <parameter
      name="GUI_MIFfilename"
      value="C:/work/pj104/code/1702/Mixed_Radix_DFT/IP/mif_InitROM.mif" />
   <parameter name="GUI_CLOCK_ENABLE_INPUT_A" value="false" />
-  <parameter name="GUI_NUMWORDS_A" value="68" />
+  <parameter name="GUI_NUMWORDS_A" value="72" />
   <parameter name="DEVICE_FAMILY" value="Arria 10" />
   <parameter name="GUI_RegAddr" value="true" />
   <parameter name="GUI_RAM_BLOCK_TYPE" value="Auto" />
@@ -111,12 +111,12 @@
   <parameter name="GUI_WIDTH_A" value="64" />
   <generatedFiles>
    <file
-       path="C:\work\pj104\code\1702\Mixed_Radix_DFT\IP\mrd_ROM_Init\rom_1port_151\synth\mrd_ROM_Init_rom_1port_151_qacsi6a.v"
+       path="C:\work\pj104\code\1702\Mixed_Radix_DFT\IP\mrd_ROM_Init\rom_1port_151\synth\mrd_ROM_Init_rom_1port_151_bgifz3i.v"
        attributes="" />
   </generatedFiles>
   <childGeneratedFiles>
    <file
-       path="C:\work\pj104\code\1702\Mixed_Radix_DFT\IP\mrd_ROM_Init\rom_1port_151\synth\mrd_ROM_Init_rom_1port_151_qacsi6a.v"
+       path="C:\work\pj104\code\1702\Mixed_Radix_DFT\IP\mrd_ROM_Init\rom_1port_151\synth\mrd_ROM_Init_rom_1port_151_bgifz3i.v"
        attributes="" />
   </childGeneratedFiles>
   <sourceFiles>
@@ -126,7 +126,7 @@
   <childSourceFiles/>
   <instantiator instantiator="mrd_ROM_Init" as="rom_1port_0" />
   <messages>
-   <message level="Info" culprit="mrd_ROM_Init">"Generating: mrd_ROM_Init_rom_1port_151_qacsi6a"</message>
+   <message level="Info" culprit="mrd_ROM_Init">"Generating: mrd_ROM_Init_rom_1port_151_bgifz3i"</message>
   </messages>
  </entity>
 </deploy>

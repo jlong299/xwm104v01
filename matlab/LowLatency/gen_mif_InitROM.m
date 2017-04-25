@@ -1,17 +1,17 @@
 clc;
 clear;
 
-N=34;
+N=36;
 
 param = zeros(N,12);
 
 row = 0;
 k = 0;
 
-for m_len = 1:100   % The end of loop body is at the end of this file
+for m_len = 1:128   % The end of loop body is at the end of this file
     % factorize  N 
     [Nf_temp, err] = factor_2345(m_len);
-    if err==1   % m_len can not be factorized to 2,3,4,5
+    if (err==1 || (m_len>108 && m_len<128))  % m_len can not be factorized to 2,3,4,5
         continue;
     end
 
@@ -86,6 +86,10 @@ for m_len = 1:100   % The end of loop body is at the end of this file
 			Nf = [4,4,4,2,3,3];
 		case 1200
 			Nf = [4,4,5,5,3,1];
+		case 1296
+			Nf = [4,4,3,3,3,3];
+        case 1536
+			Nf = [4,4,4,4,2,3];
 		otherwise
 			Nf = [4,3,1,1,1,1];
 		end
@@ -137,7 +141,7 @@ end
 
 
 % %% Gen mif
-depth = 34;
+depth = N;
 width = 64; 
 
 filename = strcat('mif_InitROM.mif');   

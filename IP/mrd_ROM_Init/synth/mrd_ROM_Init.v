@@ -9,7 +9,7 @@ module mrd_ROM_Init (
 		output wire [63:0] q        // rom_output.dataout
 	);
 
-	mrd_ROM_Init_rom_1port_151_qacsi6a rom_1port_0 (
+	mrd_ROM_Init_rom_1port_151_bgifz3i rom_1port_0 (
 		.address (address), //  rom_input.address
 		.clock   (clock),   //           .clk
 		.q       (q)        // rom_output.dataout

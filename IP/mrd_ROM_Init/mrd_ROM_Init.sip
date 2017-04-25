@@ -5,4 +5,4 @@ set_global_assignment -library "lib_mrd_ROM_Init" -name SPD_FILE [file join $::q
 set_global_assignment -library "lib_mrd_ROM_Init" -name MISC_FILE [file join $::quartus(sip_path) "../mrd_ROM_Init.qsys"]
 
 set_global_assignment -library "lib_mrd_ROM_Init" -name MISC_FILE [file join $::quartus(sip_path) "sim/mrd_ROM_Init.v"]
-set_global_assignment -library "lib_mrd_ROM_Init" -name MISC_FILE [file join $::quartus(sip_path) "rom_1port_151/sim/mrd_ROM_Init_rom_1port_151_qacsi6a.v"]
+set_global_assignment -library "lib_mrd_ROM_Init" -name MISC_FILE [file join $::quartus(sip_path) "rom_1port_151/sim/mrd_ROM_Init_rom_1port_151_bgifz3i.v"]

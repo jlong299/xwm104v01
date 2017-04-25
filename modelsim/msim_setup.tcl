@@ -156,7 +156,7 @@ alias com {
   eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/ff_rdx_data/sim/ff_rdx_data.v"                                                            
   eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/ff_rdx_index/fifo_151/sim/ff_rdx_index_fifo_151_dv6wpvq.v" 
   eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/ff_rdx_index/sim/ff_rdx_index.v"                                                            
-  eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/mrd_ROM_Init/rom_1port_151/sim/mrd_ROM_Init_rom_1port_151_qacsi6a.v" 
+  eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/mrd_ROM_Init/rom_1port_151/sim/mrd_ROM_Init_rom_1port_151_bgifz3i.v" 
   eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/mrd_ROM_Init/sim/mrd_ROM_Init.v"                                                            
   eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/lpm_mult_16_mrd/lpm_mult_151/sim/lpm_mult_16_mrd_lpm_mult_151_lx6omxy.v" 
   eval  vlog $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/lpm_mult_16_mrd/sim/lpm_mult_16_mrd.v"                                                            

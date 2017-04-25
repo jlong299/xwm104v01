@@ -16,11 +16,11 @@ Info: mrd_ROM_Init: Running transform generation_view_transform took 0.000s
 Info: rom_1port_0: Running transform generation_view_transform
 Info: rom_1port_0: Running transform generation_view_transform took 0.000s
 Info: mrd_ROM_Init: Running transform merlin_avalon_transform
-Info: mrd_ROM_Init: Running transform merlin_avalon_transform took 0.070s
+Info: mrd_ROM_Init: Running transform merlin_avalon_transform took 0.054s
 Info: mrd_ROM_Init: "Naming system components in system: mrd_ROM_Init"
 Info: mrd_ROM_Init: "Processing generation queue"
 Info: mrd_ROM_Init: "Generating: mrd_ROM_Init"
-Info: mrd_ROM_Init: "Generating: mrd_ROM_Init_rom_1port_151_bgifz3i"
+Info: mrd_ROM_Init: "Generating: mrd_ROM_Init_rom_1port_151_qacsi6a"
 Info: mrd_ROM_Init: Done "mrd_ROM_Init" with 2 modules, 2 files
 Info: qsys-generate succeeded.
 Info: Finished: Create simulation model
@@ -62,11 +62,11 @@ Info: mrd_ROM_Init: Running transform generation_view_transform took 0.000s
 Info: rom_1port_0: Running transform generation_view_transform
 Info: rom_1port_0: Running transform generation_view_transform took 0.000s
 Info: mrd_ROM_Init: Running transform merlin_avalon_transform
-Info: mrd_ROM_Init: Running transform merlin_avalon_transform took 0.007s
+Info: mrd_ROM_Init: Running transform merlin_avalon_transform took 0.022s
 Info: mrd_ROM_Init: "Naming system components in system: mrd_ROM_Init"
 Info: mrd_ROM_Init: "Processing generation queue"
 Info: mrd_ROM_Init: "Generating: mrd_ROM_Init"
-Info: mrd_ROM_Init: "Generating: mrd_ROM_Init_rom_1port_151_bgifz3i"
+Info: mrd_ROM_Init: "Generating: mrd_ROM_Init_rom_1port_151_qacsi6a"
 Info: mrd_ROM_Init: Done "mrd_ROM_Init" with 2 modules, 3 files
 Info: qsys-generate succeeded.
 Info: Finished: Create HDL design files for synthesis

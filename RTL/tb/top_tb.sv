@@ -139,6 +139,8 @@ end
 logic [5:0] size;
 always@(*) begin
 	case (dftpts_in)
+		12'd1536 : size = 6'd35;
+		12'd1296 : size = 6'd34;
 		12'd1200 : size = 6'd33;
 		12'd1152 : size = 6'd32;
 		12'd1080 : size = 6'd31;
@@ -202,8 +204,8 @@ top_inst(
 	// .dftpts_out  ()
 );
 
-logic [0:33][15:0] latency_xlx;
-assign latency_xlx[0:33] = '{
+logic [0:35][15:0] latency_xlx;
+assign latency_xlx[0:35] = '{
 	16'd75,
 	16'd122,
 	16'd152,
@@ -237,7 +239,9 @@ assign latency_xlx[0:33] = '{
 	16'd3359,
 	16'd3716,
 	16'd3671,
-	16'd3792
+	16'd3792,
+	16'd4331,
+	16'd4727
 };
 logic [6:0] cnt_xlx;
 
@@ -269,7 +273,7 @@ begin
 			// end
 
 			cnt_close_file <= (rd_file_end)? cnt_close_file+1 : 0;
-			if (cnt_close_file == 16'd3200)
+			if (cnt_close_file == 16'd3300)
 				$fclose(wr_file);
 
 			cnt_latency <= (sink_sop) ? 16'd0 : cnt_latency + 16'd1;

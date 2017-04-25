@@ -73,7 +73,10 @@ outf_FFT = fopen('../../modelsim/matlab_result.dat','w');
 %  Loop  from  12*1  to  12*100
 % for m_len = 1:20:100   % The end of loop body is at the end of this file
 m_len = 0;
-while(m_len<100 )
+while(m_len<128 )
+    if (m_len==108)
+        m_len = 126;
+    end
     m_len = m_len+1;
 %     if (m_len==3) 
 %         m_len = 96; 

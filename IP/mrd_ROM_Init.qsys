@@ -6,7 +6,7 @@
    version="1.0"
    description=""
    tags="INTERNAL_COMPONENT=true"
-   categories="" />
+   categories="System" />
  <parameter name="bonusData"><![CDATA[bonusData 
 {
    element rom_1port_0
@@ -73,7 +73,7 @@
   <parameter name="GUI_JTAG_ID" value="NONE" />
   <parameter name="GUI_MAXIMUM_DEPTH" value="0" />
   <parameter name="GUI_MIFfilename">C:/work/pj104/code/1702/Mixed_Radix_DFT/IP/mif_InitROM.mif</parameter>
-  <parameter name="GUI_NUMWORDS_A" value="68" />
+  <parameter name="GUI_NUMWORDS_A" value="72" />
   <parameter name="GUI_RAM_BLOCK_TYPE" value="Auto" />
   <parameter name="GUI_RegAddr" value="true" />
   <parameter name="GUI_RegOutput" value="true" />

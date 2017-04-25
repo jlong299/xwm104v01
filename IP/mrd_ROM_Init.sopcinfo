@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="mrd_ROM_Init" kind="mrd_ROM_Init" version="1.0" fabric="QSYS">
  <!-- Format version 15.1 185 (Future versions may contain additional information.) -->
- <!-- 2017.04.05.11:11:36 -->
+ <!-- 2017.04.25.13:57:00 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1491361895</value>
+  <value>1493099820</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -191,7 +191,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="GUI_NUMWORDS_A">
    <type>int</type>
-   <value>68</value>
+   <value>72</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>

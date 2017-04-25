@@ -12,7 +12,7 @@
 # or its authorized distributors. Please refer to the applicable 
 # agreement for further details.
 
-# ACDS 15.1 185 win32 2017.04.05.11:11:35
+# ACDS 15.1 185 win32 2017.04.25.13:56:59
 
 # ----------------------------------------
 # ncsim - auto-generated simulation script
@@ -59,7 +59,7 @@
 # within the Quartus project, and generate a unified
 # script which supports all the Altera IP within the design.
 # ----------------------------------------
-# ACDS 15.1 185 win32 2017.04.05.11:11:35
+# ACDS 15.1 185 win32 2017.04.25.13:56:59
 # ----------------------------------------
 # initialize variables
 TOP_LEVEL_NAME="mrd_ROM_Init"
@@ -131,7 +131,7 @@ fi
 # ----------------------------------------
 # compile design files in correct order
 if [ $SKIP_COM -eq 0 ]; then
-  ncvlog $USER_DEFINED_COMPILE_OPTIONS           "$QSYS_SIMDIR/../rom_1port_151/sim/mrd_ROM_Init_rom_1port_151_qacsi6a.v" -work mrd_ROM_Init_rom_1port_151 -cdslib ./cds_libs/mrd_ROM_Init_rom_1port_151.cds.lib
+  ncvlog $USER_DEFINED_COMPILE_OPTIONS           "$QSYS_SIMDIR/../rom_1port_151/sim/mrd_ROM_Init_rom_1port_151_bgifz3i.v" -work mrd_ROM_Init_rom_1port_151 -cdslib ./cds_libs/mrd_ROM_Init_rom_1port_151.cds.lib
   ncvlog -compcnfg $USER_DEFINED_COMPILE_OPTIONS "$QSYS_SIMDIR/mrd_ROM_Init.v"                                                                                                                                  
 fi
 

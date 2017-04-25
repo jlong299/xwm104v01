@@ -63,6 +63,7 @@ begin
 		end
 
 		size <= (sink_sop)? size + 6'd1 : size;
+		inverse <= (sink_sop)? ~inverse : inverse;
 
 	end
 end
