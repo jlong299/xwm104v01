@@ -137,7 +137,7 @@ assign twdl_demontr = ctrl.twdl_demontr;
 assign stage_of_rdx2 = ctrl.stage_of_rdx2;
 
 //----------------  Input (Sink) registers -------------
-localparam  in_dly = 7;
+localparam  in_dly = 7+1;
 // logic [in_dly:0]  valid_r;
 // logic [in_dly:0][17:0]  din_real_r, din_imag_r;
 // always@(posedge clk)

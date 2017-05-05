@@ -20,6 +20,7 @@ logic [3:0]  cnt_sink_sop;
 
 integer 	data_file, scan_file, wr_file, wr_file_latency, data_file_p4, scan_file_p4;
 logic [31:0] 	captured_data, captured_data_imag;
+logic [31:0] 	captured_data_p4, captured_data_imag_p4;
 logic [15:0]  cnt_file_end; 
 
 logic sink_valid_p4;
@@ -28,8 +29,8 @@ logic [17:0] sink_imag_p4 [0:3];
 logic sink_sop_p4;
 logic sink_eop_p4;
 logic source_valid_p4, source_sop_p4, source_eop_p4;
-logic signed [17:0]  source_real_p4 [0:3];
-logic signed [17:0]  source_imag_p4 [0:3];
+logic [17:0]  source_real_p4 [0:3];
+logic [17:0]  source_imag_p4 [0:3];
 logic [3:0] source_exp_p4;
 logic  [11:0] dftpts_in_p4;
 logic  [15:0] cnt0_p4;
@@ -42,9 +43,9 @@ initial begin
 		$finish;
 	end
 
-	data_file_p4 = $fopen("dft_src.dat","r");
+	data_file_p4 = $fopen("dft_src_p4.dat","r");
 	if (data_file_p4 == 0) begin
-		$display("dft_src handle was NULL");
+		$display("dft_src_p4 handle was NULL");
 		$finish;
 	end
 
@@ -243,50 +244,45 @@ begin
 	else
 	begin
 		//dftpts_in <= dftpts;
-		if (cnt0==1 && !rd_file_end) begin
-			scan_file_p4 = $fscanf(data_file_p4, "%d\n", captured_data);
-			dftpts_in = captured_data;
+		if (cnt0_p4==1 && !rd_file_end_p4) begin
+			scan_file_p4 = $fscanf(data_file_p4, "%d\n", captured_data_p4);
+			dftpts_in_p4 = captured_data_p4;
 		end
 
-		if (dftpts_in < 180)
-			cnt0 <= (cnt0 == dftpts_in + 600)? 16'd0 : cnt0+1'b1;
+		if (dftpts_in_p4 < 180)
+			cnt0_p4 <= (cnt0_p4 == dftpts_in_p4 + 600)? 16'd0 : cnt0_p4+1'b1;
 		else
-			cnt0 <= (cnt0 == dftpts_in + 4*dftpts_in)? 16'd0 : cnt0+1'b1;
+			cnt0_p4 <= (cnt0_p4 == dftpts_in_p4 + 4*dftpts_in_p4)? 16'd0 : cnt0_p4+1'b1;
 
-		sink_sop <= (cnt0==16'd10 && !rd_file_end);
-		sink_eop <= (cnt0==16'd10 + dftpts_in/4 -1 && !rd_file_end);
-		sink_valid <= (cnt0>=16'd10 && cnt0<16'd10+dftpts_in/4 && !rd_file_end);
+		sink_sop_p4 <= (cnt0_p4==16'd10 && !rd_file_end_p4);
+		sink_eop_p4 <= (cnt0_p4==16'd10 + dftpts_in_p4/4 -1 && !rd_file_end_p4);
+		sink_valid_p4 <= (cnt0_p4>=16'd10 && cnt0_p4<16'd10+dftpts_in_p4/4 && !rd_file_end_p4);
 
-		// if (cnt0 <= 16'd11+dftpts_in)
-		// begin
-		// 	sink_real <= {2'b00, cnt0} - 18'd10;
-		// 	sink_imag <= {2'b00, cnt0} - 18'd10;
-		// end
-		// else
-		// begin
-		// 	sink_real <= 0;
-		// 	sink_imag <= 0;
-		// end
-
-		if (!rd_file_end) begin
-		if (cnt0>=16'd10 && cnt0<16'd10+dftpts_in/4) begin
+		if (!rd_file_end_p4) begin
+		if (cnt0_p4>=16'd10 && cnt0_p4<16'd10+dftpts_in_p4/4) begin
 			if (!$feof(data_file_p4)) begin
-				scan_file = $fscanf(data_file_p4, "%d %d\n", captured_data, captured_data_imag);
-				sink_real[0] = captured_data[17:0];
-				sink_imag[0] = captured_data_imag[17:0];
-				scan_file = $fscanf(data_file_p4, "%d %d\n", captured_data, captured_data_imag);
-				sink_real[1] = captured_data[17:0];
-				sink_imag[1] = captured_data_imag[17:0];
-				scan_file = $fscanf(data_file_p4, "%d %d\n", captured_data, captured_data_imag);
-				sink_real[2] = captured_data[17:0];
-				sink_imag[2] = captured_data_imag[17:0];
-				scan_file = $fscanf(data_file_p4, "%d %d\n", captured_data, captured_data_imag);
-				sink_real[3] = captured_data[17:0];
-				sink_imag[3] = captured_data_imag[17:0];
+				scan_file_p4 = $fscanf(data_file_p4, "%d %d\n", captured_data_p4, captured_data_imag_p4);
+				sink_real_p4[0] = captured_data_p4[17:0];
+				sink_imag_p4[0] = captured_data_imag_p4[17:0];
+				scan_file_p4 = $fscanf(data_file_p4, "%d %d\n", captured_data_p4, captured_data_imag_p4);
+				sink_real_p4[1] = captured_data_p4[17:0];
+				sink_imag_p4[1] = captured_data_imag_p4[17:0];
+				scan_file_p4 = $fscanf(data_file_p4, "%d %d\n", captured_data_p4, captured_data_imag_p4);
+				sink_real_p4[2] = captured_data_p4[17:0];
+				sink_imag_p4[2] = captured_data_imag_p4[17:0];
+				scan_file_p4 = $fscanf(data_file_p4, "%d %d\n", captured_data_p4, captured_data_imag_p4);
+				sink_real_p4[3] = captured_data_p4[17:0];
+				sink_imag_p4[3] = captured_data_imag_p4[17:0];
 			end
 			else begin
-				sink_real = 0;
-				sink_imag = 0;
+				sink_real_p4[0] = 0;
+				sink_imag_p4[0] = 0;
+				sink_real_p4[1] = 0;
+				sink_imag_p4[1] = 0;
+				sink_real_p4[2] = 0;
+				sink_imag_p4[2] = 0;
+				sink_real_p4[3] = 0;
+				sink_imag_p4[3] = 0;
 			end
 		end
 		else
@@ -294,7 +290,7 @@ begin
 			if ($feof(data_file_p4))
 			begin
 				$fclose(data_file_p4);
-				rd_file_end <= 1'b1;
+				rd_file_end_p4 <= 1'b1;
 			end
 		end
 		end
@@ -303,6 +299,31 @@ begin
 	end
 end
 
+
+// top_mixed_radix_dft_p4 
+// top_p4(
+// 	.clk  (clk),    // Clock
+// 	.rst_n  (rst_n),  // Asynchronous reset active low
+	
+// 	.sink_valid  (sink_valid_p4),
+// 	.sink_ready  (),
+// 	.sink_sop  (sink_sop_p4),
+// 	.sink_eop  (sink_eop_p4),
+// 	.sink_real  (sink_real_p4),
+// 	.sink_imag  (sink_imag_p4),
+// 	// .dftpts_in  (dftpts_in),
+// 	.size  (size),
+// 	.inverse  (1'b0),
+
+// 	.source_valid  (source_valid_p4),
+// 	// .source_ready  (1'b1),
+// 	.source_sop  (source_sop_p4),
+// 	.source_eop  (source_eop_p4),
+// 	.source_real  (source_real_p4),
+// 	.source_imag  (source_imag_p4),
+// 	.source_exp (source_exp_p4)
+// 	// .dftpts_out  ()
+// );
 
 top_mixed_radix_dft_p4 
 top_p4(

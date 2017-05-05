@@ -52,7 +52,17 @@ elab
 # elab
 # vmap       work     ./libraries/work/
 
-add wave -radix signed {sim:/top_tb/*}
+# add wave -radix signed {sim:/top_tb/*}
+add wave -radix signed {sim:/top_tb_p4/*}
+add wave -radix signed {sim:/top_tb_p4/sink_real_p4}
+add wave -radix signed {sim:/top_tb_p4/sink_imag_p4}
+
+add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/wrRAM/wren}
+add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/wrRAM/wraddr}
+add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/wrRAM/din_real}
+add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/wrRAM/din_imag}
+
+
 # add wave -radix signed {sim:/top_tb/top_inst/rst_n_sync}
 # add wave -radix signed {sim:/top_tb/top_inst/sink_ready}
 
