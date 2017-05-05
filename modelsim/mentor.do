@@ -1,4 +1,4 @@
-set TOP_LEVEL_NAME top_tb
+set TOP_LEVEL_NAME top_tb_p4
 # set TOP_LEVEL_NAME divider_pipe0_tb
 # set TOP_LEVEL_NAME mrd_twdl_tb
 # set TOP_LEVEL_NAME mrd_rdx2345_v2_tb
@@ -53,75 +53,52 @@ elab
 # vmap       work     ./libraries/work/
 
 add wave -radix signed {sim:/top_tb/*}
-add wave -radix signed {sim:/top_tb/top_inst/rst_n_sync}
-add wave -radix signed {sim:/top_tb/top_inst/sink_ready}
+# add wave -radix signed {sim:/top_tb/top_inst/rst_n_sync}
+# add wave -radix signed {sim:/top_tb/top_inst/sink_ready}
 
-add wave -radix unsigned sim:/top_tb/top_inst/ctrl_fsm/*
-add wave -radix unsigned sim:/top_tb/top_inst/ctrl_fsm/ctrl_to_mem/*
+# add wave -radix unsigned sim:/top_tb/top_inst/ctrl_fsm/*
+# add wave -radix unsigned sim:/top_tb/top_inst/ctrl_fsm/ctrl_to_mem/*
 
-add wave -radix unsigned {sim:/top_tb/top_inst/mem0/fsm}
-add wave -radix unsigned {sim:/top_tb/top_inst/mem0/cnt_stage}
-add wave -radix unsigned {sim:/top_tb/top_inst/mem0/fsm_lastRd_source}
-add wave -radix unsigned {sim:/top_tb/top_inst/mem0/cnt_twdlStage}
+# add wave -radix unsigned {sim:/top_tb/top_inst/mem0/fsm}
+# add wave -radix unsigned {sim:/top_tb/top_inst/mem0/cnt_stage}
+# add wave -radix unsigned {sim:/top_tb/top_inst/mem0/fsm_lastRd_source}
+# add wave -radix unsigned {sim:/top_tb/top_inst/mem0/cnt_twdlStage}
 
-add wave -radix signed {sim:/top_tb/top_inst/mem0/out_data/dout_real}
-add wave -radix signed {sim:/top_tb/top_inst/mem0/in_rdx2345_data/d_real[0]}
-
-
-add wave -radix unsigned {sim:/top_tb/top_inst/mem0/mrd_FSMrd_rd_inst/*}
-add wave -radix unsigned {sim:/top_tb/top_inst/mem0/out_rdx2345_data/*}
-add wave -radix signed {sim:/top_tb/top_inst/mem0/out_rdx2345_data/d_real}
-add wave -radix signed {sim:/top_tb/top_inst/mem0/out_rdx2345_data/d_imag}
-
-# add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/u20/*}
-add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/*}
-add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/din_real}
-add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/dout_real}
-
-add wave -radix unsigned {sim:/top_tb/top_inst/mem0/in_rdx2345_data/*}
-add wave -radix signed {sim:/top_tb/top_inst/mem0/in_rdx2345_data/d_real}
-add wave -radix signed {sim:/top_tb/top_inst/mem0/in_rdx2345_data/d_imag}
-
-add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/exp_in}
-add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/exp_out}
-add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/dft_val}
-
-add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/rdx5_3_4_2_v2/worst_case_growth}
-add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/rdx5_3_4_2_v2/margin_in}
+# add wave -radix signed {sim:/top_tb/top_inst/mem0/out_data/dout_real}
+# add wave -radix signed {sim:/top_tb/top_inst/mem0/in_rdx2345_data/d_real[0]}
 
 
-add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/abs_real}
-add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/abs_imag}
-add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/margin_real}
-add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/margin_imag}
-add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/min_margin}
-add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/margin_out}
-add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/margin_in}
+# add wave -radix unsigned {sim:/top_tb/top_inst/mem0/mrd_FSMrd_rd_inst/*}
+# add wave -radix unsigned {sim:/top_tb/top_inst/mem0/out_rdx2345_data/*}
+# add wave -radix signed {sim:/top_tb/top_inst/mem0/out_rdx2345_data/d_real}
+# add wave -radix signed {sim:/top_tb/top_inst/mem0/out_rdx2345_data/d_imag}
+
+# add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/*}
+# add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/din_real}
+# add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/dout_real}
+
+# add wave -radix unsigned {sim:/top_tb/top_inst/mem0/in_rdx2345_data/*}
+# add wave -radix signed {sim:/top_tb/top_inst/mem0/in_rdx2345_data/d_real}
+# add wave -radix signed {sim:/top_tb/top_inst/mem0/in_rdx2345_data/d_imag}
+
+# add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/exp_in}
+# add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/exp_out}
+# add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/dft_val}
+
+# add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/rdx5_3_4_2_v2/worst_case_growth}
+# add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/rdx5_3_4_2_v2/margin_in}
 
 
-# add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/in_val}
-# add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/valid_r[20]}
-# add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/sclr}
-# add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/d_real_r}
-# add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/d_imag_r}
-# add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/tw_real[1]}
-# add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/twdl/tw_imag[1]}
-
-
-# add wave -radix signed {sim:/mrd_rdx2345_v2_tb/*}
-# add wave -radix signed {sim:/mrd_rdx2345_v2_tb/din_real}
-# add wave -radix signed {sim:/mrd_rdx2345_v2_tb/din_imag}
-# add wave -radix signed {sim:/mrd_rdx2345_v2_tb/out_val}
-# add wave -radix signed {sim:/mrd_rdx2345_v2_tb/out_val_53}
-# add wave -radix signed {sim:/mrd_rdx2345_v2_tb/dout_real}
-# add wave -radix signed {sim:/mrd_rdx2345_v2_tb/dout_real_53}
-# add wave -radix signed {sim:/mrd_rdx2345_v2_tb/dout_imag}
-# add wave -radix signed {sim:/mrd_rdx2345_v2_tb/dout_imag_53}
-# add wave -radix signed {sim:/mrd_rdx2345_v2_tb/exp_out}
-# add wave -radix signed {sim:/mrd_rdx2345_v2_tb/exp_out_53}
+# add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/abs_real}
+# add wave -radix signed {sim:/top_tb/top_inst/rdx2345_twdl/abs_imag}
+# add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/margin_real}
+# add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/margin_imag}
+# add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/min_margin}
+# add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/margin_out}
+# add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/margin_in}
 
 
 view structure
 view signals
 
-run 1000us
+run 20us

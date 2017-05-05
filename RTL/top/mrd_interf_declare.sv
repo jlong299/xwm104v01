@@ -56,3 +56,21 @@ endinterface
 // 	logic source_start;
 // 	logic source_end; 
 // endinterface
+
+//---------- Support paralle 4 in/output ----------
+interface mrd_st_if_p4 ();
+	logic valid, sop, eop;
+	logic [17:0] din_real [0:3];
+	logic [17:0] din_imag [0:3];
+	logic [17:0] dout_real [0:3];
+	logic [17:0] dout_imag [0:3];
+	logic [3:0] exp;
+	// logic [5:0] dftpts; // Number of DFT points
+	logic [5:0] size; // Number of DFT points  //0~33 : 12~1200
+	// logic inverse;
+
+	// modport ST_IN (input valid, sop, eop, d_real, d_imag, dftpts, inverse,
+	// 	           output ready);
+	// modport ST_OUT (input ready,
+	// 	            output valid, sop, eop, d_real, d_imag, dftpts, inverse);
+endinterface
