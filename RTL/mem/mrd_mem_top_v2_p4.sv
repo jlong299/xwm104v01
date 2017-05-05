@@ -192,7 +192,7 @@ begin
 end
 assign out_rdx2345_data.cnt_stage = cnt_stage;
 //fsm_lastRd_source : '1' when FSM is in last read stage or source stage
-assign fsm_lastRd_source = (fsm==Source || cnt_stage==ctrl.NumOfFactors-3'd1);
+// assign fsm_lastRd_source = (fsm==Source || cnt_stage==ctrl.NumOfFactors-3'd1);
 
 // always@(posedge clk) out_rdx2345_data.quotient <= ctrl.quotient[cnt_stage];
 // always@(posedge clk) out_rdx2345_data.remainder <= ctrl.remainder[cnt_stage];
@@ -289,8 +289,8 @@ mrd_FSMsink_inst (
 	wrRAM_FSMsink,
 
 	sink_end,
-	overTime,
-	twdl_sop_sink
+	overTime
+	// twdl_sop_sink
 );
 
 //------------------------------------------------

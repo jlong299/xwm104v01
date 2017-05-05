@@ -61,6 +61,8 @@ add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/wrRAM/wren}
 add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/wrRAM/wraddr}
 add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/wrRAM/din_real}
 add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/wrRAM/din_imag}
+add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/fsm}
+add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/sink_end}
 
 
 # add wave -radix signed {sim:/top_tb/top_inst/rst_n_sync}

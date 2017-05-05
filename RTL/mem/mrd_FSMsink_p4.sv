@@ -11,9 +11,9 @@ module mrd_FSMsink_p4 #(parameter
 	mrd_st_if_p4  in_data,
 	mrd_mem_wr wrRAM_FSMsink,
 
-	output logic sink_3_4,
-	output logic overTime,
-	output logic twdl_sop_sink
+	output logic sink_end,
+	output logic overTime
+	// output logic twdl_sop_sink
 );
 // parameter Idle = 3'd0, Sink = 3'd1, Wait_to_rd = 3'd2,
 //   			Rd = 3'd3,  Wait_wr_end = 3'd4,  Source = 3'd5;
@@ -106,74 +106,26 @@ for (i=3'd0; i<=3'd6; i=i+3'd1) begin : u1
 end
 endgenerate
 
-
-// always@(posedge clk) begin
-// 	wrRAM_FSMsink.wraddr[0] <= bank_addr_sink_pre;
-// 	wrRAM_FSMsink.wraddr[1] <= bank_addr_sink_pre;
-// 	wrRAM_FSMsink.wraddr[2] <= bank_addr_sink_pre;
-// 	wrRAM_FSMsink.wraddr[3] <= bank_addr_sink_pre;
-// 	wrRAM_FSMsink.wraddr[4] <= bank_addr_sink_pre;
-// 	wrRAM_FSMsink.wraddr[5] <= bank_addr_sink_pre;
-// 	wrRAM_FSMsink.wraddr[6] <= bank_addr_sink_pre;
-// 	bank_index_sink <= bank_index_sink_pre;
-// end
-
-// always@(posedge clk)
-// begin
-// 	if (!rst_n) begin
-// 		bank_addr_sink_pre <= 0;
-// 		bank_index_sink_pre  <= 0;
-// 	end
-// 	else begin
-// 		if (in_data.valid) begin
-// 			bank_index_sink_pre <= (bank_index_sink_pre==3'd6) ?
-// 			                       3'd0 : bank_index_sink_pre + 3'd1;
-// 			bank_addr_sink_pre <= (bank_index_sink_pre==3'd6) ?
-// 			                   bank_addr_sink_pre + 1'd1 : bank_addr_sink_pre;
-// 		end
-// 		else begin
-// 			bank_addr_sink_pre <= 0;
-// 			bank_index_sink_pre  <= 0;
-// 		end
-// 	end
-// end
-
-// always@(*)
-// begin
-// 	case (bank_index_sink)
-// 	3'd0:  wrRAM_FSMsink.wren = 7'b1000000;
-// 	3'd1:  wrRAM_FSMsink.wren = 7'b0100000;
-// 	3'd2:  wrRAM_FSMsink.wren = 7'b0010000;
-// 	3'd3:  wrRAM_FSMsink.wren = 7'b0001000;
-// 	3'd4:  wrRAM_FSMsink.wren = 7'b0000100;
-// 	3'd5:  wrRAM_FSMsink.wren = 7'b0000010;
-// 	3'd6:  wrRAM_FSMsink.wren = 7'b0000001;
-// 	default: wrRAM_FSMsink.wren = 7'd0;
-// 	endcase
-// end
-
 logic [11:0] cnt_overTime;
 always@(posedge clk)
 begin 
 	if(!rst_n)  begin
-		sink_3_4 <= 0;
+		sink_end <= 0;
 		cnt_sink <= 0;
 		cnt_overTime <= 0;
 		overTime <= 0;
-		twdl_sop_sink <= 0;
+		// twdl_sop_sink <= 0;
 	end
 	else begin
 		cnt_sink <= (in_data.valid)? cnt_sink+12'd1 : 12'd0;
-		if (cnt_sink != 12'd0 && cnt_sink==
-			// (ctrl.twdl_demontr[0] - ctrl.twdl_demontr[1] - 12'd1))
-			(ctrl.twdl_demontr[0][11:2] + ctrl.twdl_demontr[0][11:1] - 12'd1))
-			sink_3_4 <= 1'b1;
-		else sink_3_4 <= 1'b0;
+		if (cnt_sink != 12'd0 && cnt_sink==ctrl.twdl_demontr[0][11:2])
+			sink_end <= 1'b1;
+		else sink_end <= 1'b0;
 
 		cnt_overTime <= (fsm==Sink)? cnt_overTime + 12'd1 : 12'd0;
 		overTime <= (cnt_overTime==12'd2047)? 1'b1 : 1'b0;
 
-		twdl_sop_sink <= (cnt_sink==ctrl.twdl_demontr[0][11:2] + ctrl.twdl_demontr[0][11:1] - 12'd3);
+		// twdl_sop_sink <= (cnt_sink==ctrl.twdl_demontr[0][11:2] + ctrl.twdl_demontr[0][11:1] - 12'd3);
 	end
 end
 
