@@ -1,6 +1,7 @@
-module mrd_FSMrd_rd_p4 #(parameter
-	wait_before_start = 6
-	)
+module mrd_FSMrd_rd_p4 
+// #(parameter
+// 	wait_before_start = 4'd6
+// 	)
 	(
 	input clk,
 	input rst_n,
@@ -9,11 +10,11 @@ module mrd_FSMrd_rd_p4 #(parameter
 	input [2:0] fsm_r,
 	input [2:0] cnt_stage,
 
-	input [in_dly:0][17:0] din_real_r,
-	input [in_dly:0][17:0] din_imag_r,
+	// input [in_dly:0][17:0] din_real_r,
+	// input [in_dly:0][17:0] din_imag_r,
 	input [0:5][2:0] Nf,
 	input [0:5][11:0] dftpts_div_Nf,
-	// input [0:4][11:0] addrs_butterfly_src,
+	input [0:4][11:0] addrs_butterfly_src,
 	input [0:5][11:0]  twdl_demontr,
 	input [2:0]  stage_of_rdx2,
 
@@ -27,6 +28,7 @@ module mrd_FSMrd_rd_p4 #(parameter
 // parameter Idle = 3'd0, Sink = 3'd1, Wait_to_rd = 3'd2,
 //   			Rd = 3'd3,  Wait_wr_end = 3'd4,  Source = 3'd5;
 localparam Idle = 3'd0, Rd = 3'd3, Wait_wr_end = 3'd4, Source = 3'd5;
+localparam in_dly = 8;
 
 logic [0:4][mrd_mem_pkt::wADDR-1:0]  bank_addr_rd, bank_addr_rd_r, bank_addr_rd_rr;
 logic [0:4][2:0]  bank_index_rd, bank_index_rd_r, bank_index_rd_rr, bank_index_rd_rrr,
@@ -38,6 +40,9 @@ logic [11:0]  twdl_numrtr_1;
 logic [11:0] cnt_FSMrd, cnt_FSMrd_2;
 logic [in_dly-1:1] rden_r; //////
 logic rden_r0;
+
+localparam	wait_before_start = 4'd3;
+logic [3:0]  cnt_wait;
 
 //-------------------------------------------
 always@(posedge clk) begin
@@ -55,10 +60,18 @@ begin
 		cnt_FSMrd <= 0;
 		// twdl_sop_rd <= 0;
 		// cnt_FSMrd_2 <= 0;
+		cnt_wait <= 0;
 	end
 	else
 	begin
-		if (fsm == Rd && fsm_r != Rd)
+		if ((fsm == Rd && fsm_r != Rd) || (fsm==Source && fsm_r!=Source))
+			cnt_wait <= 12'd1;
+		else if (cnt_wait != 4'd0)
+			cnt_wait <= (cnt_wait==wait_before_start)? 4'd0 : cnt_wait+4'd1;
+		else
+			cnt_wait <= 4'd0;
+
+		if (cnt_wait==wait_before_start)
 			cnt_FSMrd <= 12'd1;
 		else if (cnt_FSMrd != 12'd0)
 			cnt_FSMrd <= (cnt_FSMrd==cnt_rd_stop) ? 
@@ -102,11 +115,10 @@ CTA_addr_trans_inst	(
 genvar  k;
 generate
 for (k=3'd0; k < 3'd5; k=k+3'd1) begin : gen0
-// assign addrs_butterfly_mux[k]=(fsm==Rd && cnt_stage != ctrl.NumOfFactors-3'd1)?
-//                               addrs_butterfly[k] : addrs_butterfly_src[k] ;
 always@(posedge clk)
- addrs_butterfly_mux[k]<=(fsm==Rd && cnt_stage != ctrl.NumOfFactors-3'd1)?
-                              addrs_butterfly[k] : addrs_butterfly_src[k] ;
+ // addrs_butterfly_mux[k]<=(fsm==Rd && cnt_stage != ctrl.NumOfFactors-3'd1)?
+ //                              addrs_butterfly[k] : addrs_butterfly_src[k] ;
+ addrs_butterfly_mux[k]<=(fsm==Rd)?  addrs_butterfly[k] : addrs_butterfly_src[k] ;
 end
 endgenerate
 
@@ -151,30 +163,31 @@ begin
 	end
 	else begin
 		// index 3'd7 means the index is not valid
-		if (cnt_stage == stage_of_rdx2)
-			bank_index_rd[0] <= div7_rmdr_rd[0];
-        else
-			bank_index_rd[0] <= (Nf[cnt_stage] == 3'd0)? 3'd7 : div7_rmdr_rd[0];
 
-		if (cnt_stage == stage_of_rdx2)
-			bank_index_rd[1] <= div7_rmdr_rd[1];
-        else
-			bank_index_rd[1] <= (Nf[cnt_stage] <= 3'd1)? 3'd7 : div7_rmdr_rd[1];
+		// bank_index_rd[0] <= (Nf[cnt_stage] == 3'd0)? 3'd7 : div7_rmdr_rd[0];
+		bank_index_rd[0] <= div7_rmdr_rd[0];
 
-		if (cnt_stage == stage_of_rdx2)
+		// bank_index_rd[1] <= (Nf[cnt_stage] <= 3'd1)? 3'd7 : div7_rmdr_rd[1];
+		bank_index_rd[1] <= div7_rmdr_rd[1];
+
+		// if (Nf[cnt_stage]==3'd2)
+		// 	bank_index_rd[2] <= div7_rmdr_rd[2];
+		//       else
+		if (fsm==Source)
 			bank_index_rd[2] <= div7_rmdr_rd[2];
-        else
-			bank_index_rd[2] <= (Nf[cnt_stage] <= 3'd2)? 3'd7 : div7_rmdr_rd[2];
+		else
+			bank_index_rd[2] <= (Nf[cnt_stage] == 3'd1)? 3'd7 : div7_rmdr_rd[2];
 
-		if (cnt_stage == stage_of_rdx2)
-			bank_index_rd[3] <= div7_rmdr_rd[3];
-        else
-			bank_index_rd[3] <= (Nf[cnt_stage] <= 3'd3)? 3'd7 : div7_rmdr_rd[3];
+		// if (Nf[cnt_stage]==3'd2)
+		// 	bank_index_rd[3] <= div7_rmdr_rd[3];
+  		//       else
+  		if (fsm==Source)
+  			bank_index_rd[3] <= div7_rmdr_rd[3];
+  		else
+			bank_index_rd[3] <= (Nf[cnt_stage]==3'd1 || Nf[cnt_stage]==3'd3)? 3'd7 : div7_rmdr_rd[3];
 
-		if (cnt_stage == stage_of_rdx2)
-			bank_index_rd[4] <= 3'd7 ;
-        else
-			bank_index_rd[4] <= (Nf[cnt_stage] <= 3'd4)? 3'd7 : div7_rmdr_rd[4];
+		
+		bank_index_rd[4] <= (Nf[cnt_stage] != 3'd5)? 3'd7 : div7_rmdr_rd[4];
     end
 end
 
@@ -228,7 +241,7 @@ end
 
 //------------------------------------------------
 generate
-	for (k=0; k<3; k++) begin : rd_out
+	for (k=0; k<5; k++) begin : rd_out
 	always@(*)
 	begin
 		out_rdx2345_data.d_real[k] = rdRAM_FSMrd.dout_real[(bank_index_rd_rrr[k])]; 
@@ -237,25 +250,25 @@ generate
 	end
 endgenerate
 
-logic [17:0] din_real_r_final, din_imag_r_final;
-// logic [2:0] cnt_stage_r;
-always@(posedge clk) begin
-	din_real_r_final <= din_real_r[in_dly];
-	din_imag_r_final <= din_imag_r[in_dly];
-	// cnt_stage_r <= cnt_stage;
-end
+// logic [17:0] din_real_r_final, din_imag_r_final;
+// // logic [2:0] cnt_stage_r;
+// always@(posedge clk) begin
+// 	din_real_r_final <= din_real_r[in_dly];
+// 	din_imag_r_final <= din_imag_r[in_dly];
+// 	// cnt_stage_r <= cnt_stage;
+// end
  
-always@(*)
-begin
-	////// change in_dly in mrd_mem_top_v2.sv
-	out_rdx2345_data.d_real[3] = (cnt_stage==3'd0)? din_real_r_final :
-	        rdRAM_FSMrd.dout_real[(bank_index_rd_rrr[3])]; 
-	out_rdx2345_data.d_imag[3] = (cnt_stage==3'd0)? din_imag_r_final :
-	        rdRAM_FSMrd.dout_imag[(bank_index_rd_rrr[3])]; 
+// always@(*)
+// begin
+// 	////// change in_dly in mrd_mem_top_v2.sv
+// 	out_rdx2345_data.d_real[3] = (cnt_stage==3'd0)? din_real_r_final :
+// 	        rdRAM_FSMrd.dout_real[(bank_index_rd_rrr[3])]; 
+// 	out_rdx2345_data.d_imag[3] = (cnt_stage==3'd0)? din_imag_r_final :
+// 	        rdRAM_FSMrd.dout_imag[(bank_index_rd_rrr[3])]; 
 
-	out_rdx2345_data.d_real[4] = rdRAM_FSMrd.dout_real[(bank_index_rd_rrr[4])]; 
-	out_rdx2345_data.d_imag[4] = rdRAM_FSMrd.dout_imag[(bank_index_rd_rrr[4])]; 
-end
+// 	out_rdx2345_data.d_real[4] = rdRAM_FSMrd.dout_real[(bank_index_rd_rrr[4])]; 
+// 	out_rdx2345_data.d_imag[4] = rdRAM_FSMrd.dout_imag[(bank_index_rd_rrr[4])]; 
+// end
 //////
 always@(posedge clk) out_rdx2345_data.valid <= rden_r[in_dly-1];
 always@(posedge clk) out_rdx2345_data.bank_index <= bank_index_rd_rr;

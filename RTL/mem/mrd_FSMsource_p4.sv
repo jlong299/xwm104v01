@@ -1,6 +1,7 @@
-module mrd_FSMsource_p4 #(parameter
-	dly_addr_source = 10
-	)
+module mrd_FSMsource_p4 
+// #(parameter
+// 	dly_addr_source = 10
+// 	)
 	(
 	input clk,
 	input rst_n,
@@ -8,7 +9,7 @@ module mrd_FSMsource_p4 #(parameter
 	// FSM signals
 	input [2:0] fsm,
 	input [2:0] fsm_r,
-	input fsm_lastRd_source,
+	// input fsm_lastRd_source,
 
 	// Parameters
 	input [0:5][2:0] Nf,
@@ -22,7 +23,7 @@ module mrd_FSMsource_p4 #(parameter
 
 	// Output
 	output logic [0:4][11:0] addrs_butterfly_src,
-	output logic [2:0] bank_index_source,
+	// output logic [2:0] bank_index_source,
 	output logic source_end
 	
 );
@@ -38,28 +39,49 @@ genvar i;
 
 //--------Part 1 : RAMs read address which feeds to mrd_FSMrd_rd.sv ------ 
 //--------Note :  Addresses are inverse bit order ----
-CTA_addr_source #(
+localparam	wait_before_start = 4'd4;
+logic [3:0]  cnt_wait;
+
+always@(posedge clk)
+begin
+	if (!rst_n)
+	begin
+		cnt_wait <= 0;
+	end
+	else
+	begin
+		if (fsm!=Source)
+			cnt_wait <= 12'd0;
+		else 
+			cnt_wait <= (cnt_wait==wait_before_start)? wait_before_start : cnt_wait+4'd1;
+	end
+end
+
+CTA_addr_source_p4 #(
 		12
 	)
 CTA_addr_source_inst (
 	clk,    
 	rst_n,  
-	fsm_lastRd_source,
+	(cnt_wait==wait_before_start),
 
 	Nf,  //N1,N2,...,N6
 	twdl_demontr,
 
-	addr_source_CTA 
+	// addr_source_CTA 
+	addrs_butterfly_src[0:3]
 );
 
-always@(posedge clk)
-begin
-	addrs_butterfly_src[0] <= addr_source_CTA;
-	addrs_butterfly_src[1] <= addr_source_CTA + 12'd1;
-	addrs_butterfly_src[2] <= addr_source_CTA + 12'd2;
-	addrs_butterfly_src[3] <= 0;
-	addrs_butterfly_src[4] <= 0;
-end
+assign  addrs_butterfly_src[4] = 0;
+
+// always@(posedge clk)
+// begin
+// 	addrs_butterfly_src[0] <= addr_source_CTA;
+// 	addrs_butterfly_src[1] <= addr_source_CTA + 12'd1;
+// 	addrs_butterfly_src[2] <= addr_source_CTA + 12'd2;
+// 	addrs_butterfly_src[3] <= 0;
+// 	addrs_butterfly_src[4] <= 0;
+// end
 
 //------Part 2 : Gen output sop,eop,valid according to in_rdx2345_data.valid--
 //------Note : in_rdx2345_data.valid represents first 1/3 output data ----
@@ -80,7 +102,7 @@ begin
 	begin
 
 		in_rdx2345_valid_r <= in_rdx2345_data.valid;
-		if (fsm_lastRd_source) begin
+		if (fsm==Source) begin
 			if (in_rdx2345_data.valid && (!in_rdx2345_valid_r)) begin
 				out_data.sop <= 1'b1;
 				cnt_source <= 12'd1;
@@ -107,54 +129,54 @@ begin
 	end
 end
 
-//------Part 3 : Delay the source RAM read address to make the  ----
-//------last 2/3 output data right behind the first 1/3 ----
-logic [dly_addr_source-1:0][11:0]  addr_source_CTA_r;
-always@(posedge clk) 
-	addr_source_CTA_r <= {addr_source_CTA_r[dly_addr_source-2:0], addr_source_CTA};
+// //------Part 3 : Delay the source RAM read address to make the  ----
+// //------last 2/3 output data right behind the first 1/3 ----
+// logic [dly_addr_source-1:0][11:0]  addr_source_CTA_r;
+// always@(posedge clk) 
+// 	addr_source_CTA_r <= {addr_source_CTA_r[dly_addr_source-2:0], addr_source_CTA};
 
-divider_7 divider_7_inst2 (
-	// .dividend 	(addr_source_CTA_r[27]),  
-	.dividend 	(addr_source_CTA_r[dly_addr_source-1]),  
+// divider_7 divider_7_inst2 (
+// 	// .dividend 	(addr_source_CTA_r[27]),  
+// 	.dividend 	(addr_source_CTA_r[dly_addr_source-1]),  
 
-	.quotient 	(bank_addr_source_pre),
-	.remainder 	(bank_index_source_pre)
-);
+// 	.quotient 	(bank_addr_source_pre),
+// 	.remainder 	(bank_index_source_pre)
+// );
 
-always@(posedge clk) begin
-	if (!rst_n)	begin
-		bank_addr_source_r0 <= 0;
-		bank_addr_source_r1 <= 0;
-		bank_index_source_r0 <= 0;
-		bank_index_source_r1 <= 0;
-		bank_index_source <= 0;
-	end
-	else begin
-		bank_addr_source_r0 <= bank_addr_source_pre;
-		bank_addr_source_r1 <= bank_addr_source_r0;
-		bank_index_source_r0 <= bank_index_source_pre;
-		bank_index_source_r1 <= bank_index_source_r0;
-		bank_index_source <= bank_index_source_r1;
-	end
-end
-generate 
-for (i=0; i<=6; i++) begin : temp0
-assign rdRAM_FSMsource.rdaddr[i] = bank_addr_source_r1[mrd_mem_pkt::wADDR-1:0];
-end
-endgenerate
+// always@(posedge clk) begin
+// 	if (!rst_n)	begin
+// 		bank_addr_source_r0 <= 0;
+// 		bank_addr_source_r1 <= 0;
+// 		bank_index_source_r0 <= 0;
+// 		bank_index_source_r1 <= 0;
+// 		bank_index_source <= 0;
+// 	end
+// 	else begin
+// 		bank_addr_source_r0 <= bank_addr_source_pre;
+// 		bank_addr_source_r1 <= bank_addr_source_r0;
+// 		bank_index_source_r0 <= bank_index_source_pre;
+// 		bank_index_source_r1 <= bank_index_source_r0;
+// 		bank_index_source <= bank_index_source_r1;
+// 	end
+// end
+// generate 
+// for (i=0; i<=6; i++) begin : temp0
+// assign rdRAM_FSMsource.rdaddr[i] = bank_addr_source_r1[mrd_mem_pkt::wADDR-1:0];
+// end
+// endgenerate
 
-always@(posedge clk)
-begin
-	case (bank_index_source_r0)
-	3'd0:  rdRAM_FSMsource.rden <= 7'b1000000;
-	3'd1:  rdRAM_FSMsource.rden <= 7'b0100000;
-	3'd2:  rdRAM_FSMsource.rden <= 7'b0010000;
-	3'd3:  rdRAM_FSMsource.rden <= 7'b0001000;
-	3'd4:  rdRAM_FSMsource.rden <= 7'b0000100;
-	3'd5:  rdRAM_FSMsource.rden <= 7'b0000010;
-	3'd6:  rdRAM_FSMsource.rden <= 7'b0000001;
-	default: rdRAM_FSMsource.rden <= 7'd0;
-	endcase
-end
+// always@(posedge clk)
+// begin
+// 	case (bank_index_source_r0)
+// 	3'd0:  rdRAM_FSMsource.rden <= 7'b1000000;
+// 	3'd1:  rdRAM_FSMsource.rden <= 7'b0100000;
+// 	3'd2:  rdRAM_FSMsource.rden <= 7'b0010000;
+// 	3'd3:  rdRAM_FSMsource.rden <= 7'b0001000;
+// 	3'd4:  rdRAM_FSMsource.rden <= 7'b0000100;
+// 	3'd5:  rdRAM_FSMsource.rden <= 7'b0000010;
+// 	3'd6:  rdRAM_FSMsource.rden <= 7'b0000001;
+// 	default: rdRAM_FSMsource.rden <= 7'd0;
+// 	endcase
+// end
 
 endmodule
