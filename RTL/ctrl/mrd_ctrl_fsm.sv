@@ -360,7 +360,7 @@ always@(posedge clk) begin
 		else if (index==3'd5)  index <= 3'd5;
 		else index <= (flag_index_change)? index+3'd1 : index;
 
-		if (start_calc_param_r[2]) cnt_quot <= 3'd0;
+		if (fsm==3'd0 || start_calc_param_r[2]) cnt_quot <= 3'd0;
 		else if ((index==3'd4 && flag_index_change) || index==3'd5 ) cnt_quot <= 3'd6;
 		else cnt_quot <= (flag_index_change)? 3'd0 : cnt_quot+3'd1;
 
@@ -373,7 +373,7 @@ always@(posedge clk) begin
 		if (start_calc_param_r[2])  quot <= ctrl_to_mem.quotient[0];
 		else quot <= (flag_index_change)? quot+cnt_remd : quot+ctrl_to_mem.quotient[5];
 
-		if (start_calc_param_r[2])  cnt_remd <= 0;
+		if (fsm==3'd0 || start_calc_param_r[2])  cnt_remd <= 0;
 		else if (index==3'd4) cnt_remd <= 0;
 		else if (flag_index_change) cnt_remd <= 0;
 		// if (start_calc_param_r[2]==1'b1 || index==3'd4 || flag_index_change==1'b1)  cnt_remd <= 0;

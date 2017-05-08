@@ -19,7 +19,7 @@ logic [3:0] source_exp;
 logic [3:0]  cnt_sink_sop;
 
 integer 	data_file, scan_file, wr_file, wr_file_latency;
-integer     data_file_p4, scan_file_p4, wr_file_p4;
+integer     data_file_p4, scan_file_p4, wr_file_p4, wr_file_latency_p4;
 logic [31:0] 	captured_data, captured_data_imag;
 logic [31:0] 	captured_data_p4, captured_data_imag_p4;
 logic [15:0]  cnt_file_end; 
@@ -65,6 +65,12 @@ initial begin
 	wr_file_latency = $fopen("latency_result.dat","w");
 	if (wr_file_latency == 0) begin
 		$display("latency_result handle was NULL");
+		$finish;
+	end
+
+	wr_file_latency_p4 = $fopen("latency_result_p4.dat","w");
+	if (wr_file_latency_p4 == 0) begin
+		$display("latency_result_p4 handle was NULL");
 		$finish;
 	end
 end
@@ -416,7 +422,7 @@ begin
 
 end
 
-logic [15:0]  cnt_val_debug_p4, cnt_close_file_p4, cnt_latency_p4;
+logic [15:0]  cnt_val_debug_p4, cnt_close_file_p4, cnt_latency_p4, latency_p4;
 logic signed [29:0]  real_adj_p4, imag_adj_p4;
 always@(posedge clk)
 begin
@@ -424,7 +430,7 @@ begin
 		cnt_val_debug_p4 <= 0;
 		cnt_close_file_p4 <= 0;
 
-		// cnt_latency <= 0;
+		cnt_latency_p4 <= 0;
 		// cnt_xlx <= 0;
 	end
 	else
@@ -450,11 +456,12 @@ begin
 			if (cnt_close_file_p4 == 16'd3300)
 				$fclose(wr_file_p4);
 
-			// cnt_latency <= (sink_sop) ? 16'd0 : cnt_latency + 16'd1;
-			// if (source_eop) begin 
-			// 	$fwrite(wr_file_latency, "%d %d\n", cnt_latency+16'd1, latency_xlx[cnt_xlx]);
-			// 	cnt_xlx <= cnt_xlx + 1'd1;
-			// end
+			cnt_latency_p4 <= (sink_sop_p4) ? 16'd0 : cnt_latency_p4 + 16'd1;
+
+			if (source_eop_p4) begin 
+				$fwrite(wr_file_latency_p4, "%d\n", cnt_latency_p4+16'd1);
+				// cnt_xlx <= cnt_xlx + 1'd1;
+			end
 	end
 
 end
