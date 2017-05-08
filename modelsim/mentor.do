@@ -110,6 +110,19 @@ add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/sink_end}
 # add wave -radix unsigned {sim:/top_tb/top_inst/rdx2345_twdl/margin_in}
 
 
+add wave -radix unsigned {sim:/top_tb_p4/top_inst/mem0/in_rdx2345_data/valid}
+add wave -radix signed {sim:/top_tb_p4/top_inst/mem0/in_rdx2345_data/d_real}
+add wave -radix signed {sim:/top_tb_p4/top_inst/mem0/in_rdx2345_data/d_imag}
+add wave -radix unsigned {sim:/top_tb_p4/top_p4/mem0_p4/in_rdx2345_data/valid}
+add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/in_rdx2345_data/d_real}
+add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/in_rdx2345_data/d_imag}
+add wave -radix unsigned {sim:/top_tb_p4/top_p4/mem0_p4/out_rdx2345_data/valid}
+add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/out_rdx2345_data/d_real}
+add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/out_rdx2345_data/d_imag}
+add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/mrd_FSMrd_rd_inst/*}
+add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/mrd_FSMrd_rd_inst/rdRAM_FSMrd/*}
+
+
 view structure
 view signals
 

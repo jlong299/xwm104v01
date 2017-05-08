@@ -137,7 +137,7 @@ assign twdl_demontr = ctrl.twdl_demontr;
 assign stage_of_rdx2 = ctrl.stage_of_rdx2;
 
 //----------------  Input (Sink) registers -------------
-localparam  in_dly = 7+1;
+// localparam  in_dly = 7+1;
 // logic [in_dly:0]  valid_r;
 // logic [in_dly:0][17:0]  din_real_r, din_imag_r;
 // always@(posedge clk)
@@ -245,12 +245,15 @@ for (i=0; i<=6; i++)  begin : din_switch
 	                  : wrRAM_FSMrd.wren[i] ; 
 	end	
 
-assign rdRAM.rdaddr[i]= (fsm==Rd)? rdRAM_FSMrd.rdaddr[i] : rdRAM_FSMsource.rdaddr[i];
-assign rdRAM.rden[i] = (fsm==Rd)? rdRAM_FSMrd.rden[i] : 
-                 (rdRAM_FSMsource.rden[i] & fsm_lastRd_source);
-                 // (rdRAM_FSMsource_rden_r1[i] & fsm_lastRd_source);
-assign rdRAM_FSMrd.dout_real[i] = (fsm_r==Rd)? rdRAM.dout_real[i] : 18'd0;
-assign rdRAM_FSMrd.dout_imag[i] = (fsm_r==Rd)? rdRAM.dout_imag[i] : 18'd0;
+// assign rdRAM.rdaddr[i]= (fsm==Rd)? rdRAM_FSMrd.rdaddr[i] : rdRAM_FSMsource.rdaddr[i];
+// assign rdRAM.rden[i] = (fsm==Rd)? rdRAM_FSMrd.rden[i] : rdRAM_FSMsource.rden[i];
+                 // (rdRAM_FSMsource.rden[i] & fsm_lastRd_source);
+// assign rdRAM_FSMrd.dout_real[i] = (fsm_r==Rd)? rdRAM.dout_real[i] : 18'd0;
+// assign rdRAM_FSMrd.dout_imag[i] = (fsm_r==Rd)? rdRAM.dout_imag[i] : 18'd0;
+assign rdRAM.rdaddr[i]= rdRAM_FSMrd.rdaddr[i];
+assign rdRAM.rden[i] = rdRAM_FSMrd.rden[i];
+assign rdRAM_FSMrd.dout_real[i] = rdRAM.dout_real[i];
+assign rdRAM_FSMrd.dout_imag[i] = rdRAM.dout_imag[i];
 end
 endgenerate 
 
@@ -271,7 +274,7 @@ always@(posedge clk) begin
 end
 always@(posedge clk) out_data.exp <= in_rdx2345_data.exp;
 
-logic twdl_sop_sink, twdl_sop_rd;
+// logic twdl_sop_sink, twdl_sop_rd;
 //------------------------------------------------
 //------------------ 1st stage: Sink -------------
 //------------------------------------------------
@@ -297,9 +300,10 @@ mrd_FSMsink_inst (
 //------------------ 2nd stage: Read -------------
 //------------------------------------------------
 
-mrd_FSMrd_rd #(
-	in_dly
-	)
+mrd_FSMrd_rd_p4 
+// #(
+// 	in_dly
+// 	)
 mrd_FSMrd_rd_inst (
 	clk, 
 	rst_n,
@@ -308,8 +312,8 @@ mrd_FSMrd_rd_inst (
 	fsm_r,
 	cnt_stage,
 
-	din_real_r,
-	din_imag_r,
+	// din_real_r,
+	// din_imag_r,
 	Nf,
 	dftpts_div_Nf,
 	addrs_butterfly_src,
@@ -320,8 +324,8 @@ mrd_FSMrd_rd_inst (
 	rdRAM_FSMrd,
 	out_rdx2345_data,
 
-	rd_end,
-	twdl_sop_rd
+	rd_end
+	// twdl_sop_rd
 );
 
 
@@ -354,16 +358,17 @@ mrd_FSMrd_wr_inst (
 //
 // Output       |---------------------|------------------------------|  
 //                     1/3                      2/3 
-mrd_FSMsource_p4 #(
-	.dly_addr_source (11+5)
-	)
+mrd_FSMsource_p4 
+// #(
+// 	.dly_addr_source (11+5)
+// 	)
 mrd_FSMsource_inst (
 	clk,
 	rst_n,
 
 	fsm,
 	fsm_r,
-	fsm_lastRd_source,
+	// fsm_lastRd_source,
 
 	Nf,
 	ctrl.twdl_demontr[0], // DFT points
@@ -374,7 +379,7 @@ mrd_FSMsource_inst (
 	out_data,
 
 	addrs_butterfly_src,
-	bank_index_source,
+	// bank_index_source,
 	source_end
 );
 
@@ -382,7 +387,8 @@ mrd_FSMsource_inst (
 //----------  Parameters to calculate twiddle factors --------
 //----------  twdl_sop indicates when to start to calc twiddle factors --
 //-----------------------------------------------------------------------
-assign out_rdx2345_data.twdl_sop = twdl_sop_sink | twdl_sop_rd;
+// assign out_rdx2345_data.twdl_sop = twdl_sop_sink | twdl_sop_rd;
+assign out_rdx2345_data.twdl_sop = (fsm==Rd && fsm_r!=Rd);
 
 logic [2:0] cnt_twdlStage;
 always@(posedge clk) begin
