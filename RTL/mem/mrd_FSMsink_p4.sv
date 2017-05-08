@@ -107,6 +107,7 @@ end
 endgenerate
 
 logic [11:0] cnt_overTime;
+logic valid_r;
 always@(posedge clk)
 begin 
 	if(!rst_n)  begin
@@ -115,12 +116,16 @@ begin
 		cnt_overTime <= 0;
 		overTime <= 0;
 		// twdl_sop_sink <= 0;
+		valid_r <= 0;
 	end
 	else begin
-		cnt_sink <= (in_data.valid)? cnt_sink+12'd1 : 12'd0;
-		if (cnt_sink != 12'd0 && cnt_sink==ctrl.twdl_demontr[0][11:2])
-			sink_end <= 1'b1;
-		else sink_end <= 1'b0;
+		// cnt_sink <= (in_data.valid)? cnt_sink+12'd1 : 12'd0;
+		// if (cnt_sink != 12'd0 && cnt_sink==ctrl.twdl_demontr[0][11:2])
+		// 	sink_end <= 1'b1;
+		// else sink_end <= 1'b0;
+
+		valid_r <= in_data.valid;
+		sink_end <= (in_data.valid==1'b0 && valid_r==1'b1);
 
 		cnt_overTime <= (fsm==Sink)? cnt_overTime + 12'd1 : 12'd0;
 		overTime <= (cnt_overTime==12'd2047)? 1'b1 : 1'b0;

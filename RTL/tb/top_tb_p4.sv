@@ -18,7 +18,8 @@ logic signed [17:0]  source_real, source_imag;
 logic [3:0] source_exp;
 logic [3:0]  cnt_sink_sop;
 
-integer 	data_file, scan_file, wr_file, wr_file_latency, data_file_p4, scan_file_p4;
+integer 	data_file, scan_file, wr_file, wr_file_latency;
+integer     data_file_p4, scan_file_p4, wr_file_p4;
 logic [31:0] 	captured_data, captured_data_imag;
 logic [31:0] 	captured_data_p4, captured_data_imag_p4;
 logic [15:0]  cnt_file_end; 
@@ -52,6 +53,12 @@ initial begin
 	wr_file = $fopen("top_result.dat","w");
 	if (wr_file == 0) begin
 		$display("top_result handle was NULL");
+		$finish;
+	end
+
+	wr_file_p4 = $fopen("top_result_p4.dat","w");
+	if (wr_file_p4 == 0) begin
+		$display("top_result_p4 handle was NULL");
 		$finish;
 	end
 
@@ -96,6 +103,7 @@ begin
 	end
 	else
 	begin
+		inverse <= 1'b0;
 		//dftpts_in <= dftpts;
 		if (cnt0==1 && !rd_file_end) begin
 			scan_file = $fscanf(data_file, "%d\n", captured_data);
@@ -210,7 +218,7 @@ top_inst(
 	.sink_imag  (sink_imag),
 	// .dftpts_in  (dftpts_in),
 	.size  (size),
-	.inverse  (1'b0),
+	.inverse  (inverse),
 
 	.source_valid  (source_valid),
 	// .source_ready  (1'b1),
@@ -300,31 +308,6 @@ begin
 end
 
 
-// top_mixed_radix_dft_p4 
-// top_p4(
-// 	.clk  (clk),    // Clock
-// 	.rst_n  (rst_n),  // Asynchronous reset active low
-	
-// 	.sink_valid  (sink_valid_p4),
-// 	.sink_ready  (),
-// 	.sink_sop  (sink_sop_p4),
-// 	.sink_eop  (sink_eop_p4),
-// 	.sink_real  (sink_real_p4),
-// 	.sink_imag  (sink_imag_p4),
-// 	// .dftpts_in  (dftpts_in),
-// 	.size  (size),
-// 	.inverse  (1'b0),
-
-// 	.source_valid  (source_valid_p4),
-// 	// .source_ready  (1'b1),
-// 	.source_sop  (source_sop_p4),
-// 	.source_eop  (source_eop_p4),
-// 	.source_real  (source_real_p4),
-// 	.source_imag  (source_imag_p4),
-// 	.source_exp (source_exp_p4)
-// 	// .dftpts_out  ()
-// );
-
 top_mixed_radix_dft_p4 
 top_p4(
 	.clk  (clk),    // Clock
@@ -338,7 +321,7 @@ top_p4(
 	.sink_imag  (sink_imag_p4),
 	// .dftpts_in  (dftpts_in),
 	.size  (size),
-	.inverse  (1'b0),
+	.inverse  (inverse),
 
 	.source_valid  (source_valid_p4),
 	// .source_ready  (1'b1),
@@ -433,6 +416,48 @@ begin
 
 end
 
+logic [15:0]  cnt_val_debug_p4, cnt_close_file_p4, cnt_latency_p4;
+logic signed [29:0]  real_adj_p4, imag_adj_p4;
+always@(posedge clk)
+begin
+	if (!rst_n) begin
+		cnt_val_debug_p4 <= 0;
+		cnt_close_file_p4 <= 0;
+
+		// cnt_latency <= 0;
+		// cnt_xlx <= 0;
+	end
+	else
+	begin
+			if (source_valid_p4)
+			begin
+				cnt_val_debug_p4 <= cnt_val_debug_p4 + 16'd1;
+				real_adj_p4 = $signed(source_real_p4[0])*$signed(2**source_exp_p4);
+				imag_adj_p4 = $signed(source_imag_p4[0])*$signed(2**source_exp_p4);
+				$fwrite(wr_file_p4, "%d %d\n", $signed(real_adj_p4), $signed(imag_adj_p4));
+				real_adj_p4 = $signed(source_real_p4[1])*$signed(2**source_exp_p4);
+				imag_adj_p4 = $signed(source_imag_p4[1])*$signed(2**source_exp_p4);
+				$fwrite(wr_file_p4, "%d %d\n", $signed(real_adj_p4), $signed(imag_adj_p4));
+				real_adj_p4 = $signed(source_real_p4[2])*$signed(2**source_exp_p4);
+				imag_adj_p4 = $signed(source_imag_p4[2])*$signed(2**source_exp_p4);
+				$fwrite(wr_file_p4, "%d %d\n", $signed(real_adj_p4), $signed(imag_adj_p4));
+				real_adj_p4 = $signed(source_real_p4[3])*$signed(2**source_exp_p4);
+				imag_adj_p4 = $signed(source_imag_p4[3])*$signed(2**source_exp_p4);
+				$fwrite(wr_file_p4, "%d %d\n", $signed(real_adj_p4), $signed(imag_adj_p4));
+			end
+
+			cnt_close_file_p4 <= (rd_file_end_p4)? cnt_close_file_p4+1 : 0;
+			if (cnt_close_file_p4 == 16'd3300)
+				$fclose(wr_file_p4);
+
+			// cnt_latency <= (sink_sop) ? 16'd0 : cnt_latency + 16'd1;
+			// if (source_eop) begin 
+			// 	$fwrite(wr_file_latency, "%d %d\n", cnt_latency+16'd1, latency_xlx[cnt_xlx]);
+			// 	cnt_xlx <= cnt_xlx + 1'd1;
+			// end
+	end
+
+end
 
 
 

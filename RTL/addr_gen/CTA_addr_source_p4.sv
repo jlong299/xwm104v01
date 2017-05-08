@@ -31,7 +31,7 @@ acc_k1 (
 
 	.clr_n 	(clr_n),
 	.ena_top 	(1'b1),
-	.in_carry 	(1'b1),
+	.in_carry 	(1'b0),
 	.max_acc 	(Nf[0]-3'd1),
 	.inc 	(3'b1),
 
@@ -49,7 +49,8 @@ acc_k2 (
 
 	.clr_n 	(clr_n),
 	.ena_top 	(1'b1),
-	.in_carry 	(carry_out[0]),
+	// .in_carry 	(carry_out[0]),
+	.in_carry 	(1'b1),
 	.max_acc 	(Nf[1]-3'd1),
 	.inc 	(3'b1),
 
@@ -171,16 +172,18 @@ begin
 		k4_x_twdl_dem5 <= 0;
 	end
 	else begin
-		if (carry_out[0]) 
+		// if (carry_out[0]) 
+		// if (1'b1) 
 			k0_x_twdl_dem1 <= 0;
-		else if (1'b1)
-			k0_x_twdl_dem1 <= k0_x_twdl_dem1 + twdl_demontr[1];
-		else
-			k0_x_twdl_dem1 <= k0_x_twdl_dem1;
+		// else if (1'b1)
+			// k0_x_twdl_dem1 <= k0_x_twdl_dem1 + twdl_demontr[1];
+		// else
+			// k0_x_twdl_dem1 <= k0_x_twdl_dem1;
 
 		if (carry_out[1]) 
 			k1_x_twdl_dem2 <= 0;
-		else if (carry_out[0])
+		// else if (carry_out[0])
+		else if (1'b1)
 			k1_x_twdl_dem2 <= k1_x_twdl_dem2 + twdl_demontr[2];
 		else
 			k1_x_twdl_dem2 <= k1_x_twdl_dem2;

@@ -114,7 +114,7 @@ rdx2345_twdl(
 mrd_ctrl_fsm 
 ctrl_fsm(
 	.clk (clk),
-	.rst_n (rst_n),
+	.rst_n (rst_n_sync),
 
 	.fsm (fsm),
 	.sink_sop (sink_sop),

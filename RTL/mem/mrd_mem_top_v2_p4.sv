@@ -260,17 +260,20 @@ endgenerate
 logic [2:0] bank_index_source_r;
 always@(posedge clk) bank_index_source_r <= bank_index_source;
 always@(posedge clk) begin
-	 out_data.dout_real[0] <= (fsm_lastRd_source && in_rdx2345_data.valid)? 
-            in_rdx2345_data.d_real[0] : rdRAM.dout_real[bank_index_source_r] ;
-	 out_data.dout_imag[0] <= (fsm_lastRd_source && in_rdx2345_data.valid)? 
-            in_rdx2345_data.d_imag[0] : rdRAM.dout_imag[bank_index_source_r] ;
+	 // out_data.dout_real[0] <= (fsm_lastRd_source && in_rdx2345_data.valid)? 
+  //           in_rdx2345_data.d_real[0] : rdRAM.dout_real[bank_index_source_r] ;
+	 // out_data.dout_imag[0] <= (fsm_lastRd_source && in_rdx2345_data.valid)? 
+  //           in_rdx2345_data.d_imag[0] : rdRAM.dout_imag[bank_index_source_r] ;
 
-     out_data.dout_real[1] <= 0;
-     out_data.dout_imag[1] <= 0;
-     out_data.dout_real[2] <= 0;
-     out_data.dout_imag[2] <= 0;
-     out_data.dout_real[3] <= 0;
-     out_data.dout_imag[3] <= 0;
+  	out_data.dout_real[0] <= (fsm==Source)? out_rdx2345_data.d_real[0] : 18'd0;
+  	out_data.dout_imag[0] <= (fsm==Source)? out_rdx2345_data.d_imag[0] : 18'd0;
+  	out_data.dout_real[1] <= (fsm==Source)? out_rdx2345_data.d_real[1] : 18'd0;
+  	out_data.dout_imag[1] <= (fsm==Source)? out_rdx2345_data.d_imag[1] : 18'd0;
+  	out_data.dout_real[2] <= (fsm==Source)? out_rdx2345_data.d_real[2] : 18'd0;
+  	out_data.dout_imag[2] <= (fsm==Source)? out_rdx2345_data.d_imag[2] : 18'd0;
+  	out_data.dout_real[3] <= (fsm==Source)? out_rdx2345_data.d_real[3] : 18'd0;
+  	out_data.dout_imag[3] <= (fsm==Source)? out_rdx2345_data.d_imag[3] : 18'd0;
+
 end
 always@(posedge clk) out_data.exp <= in_rdx2345_data.exp;
 

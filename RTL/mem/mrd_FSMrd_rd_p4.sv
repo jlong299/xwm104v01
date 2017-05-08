@@ -118,7 +118,8 @@ for (k=3'd0; k < 3'd5; k=k+3'd1) begin : gen0
 always@(posedge clk)
  // addrs_butterfly_mux[k]<=(fsm==Rd && cnt_stage != ctrl.NumOfFactors-3'd1)?
  //                              addrs_butterfly[k] : addrs_butterfly_src[k] ;
- addrs_butterfly_mux[k]<=(fsm==Rd)?  addrs_butterfly[k] : addrs_butterfly_src[k] ;
+ addrs_butterfly_mux[k]<=(fsm==Idle)? 12'd0 : 
+                (fsm==Rd)?  addrs_butterfly[k] : addrs_butterfly_src[k] ;
 end
 endgenerate
 
@@ -270,7 +271,8 @@ endgenerate
 // 	out_rdx2345_data.d_imag[4] = rdRAM_FSMrd.dout_imag[(bank_index_rd_rrr[4])]; 
 // end
 //////
-always@(posedge clk) out_rdx2345_data.valid <= rden_r[in_dly-1];
+always@(posedge clk) out_rdx2345_data.valid <= (fsm==Rd || fsm==Wait_wr_end)?
+                                               rden_r[in_dly-1] : 1'b0;
 always@(posedge clk) out_rdx2345_data.bank_index <= bank_index_rd_rr;
 always@(posedge clk) out_rdx2345_data.bank_addr <= bank_addr_rd_rr;
 

@@ -85,6 +85,7 @@ assign  addrs_butterfly_src[4] = 0;
 
 //------Part 2 : Gen output sop,eop,valid according to in_rdx2345_data.valid--
 //------Note : in_rdx2345_data.valid represents first 1/3 output data ----
+localparam [11:0] sop_time = 12'd12;
 logic in_rdx2345_valid_r;
 logic [11:0]  cnt_source;
 always@(posedge clk)
@@ -96,23 +97,17 @@ begin
 		out_data.valid <= 0;
 		source_end <= 0;
 		cnt_source <= 0;
-		in_rdx2345_valid_r <= 0;
+		// in_rdx2345_valid_r <= 0;
 	end
 	else
 	begin
 
-		in_rdx2345_valid_r <= in_rdx2345_data.valid;
 		if (fsm==Source) begin
-			if (in_rdx2345_data.valid && (!in_rdx2345_valid_r)) begin
-				out_data.sop <= 1'b1;
-				cnt_source <= 12'd1;
-			end
-			else begin
-				out_data.sop <= 1'b0;
-				cnt_source <= (cnt_source==12'd0)? 12'd0 : cnt_source+12'd1;
-			end
-			out_data.eop <= (cnt_source==dftpts-12'd1)? 1'b1 : 1'b0;
-			if (in_rdx2345_data.valid && (!in_rdx2345_valid_r))
+			cnt_source <= (cnt_source==12'd4095)? 12'd0 : cnt_source+12'd1;
+			out_data.sop <= (cnt_source == sop_time);
+			out_data.eop <= (cnt_source==dftpts[11:2]+sop_time-12'd1)? 1'b1 : 1'b0;
+
+			if (cnt_source == sop_time)
 				out_data.valid <= 1'b1;
 			else if (out_data.eop)
 				out_data.valid <= 1'b0;
@@ -125,7 +120,7 @@ begin
 			out_data.eop <= 0;
 			out_data.valid <= 0;
 		end
-		source_end <=  (fsm == Source && cnt_source==dftpts);
+		source_end <=  (cnt_source==dftpts[11:2]+sop_time);
 	end
 end
 

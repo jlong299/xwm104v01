@@ -56,6 +56,8 @@ elab
 add wave -radix signed {sim:/top_tb_p4/*}
 add wave -radix signed {sim:/top_tb_p4/sink_real_p4}
 add wave -radix signed {sim:/top_tb_p4/sink_imag_p4}
+add wave -radix signed {sim:/top_tb_p4/source_real_p4}
+add wave -radix signed {sim:/top_tb_p4/source_imag_p4}
 
 add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/wrRAM/wren}
 add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/wrRAM/wraddr}
@@ -63,6 +65,7 @@ add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/wrRAM/din_real}
 add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/wrRAM/din_imag}
 add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/fsm}
 add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/sink_end}
+add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/ctrl/twdl_demontr}
 
 
 # add wave -radix signed {sim:/top_tb/top_inst/rst_n_sync}
@@ -116,14 +119,19 @@ add wave -radix signed {sim:/top_tb_p4/top_inst/mem0/in_rdx2345_data/d_imag}
 add wave -radix unsigned {sim:/top_tb_p4/top_p4/mem0_p4/in_rdx2345_data/valid}
 add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/in_rdx2345_data/d_real}
 add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/in_rdx2345_data/d_imag}
+add wave -radix unsigned {sim:/top_tb_p4/top_inst/mem0/out_rdx2345_data/valid}
+add wave -radix signed {sim:/top_tb_p4/top_inst/mem0/out_rdx2345_data/d_real}
+add wave -radix signed {sim:/top_tb_p4/top_inst/mem0/out_rdx2345_data/d_imag}
 add wave -radix unsigned {sim:/top_tb_p4/top_p4/mem0_p4/out_rdx2345_data/valid}
 add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/out_rdx2345_data/d_real}
 add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/out_rdx2345_data/d_imag}
 add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/mrd_FSMrd_rd_inst/*}
 add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/mrd_FSMrd_rd_inst/rdRAM_FSMrd/*}
 
+add wave -radix signed {sim:/top_tb_p4/top_p4/ctrl_fsm/*}
+add wave -radix signed {sim:/top_tb_p4/top_p4/ctrl_fsm/ctrl_to_mem/*}
 
 view structure
 view signals
 
-run 20us
+run 800us
