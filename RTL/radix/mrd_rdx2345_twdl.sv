@@ -6,7 +6,8 @@ module mrd_rdx2345_twdl (
 	input inverse,
 	input source_eop,
 	mrd_rdx2345_if from_mem,
-	mrd_rdx2345_if to_mem
+	mrd_rdx2345_if to_mem,
+	output out_val_pre
 );
 
 localparam  wDFTout = 18;
@@ -253,6 +254,7 @@ twdl (
 	.out_val  (to_mem.valid),
 	.dout_real  (to_mem.d_real),
 	.dout_imag  (to_mem.d_imag),
+	.out_val_pre (out_val_pre),
 	
 	.sclr_ff_addr (sclr_ff_addr),
 	.rdreq_ff_addr (rdreq_ff_addr)

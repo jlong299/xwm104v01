@@ -42,6 +42,7 @@ module mrd_mem_top_v2 (
 
 	mrd_st_if  in_data,
 	mrd_rdx2345_if  in_rdx2345_data,
+	logic out_val_pre_twdl,
 
 	mrd_ctrl_if  ctrl,
 
@@ -66,6 +67,7 @@ logic [2:0]  cnt_stage;
 logic sink_3_4, overTime;
 logic wr_end, rd_end;
 logic fsm_lastRd_source,  source_end;
+logic valid_out_pre;
 
 mrd_mem_wr wrRAM();
 mrd_mem_rd rdRAM();
@@ -238,12 +240,26 @@ endgenerate
 
 logic [2:0] bank_index_source_r;
 always@(posedge clk) bank_index_source_r <= bank_index_source;
+
 always@(posedge clk) begin
-	 out_data.dout_real <= (fsm_lastRd_source && in_rdx2345_data.valid)? 
-            in_rdx2345_data.d_real[0] : rdRAM.dout_real[bank_index_source_r] ;
-	 out_data.dout_imag <= (fsm_lastRd_source && in_rdx2345_data.valid)? 
-            in_rdx2345_data.d_imag[0] : rdRAM.dout_imag[bank_index_source_r] ;
+if (!rst_n) begin
+	out_data.dout_real <= 0;
+	out_data.dout_imag <= 0;
 end
+else begin
+	if (valid_out_pre==1'b0) begin
+		out_data.dout_real <= 0;
+		out_data.dout_imag <= 0;
+	end
+	else begin
+	 out_data.dout_real <= (fsm_lastRd_source && in_rdx2345_data.valid)? 
+	        in_rdx2345_data.d_real[0] : rdRAM.dout_real[bank_index_source_r] ;
+	 out_data.dout_imag <= (fsm_lastRd_source && in_rdx2345_data.valid)? 
+	        in_rdx2345_data.d_imag[0] : rdRAM.dout_imag[bank_index_source_r] ;
+	end
+end
+end
+
 always@(posedge clk) out_data.exp <= in_rdx2345_data.exp;
 
 logic twdl_sop_sink, twdl_sop_rd;
@@ -343,6 +359,7 @@ mrd_FSMsource_inst (
 	Nf,
 	ctrl.twdl_demontr[0], // DFT points
 	twdl_demontr,
+	out_val_pre_twdl,
 
 	in_rdx2345_data,
 	rdRAM_FSMsource,
@@ -350,7 +367,8 @@ mrd_FSMsource_inst (
 
 	addrs_butterfly_src,
 	bank_index_source,
-	source_end
+	source_end,
+	valid_out_pre
 );
 
 //-----------------------------------------------------------------------

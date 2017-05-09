@@ -24,7 +24,8 @@ module mrd_FSMsource_p2
 	// Output
 	output logic [0:4][11:0] addrs_butterfly_src,
 	// output logic [2:0] bank_index_source,
-	output logic source_end
+	output logic source_end,
+	output logic valid_out_pre
 	
 );
 // parameter Idle = 3'd0, Sink = 3'd1, Wait_to_rd = 3'd2,
@@ -100,6 +101,7 @@ begin
 		source_end <= 0;
 		cnt_source <= 0;
 		// in_rdx2345_valid_r <= 0;
+		valid_out_pre <= 0;
 	end
 	else
 	begin
@@ -115,6 +117,13 @@ begin
 				out_data.valid <= 1'b0;
 			else
 				out_data.valid <= out_data.valid;
+
+			if (cnt_source == sop_time-12'd1)
+				valid_out_pre <= 1'b1;
+			else if (cnt_source==dftpts[11:1]+sop_time-12'd1)
+				valid_out_pre <= 1'b0;
+			else
+				valid_out_pre <= valid_out_pre;
 		end
 		else begin
 			out_data.sop <= 0;

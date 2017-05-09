@@ -22,6 +22,7 @@ module twdl_CTA #(parameter
 	output logic out_val,
 	output logic signed [wDataInOut-1:0]  dout_real [0:4],
 	output logic signed [wDataInOut-1:0]  dout_imag [0:4],
+	output logic out_val_pre,
 
 	output sclr_ff_addr,
 	output logic rdreq_ff_addr
@@ -94,6 +95,7 @@ end
 
 always@(posedge clk) begin
 		out_val <= (factor==3'd3 || factor==3'd5)? valid_r[delay_twdl-2] : valid_r[delay_twdl_42-2] ;
+		out_val_pre <= (factor==3'd3 || factor==3'd5)? valid_r[delay_twdl-3] : valid_r[delay_twdl_42-3] ;
 end
 always@(posedge clk)
 begin

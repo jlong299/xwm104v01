@@ -80,6 +80,7 @@ mrd_rdx2345_if mem_to_rdx2345();
 mrd_ctrl_if ctrl_to_mem();
 
 logic [2:0] fsm;
+logic out_val_pre_twdl;
 
 mrd_mem_top_v2
 mem0 (
@@ -88,6 +89,7 @@ mem0 (
 
 	.in_data ( sink_st ),
 	.in_rdx2345_data ( rdx2345_to_mem ),
+	.out_val_pre_twdl (out_val_pre_twdl),
 
 	.ctrl (ctrl_to_mem),
 
@@ -107,7 +109,8 @@ rdx2345_twdl(
 	.inverse (inverse),
 	.source_eop (source_eop),
 	.from_mem (mem_to_rdx2345),
-	.to_mem (rdx2345_to_mem)
+	.to_mem (rdx2345_to_mem),
+	.out_val_pre (out_val_pre_twdl)
 	);
 
 // Control & FSM

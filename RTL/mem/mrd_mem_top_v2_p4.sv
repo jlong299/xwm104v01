@@ -86,6 +86,7 @@ logic [2:0]  cnt_stage;
 logic sink_end, overTime;
 logic wr_end, rd_end;
 logic fsm_lastRd_source,  source_end;
+logic valid_out_pre;
 
 mrd_mem_wr wrRAM();
 mrd_mem_rd rdRAM();
@@ -265,14 +266,14 @@ always@(posedge clk) begin
 	 // out_data.dout_imag[0] <= (fsm_lastRd_source && in_rdx2345_data.valid)? 
   //           in_rdx2345_data.d_imag[0] : rdRAM.dout_imag[bank_index_source_r] ;
 
-  	out_data.dout_real[0] <= (fsm==Source)? out_rdx2345_data.d_real[0] : 18'd0;
-  	out_data.dout_imag[0] <= (fsm==Source)? out_rdx2345_data.d_imag[0] : 18'd0;
-  	out_data.dout_real[1] <= (fsm==Source)? out_rdx2345_data.d_real[1] : 18'd0;
-  	out_data.dout_imag[1] <= (fsm==Source)? out_rdx2345_data.d_imag[1] : 18'd0;
-  	out_data.dout_real[2] <= (fsm==Source)? out_rdx2345_data.d_real[2] : 18'd0;
-  	out_data.dout_imag[2] <= (fsm==Source)? out_rdx2345_data.d_imag[2] : 18'd0;
-  	out_data.dout_real[3] <= (fsm==Source)? out_rdx2345_data.d_real[3] : 18'd0;
-  	out_data.dout_imag[3] <= (fsm==Source)? out_rdx2345_data.d_imag[3] : 18'd0;
+  	out_data.dout_real[0] <= (valid_out_pre)? out_rdx2345_data.d_real[0] : 18'd0;
+  	out_data.dout_imag[0] <= (valid_out_pre)? out_rdx2345_data.d_imag[0] : 18'd0;
+  	out_data.dout_real[1] <= (valid_out_pre)? out_rdx2345_data.d_real[1] : 18'd0;
+  	out_data.dout_imag[1] <= (valid_out_pre)? out_rdx2345_data.d_imag[1] : 18'd0;
+  	out_data.dout_real[2] <= (valid_out_pre)? out_rdx2345_data.d_real[2] : 18'd0;
+  	out_data.dout_imag[2] <= (valid_out_pre)? out_rdx2345_data.d_imag[2] : 18'd0;
+  	out_data.dout_real[3] <= (valid_out_pre)? out_rdx2345_data.d_real[3] : 18'd0;
+  	out_data.dout_imag[3] <= (valid_out_pre)? out_rdx2345_data.d_imag[3] : 18'd0;
 
 end
 always@(posedge clk) out_data.exp <= in_rdx2345_data.exp;
@@ -383,7 +384,8 @@ mrd_FSMsource_inst (
 
 	addrs_butterfly_src,
 	// bank_index_source,
-	source_end
+	source_end,
+	valid_out_pre
 );
 
 //-----------------------------------------------------------------------

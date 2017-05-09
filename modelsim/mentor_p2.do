@@ -59,6 +59,8 @@ add wave -radix signed {sim:/top_tb_p2/sink_imag_p2}
 add wave -radix signed {sim:/top_tb_p2/source_real_p2}
 add wave -radix signed {sim:/top_tb_p2/source_imag_p2}
 
+# add wave -radix signed {sim:/top_tb_p2/top_inst/mem0/*}
+
 add wave -radix signed {sim:/top_tb_p2/top_p2/mem0_p2/wrRAM/wren}
 add wave -radix signed {sim:/top_tb_p2/top_p2/mem0_p2/wrRAM/wraddr}
 add wave -radix signed {sim:/top_tb_p2/top_p2/mem0_p2/wrRAM/din_real}
