@@ -69,12 +69,13 @@ Nf_temp = zeros(1,NumOfFactors_max-2);
 NumOfLen = 0;
 
 outf = fopen('../../modelsim/dft_src.dat','w');
+outf_p2 = fopen('../../modelsim/dft_src_p2.dat','w');
 outf_p4 = fopen('../../modelsim/dft_src_p4.dat','w');
 outf_FFT = fopen('../../modelsim/matlab_result.dat','w');
 %  Loop  from  12*1  to  12*100
 % for m_len = 1:20:100   % The end of loop body is at the end of this file
-m_len = 0;
-while(m_len<100 )
+m_len = 1;
+while(m_len<2 )
     if (m_len==108)
         m_len = 126;
     end
@@ -124,9 +125,11 @@ x = x_real + 1j*x_imag;
 % x = x + x*(1i);
 
 fprintf(outf , '%d\n' , m_len*12);
+fprintf(outf_p2 , '%d\n' , m_len*12);
 fprintf(outf_p4 , '%d\n' , m_len*12);
 for k = 1 : length(x_real)
     fprintf(outf , '%d %d\n' , real(x(k)), imag(x(k)));
+    fprintf(outf_p2 , '%d %d\n' , real(x(k)), imag(x(k)));
     fprintf(outf_p4 , '%d %d\n' , real(x(k)), imag(x(k)));
 end
 
@@ -405,5 +408,6 @@ end
 end
 
 fclose(outf);
+fclose(outf_p2);
 fclose(outf_p4);
 fclose(outf_FFT);
