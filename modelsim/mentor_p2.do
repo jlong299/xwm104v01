@@ -122,9 +122,13 @@ add wave -radix signed {sim:/top_tb_p2/top_p2/mem0_p2/in_rdx2345_data/d_imag}
 add wave -radix unsigned {sim:/top_tb_p2/top_inst/mem0/out_rdx2345_data/valid}
 add wave -radix signed {sim:/top_tb_p2/top_inst/mem0/out_rdx2345_data/d_real}
 add wave -radix signed {sim:/top_tb_p2/top_inst/mem0/out_rdx2345_data/d_imag}
+add wave -radix unsigned {sim:/top_tb_p2/top_inst/mem0/out_rdx2345_data/bank_index}
+add wave -radix unsigned {sim:/top_tb_p2/top_inst/mem0/out_rdx2345_data/bank_addr}
 add wave -radix unsigned {sim:/top_tb_p2/top_p2/mem0_p2/out_rdx2345_data/valid}
 add wave -radix signed {sim:/top_tb_p2/top_p2/mem0_p2/out_rdx2345_data/d_real}
 add wave -radix signed {sim:/top_tb_p2/top_p2/mem0_p2/out_rdx2345_data/d_imag}
+add wave -radix unsigned {sim:/top_tb_p2/top_p2/mem0_p2/out_rdx2345_data/bank_index}
+add wave -radix unsigned {sim:/top_tb_p2/top_p2/mem0_p2/out_rdx2345_data/bank_addr}
 add wave -radix signed {sim:/top_tb_p2/top_p2/mem0_p2/mrd_FSMrd_rd_inst/*}
 add wave -radix signed {sim:/top_tb_p2/top_p2/mem0_p2/mrd_FSMrd_rd_inst/rdRAM_FSMrd/*}
 
@@ -134,4 +138,4 @@ add wave -radix signed {sim:/top_tb_p2/top_p2/ctrl_fsm/ctrl_to_mem/*}
 view structure
 view signals
 
-run 80us
+run 800us

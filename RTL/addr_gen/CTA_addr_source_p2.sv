@@ -32,7 +32,7 @@ acc_k1 (
 	.clr_n 	(clr_n),
 	.ena_top 	(1'b1),
 	.in_carry 	(1'b1),
-	.max_acc 	(Nf[0]-3'd1),
+	.max_acc 	(Nf[0]-3'd2),
 	.inc 	(3'd2),
 
 	.out_acc 	(k[0]),

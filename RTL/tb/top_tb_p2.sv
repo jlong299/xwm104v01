@@ -269,11 +269,11 @@ begin
 			cnt0_p2 <= (cnt0_p2 == dftpts_in_p2 + 4*dftpts_in_p2)? 16'd0 : cnt0_p2+1'b1;
 
 		sink_sop_p2 <= (cnt0_p2==16'd10 && !rd_file_end_p2);
-		sink_eop_p2 <= (cnt0_p2==16'd10 + dftpts_in_p2/4 -1 && !rd_file_end_p2);
-		sink_valid_p2 <= (cnt0_p2>=16'd10 && cnt0_p2<16'd10+dftpts_in_p2/4 && !rd_file_end_p2);
+		sink_eop_p2 <= (cnt0_p2==16'd10 + dftpts_in_p2/2 -1 && !rd_file_end_p2);
+		sink_valid_p2 <= (cnt0_p2>=16'd10 && cnt0_p2<16'd10+dftpts_in_p2/2 && !rd_file_end_p2);
 
 		if (!rd_file_end_p2) begin
-		if (cnt0_p2>=16'd10 && cnt0_p2<16'd10+dftpts_in_p2/4) begin
+		if (cnt0_p2>=16'd10 && cnt0_p2<16'd10+dftpts_in_p2/2) begin
 			if (!$feof(data_file_p2)) begin
 				scan_file_p2 = $fscanf(data_file_p2, "%d %d\n", captured_data_p2, captured_data_imag_p2);
 				sink_real_p2[0] = captured_data_p2[17:0];

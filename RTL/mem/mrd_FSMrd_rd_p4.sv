@@ -46,7 +46,9 @@ logic [3:0]  cnt_wait;
 
 //-------------------------------------------
 always@(posedge clk) begin
-	if (cnt_stage == stage_of_rdx2)
+	if (fsm==Source)
+		cnt_rd_stop <= (twdl_demontr[0] >> 2); // N/2 for parallel 4
+	else if (cnt_stage == stage_of_rdx2)
 		cnt_rd_stop <= (dftpts_div_Nf[cnt_stage]) >> 1;
 	else
 		cnt_rd_stop <= dftpts_div_Nf[cnt_stage];

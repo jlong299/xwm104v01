@@ -46,10 +46,15 @@ logic [3:0]  cnt_wait;
 
 //-------------------------------------------
 always@(posedge clk) begin
-	if (cnt_stage == stage_of_rdx2)
+if (!rst_n) cnt_rd_stop <= 0;
+else begin
+	if (fsm==Source)
+		cnt_rd_stop <= (twdl_demontr[0] >> 1); // N/2 for parallel 2
+	else if (cnt_stage == stage_of_rdx2)
 		cnt_rd_stop <= (dftpts_div_Nf[cnt_stage]) >> 1;
 	else
 		cnt_rd_stop <= dftpts_div_Nf[cnt_stage];
+end
 end
 
 always@(posedge clk)
@@ -175,7 +180,7 @@ begin
 		// 	bank_index_rd[2] <= div7_rmdr_rd[2];
 		//       else
 		if (fsm==Source)
-			bank_index_rd[2] <= div7_rmdr_rd[2];
+			bank_index_rd[2] <= 3'd7;
 		else
 			bank_index_rd[2] <= (Nf[cnt_stage] == 3'd1)? 3'd7 : div7_rmdr_rd[2];
 
@@ -183,7 +188,7 @@ begin
 		// 	bank_index_rd[3] <= div7_rmdr_rd[3];
   		//       else
   		if (fsm==Source)
-  			bank_index_rd[3] <= div7_rmdr_rd[3];
+  			bank_index_rd[3] <= 3'd7;
   		else
 			bank_index_rd[3] <= (Nf[cnt_stage]==3'd1 || Nf[cnt_stage]==3'd3)? 3'd7 : div7_rmdr_rd[3];
 

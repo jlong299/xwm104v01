@@ -74,6 +74,8 @@ interface mrd_st_if_p4 ();
 	// modport ST_OUT (input ready,
 	// 	            output valid, sop, eop, d_real, d_imag, dftpts, inverse);
 
+endinterface
+
 //---------- Support paralle 2 in/output ----------
 interface mrd_st_if_p2 ();
 	logic valid, sop, eop;
