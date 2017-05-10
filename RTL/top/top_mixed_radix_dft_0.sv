@@ -24,7 +24,7 @@ module top_mixed_radix_dft_0 (
 input clk;
 input rst_n;
 input sink_valid;
-output sink_ready;
+output logic sink_ready;
 input sink_sop;
 input sink_eop;
 input [17:0] sink_real;
@@ -56,7 +56,7 @@ mrd_st_if sink_st();
 mrd_st_if source_st();
 
 assign sink_st.valid = sink_valid;
-assign sink_st.sop = sink_sop;
+assign sink_st.sop = sink_sop & sink_ready;
 assign sink_st.eop = sink_eop;
 assign sink_st.din_real = sink_real;
 assign sink_st.din_imag = sink_imag;
@@ -105,7 +105,7 @@ rdx2345_twdl(
 	.clk (clk),
 	.rst_n (rst_n_sync), 
 
-	.sink_sop (sink_sop),
+	.sink_sop (sink_st.sop),
 	.inverse (inverse),
 	.source_eop (source_eop),
 	.from_mem (mem_to_rdx2345),
@@ -120,7 +120,7 @@ ctrl_fsm(
 	.rst_n (rst_n_sync),
 
 	.fsm (fsm),
-	.sink_sop (sink_sop),
+	.sink_sop (sink_st.sop),
 	// .dftpts (dftpts_in),
 	.size (size),
 

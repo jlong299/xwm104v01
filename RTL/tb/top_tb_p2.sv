@@ -400,7 +400,7 @@ begin
 			// end
 
 			cnt_close_file <= (rd_file_end)? cnt_close_file+1 : 0;
-			if (cnt_close_file == 16'd3300)
+			if (cnt_close_file == 16'd3500)
 				$fclose(wr_file);
 
 			cnt_latency <= (sink_sop) ? 16'd0 : cnt_latency + 16'd1;
@@ -437,7 +437,7 @@ begin
 			end
 
 			cnt_close_file_p2 <= (rd_file_end_p2)? cnt_close_file_p2+1 : 0;
-			if (cnt_close_file_p2 == 16'd3300)
+			if (cnt_close_file_p2 == 16'd3500)
 				$fclose(wr_file_p2);
 
 			cnt_latency_p2 <= (sink_sop_p2) ? 16'd0 : cnt_latency_p2 + 16'd1;

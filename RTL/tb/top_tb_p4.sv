@@ -122,6 +122,7 @@ begin
 			cnt0 <= (cnt0 == dftpts_in + 4*dftpts_in)? 16'd0 : cnt0+1'b1;
 
 		sink_sop <= (cnt0==16'd10 && !rd_file_end);
+
 		sink_eop <= (cnt0==16'd10+dftpts_in-1 && !rd_file_end);
 		sink_valid <= (cnt0>=16'd10 && cnt0<16'd10+dftpts_in && !rd_file_end);
 
@@ -269,6 +270,7 @@ begin
 			cnt0_p4 <= (cnt0_p4 == dftpts_in_p4 + 4*dftpts_in_p4)? 16'd0 : cnt0_p4+1'b1;
 
 		sink_sop_p4 <= (cnt0_p4==16'd10 && !rd_file_end_p4);
+
 		sink_eop_p4 <= (cnt0_p4==16'd10 + dftpts_in_p4/4 -1 && !rd_file_end_p4);
 		sink_valid_p4 <= (cnt0_p4>=16'd10 && cnt0_p4<16'd10+dftpts_in_p4/4 && !rd_file_end_p4);
 
@@ -320,7 +322,7 @@ top_p4(
 	.rst_n  (rst_n),  // Asynchronous reset active low
 	
 	.sink_valid  (sink_valid_p4),
-	.sink_ready  (),
+	.sink_ready  (sink_ready_p4),
 	.sink_sop  (sink_sop_p4),
 	.sink_eop  (sink_eop_p4),
 	.sink_real  (sink_real_p4),
@@ -410,7 +412,7 @@ begin
 			// end
 
 			cnt_close_file <= (rd_file_end)? cnt_close_file+1 : 0;
-			if (cnt_close_file == 16'd3300)
+			if (cnt_close_file == 16'd3500)
 				$fclose(wr_file);
 
 			cnt_latency <= (sink_sop) ? 16'd0 : cnt_latency + 16'd1;
@@ -453,7 +455,7 @@ begin
 			end
 
 			cnt_close_file_p4 <= (rd_file_end_p4)? cnt_close_file_p4+1 : 0;
-			if (cnt_close_file_p4 == 16'd3300)
+			if (cnt_close_file_p4 == 16'd3500)
 				$fclose(wr_file_p4);
 
 			cnt_latency_p4 <= (sink_sop_p4) ? 16'd0 : cnt_latency_p4 + 16'd1;

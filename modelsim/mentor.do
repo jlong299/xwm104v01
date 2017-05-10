@@ -53,17 +53,19 @@ elab
 # vmap       work     ./libraries/work/
 
 # add wave -radix signed {sim:/top_tb/*}
+add wave -radix unsigned {sim:/top_tb_p4/top_inst/mem0/fsm}
+add wave -radix unsigned {sim:/top_tb_p4/top_p4/mem0_p4/fsm}
 add wave -radix signed {sim:/top_tb_p4/*}
 add wave -radix signed {sim:/top_tb_p4/sink_real_p4}
 add wave -radix signed {sim:/top_tb_p4/sink_imag_p4}
 add wave -radix signed {sim:/top_tb_p4/source_real_p4}
 add wave -radix signed {sim:/top_tb_p4/source_imag_p4}
 
+
 add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/wrRAM/wren}
 add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/wrRAM/wraddr}
 add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/wrRAM/din_real}
 add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/wrRAM/din_imag}
-add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/fsm}
 add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/sink_end}
 add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/ctrl/twdl_demontr}
 
@@ -134,4 +136,4 @@ add wave -radix signed {sim:/top_tb_p4/top_p4/ctrl_fsm/ctrl_to_mem/*}
 view structure
 view signals
 
-run 800us
+run 1000us

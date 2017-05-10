@@ -134,10 +134,13 @@ add wave -radix unsigned {sim:/top_tb_p2/top_p2/mem0_p2/out_rdx2345_data/bank_ad
 add wave -radix signed {sim:/top_tb_p2/top_p2/mem0_p2/mrd_FSMrd_rd_inst/*}
 add wave -radix signed {sim:/top_tb_p2/top_p2/mem0_p2/mrd_FSMrd_rd_inst/rdRAM_FSMrd/*}
 
+add wave -radix signed {sim:/top_tb_p2/top_inst/mem0/mrd_FSMrd_rd_inst/*}
+add wave -radix signed {sim:/top_tb_p2/top_inst/mem0/mrd_FSMrd_rd_inst/rdRAM_FSMrd/*}
+
 add wave -radix signed {sim:/top_tb_p2/top_p2/ctrl_fsm/*}
 add wave -radix signed {sim:/top_tb_p2/top_p2/ctrl_fsm/ctrl_to_mem/*}
 
 view structure
 view signals
 
-run 800us
+run 1000us

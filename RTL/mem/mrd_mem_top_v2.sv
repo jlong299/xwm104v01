@@ -132,6 +132,7 @@ end
 //------------------------------------------------
 //------------------ FSM -------------------------
 //------------------------------------------------
+logic WatchDog;
 always@(posedge clk)
 begin
 	if(!rst_n) begin
@@ -139,6 +140,9 @@ begin
 		fsm_r <= 3'd0;
 	end
 	else begin
+		if (WatchDog)
+			fsm <= Idle;
+		else begin
 		case (fsm)
 		Idle : fsm <= (in_data.sop)? Sink : Idle;
 
@@ -157,8 +161,21 @@ begin
 		Source : fsm <= (source_end)? Idle : Source;
 		default : fsm <= Idle;
 		endcase
+		end
 
 		fsm_r <= fsm;
+	end
+end
+
+logic [13:0]  cnt_WatchDog;
+always@(posedge clk) begin
+	if (~rst_n) begin
+		cnt_WatchDog <= 0;
+		WatchDog <= 0;
+	end
+	else begin
+		cnt_WatchDog <= (fsm == Idle)? 14'd0 : cnt_WatchDog + 14'd1;
+		WatchDog <= (cnt_WatchDog==14'd16383);
 	end
 end
 

@@ -104,7 +104,7 @@ logic [63:0] q_ROM;
 always@(posedge clk) begin
 if (!rst_n) rdaddr_ROM <= 0;//0;
 else 
-	if (sink_sop) rdaddr_ROM <= (size <= 6'd35)? {size,1'b0} : 7'd0;
+	if (fsm==3'd0 && sink_sop) rdaddr_ROM <= (size <= 6'd35)? {size,1'b0} : 7'd0;
 	else if (sink_sop_r1) rdaddr_ROM <= {rdaddr_ROM[6:1],1'b1};
 	else rdaddr_ROM <= rdaddr_ROM;
 end
