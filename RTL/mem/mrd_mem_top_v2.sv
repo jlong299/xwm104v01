@@ -42,7 +42,7 @@ module mrd_mem_top_v2 (
 
 	mrd_st_if  in_data,
 	mrd_rdx2345_if  in_rdx2345_data,
-	logic out_val_pre_twdl,
+	input out_val_pre_twdl,
 
 	mrd_ctrl_if  ctrl,
 
