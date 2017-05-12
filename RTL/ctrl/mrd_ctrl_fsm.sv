@@ -111,14 +111,14 @@ end
 
 always@(posedge clk) begin
 if (!rst_n) begin
-	factor_5 <= 0;
-	ctrl_to_mem.stage_of_rdx2 <= 0;
-	ctrl_to_mem.remainder[0] <= 0;
-	ctrl_to_mem.quotient[0] <= 0;
+	// factor_5 <= 0;
+	// ctrl_to_mem.stage_of_rdx2 <= 0;
+	// ctrl_to_mem.remainder[0] <= 0;
+	// ctrl_to_mem.quotient[0] <= 0;
 	ctrl_to_mem.twdl_demontr[0] <= 0;
-	dftpts_div_base <= 0;
-	ctrl_to_mem.Nf <= 0;
-	ctrl_to_mem.NumOfFactors <= 0;
+	// dftpts_div_base <= 0;
+	// ctrl_to_mem.Nf <= 0;
+	// ctrl_to_mem.NumOfFactors <= 0;
 end
 else begin
 	ctrl_to_mem.Nf[0] <= 3'd4;
@@ -131,6 +131,8 @@ else begin
 		ctrl_to_mem.Nf[2] <= q_ROM[35:33];
 		ctrl_to_mem.Nf[1] <= q_ROM[38:36];
 		ctrl_to_mem.NumOfFactors <= q_ROM[41:39];
+		//
+		ctrl_to_mem.twdl_demontr[1] <= {2'b00, q_ROM[11:2]};
 	end
 	else begin
 		ctrl_to_mem.twdl_demontr[0] <= ctrl_to_mem.twdl_demontr[0];
@@ -141,6 +143,8 @@ else begin
 		ctrl_to_mem.Nf[2] <= ctrl_to_mem.Nf[2];
 		ctrl_to_mem.Nf[1] <= ctrl_to_mem.Nf[1];
 		ctrl_to_mem.NumOfFactors <= ctrl_to_mem.NumOfFactors;
+		//
+		ctrl_to_mem.twdl_demontr[1] <= ctrl_to_mem.twdl_demontr[1];
 	end
 
 	if (~sink_sop_r3 & sink_sop_r4) begin
@@ -211,7 +215,8 @@ assign dft_size = ctrl_to_mem.twdl_demontr[0];
 //------------------ctrl_to_mem.dftpts_div_Nf[0:5]-----------------------
 // assign ctrl_to_mem.dftpts_div_Nf[0:5] = '{12'd300,12'd300,12'd240,12'd240,12'd400,12'd1200};
 always@(posedge clk) begin
-	if (!rst_n) ctrl_to_mem.dftpts_div_Nf[0:5] <= {6{12'd0}};
+	// if (!rst_n) ctrl_to_mem.dftpts_div_Nf[0:5] <= {6{12'd0}};
+	if (!rst_n) ctrl_to_mem.dftpts_div_Nf[0] <= 12'd0;
 	else begin
 		if (start_calc_param) begin
 			ctrl_to_mem.dftpts_div_Nf[0] <= dft_size[11:2];
@@ -238,12 +243,13 @@ end
 
 //--------------------ctrl_to_mem.twdl_demontr[1:4]-------------------------------------
 always@(posedge clk) begin
-	if (!rst_n)  start_calc_param_r <= 0;
-	else start_calc_param_r[2:0] <= {start_calc_param_r[1:0], start_calc_param};
+	// if (!rst_n)  start_calc_param_r <= 0;
+	// else start_calc_param_r[2:0] <= {start_calc_param_r[1:0], start_calc_param};
+	start_calc_param_r[2:0] <= {start_calc_param_r[1:0], start_calc_param};
 end
 always@(posedge clk) begin
-	if (!rst_n) ctrl_to_mem.twdl_demontr[1:5] <= {5{12'd0}};
-	else begin
+	// if (!rst_n) ctrl_to_mem.twdl_demontr[1:5] <= {5{12'd0}};
+	// else begin
 		if (start_calc_param) ctrl_to_mem.twdl_demontr[5] <= ctrl_to_mem.Nf[5];
 		else ctrl_to_mem.twdl_demontr[5] <= ctrl_to_mem.twdl_demontr[5];
 
@@ -289,20 +295,20 @@ always@(posedge clk) begin
 		end
 		else ctrl_to_mem.twdl_demontr[2] <= ctrl_to_mem.twdl_demontr[2];
 
-		if (start_calc_param_r[2]) begin
-			if (ctrl_to_mem.Nf[1]==3'd3) 
-				ctrl_to_mem.twdl_demontr[1] <= ctrl_to_mem.twdl_demontr[2] + {ctrl_to_mem.twdl_demontr[2],1'b0};
-			else if (ctrl_to_mem.Nf[1]==3'd5)
-				ctrl_to_mem.twdl_demontr[1] <= ctrl_to_mem.twdl_demontr[2] + {ctrl_to_mem.twdl_demontr[2],2'b00};
-			else if (ctrl_to_mem.Nf[1]==3'd4)
-				ctrl_to_mem.twdl_demontr[1] <= {ctrl_to_mem.twdl_demontr[2],2'b00};
-			else if (ctrl_to_mem.Nf[1]==3'd2)
-				ctrl_to_mem.twdl_demontr[1] <= {ctrl_to_mem.twdl_demontr[2],1'b0};
-			else
-				ctrl_to_mem.twdl_demontr[1] <= ctrl_to_mem.twdl_demontr[2];
-		end
-		else ctrl_to_mem.twdl_demontr[1] <= ctrl_to_mem.twdl_demontr[1];
-	end
+		// if (start_calc_param_r[2]) begin
+		// 	if (ctrl_to_mem.Nf[1]==3'd3) 
+		// 		ctrl_to_mem.twdl_demontr[1] <= ctrl_to_mem.twdl_demontr[2] + {ctrl_to_mem.twdl_demontr[2],1'b0};
+		// 	else if (ctrl_to_mem.Nf[1]==3'd5)
+		// 		ctrl_to_mem.twdl_demontr[1] <= ctrl_to_mem.twdl_demontr[2] + {ctrl_to_mem.twdl_demontr[2],2'b00};
+		// 	else if (ctrl_to_mem.Nf[1]==3'd4)
+		// 		ctrl_to_mem.twdl_demontr[1] <= {ctrl_to_mem.twdl_demontr[2],2'b00};
+		// 	else if (ctrl_to_mem.Nf[1]==3'd2)
+		// 		ctrl_to_mem.twdl_demontr[1] <= {ctrl_to_mem.twdl_demontr[2],1'b0};
+		// 	else
+		// 		ctrl_to_mem.twdl_demontr[1] <= ctrl_to_mem.twdl_demontr[2];
+		// end
+		// else ctrl_to_mem.twdl_demontr[1] <= ctrl_to_mem.twdl_demontr[1];
+	// end
 end
 //---------------------------------------------------------------------
 
@@ -336,58 +342,76 @@ logic [2:0]  cnt_quot, index, cnt_remd;
 logic [20-1:0] quot ;
 logic [12-1:0] remd ;
 logic flag_index_change;
+logic set_param_0;
+logic [11:0] twdl_demontr_next;
 assign flag_index_change = (fsm != 3'd0) && (cnt_quot==ctrl_to_mem.Nf[index]-3'd1) ;
 always@(posedge clk) begin
-	if (!rst_n) begin
-		index <= 0;
-		cnt_quot <= 0;
-		ctrl_to_mem.quotient[1] <= 0;
-		ctrl_to_mem.quotient[2] <= 0;
-		ctrl_to_mem.quotient[3] <= 0;
-		ctrl_to_mem.quotient[4] <= 0;
-		ctrl_to_mem.quotient[5] <= 0;
-		ctrl_to_mem.remainder[1] <= 0;
-		ctrl_to_mem.remainder[2] <= 0;
-		ctrl_to_mem.remainder[3] <= 0;
-		ctrl_to_mem.remainder[4] <= 0;
-		ctrl_to_mem.remainder[5] <= 0;
-		quot <= 0;
-		remd <= 0;
-		cnt_remd <= 0;
-	end
-	else begin
-		if (start_calc_param_r[2]) index <= 3'd0;
+	// if (!rst_n) begin
+	// 	index <= 0;
+	// 	cnt_quot <= 0;
+	// 	ctrl_to_mem.quotient[1] <= 0;
+	// 	ctrl_to_mem.quotient[2] <= 0;
+	// 	ctrl_to_mem.quotient[3] <= 0;
+	// 	ctrl_to_mem.quotient[4] <= 0;
+	// 	ctrl_to_mem.quotient[5] <= 0;
+	// 	ctrl_to_mem.remainder[1] <= 0;
+	// 	ctrl_to_mem.remainder[2] <= 0;
+	// 	ctrl_to_mem.remainder[3] <= 0;
+	// 	ctrl_to_mem.remainder[4] <= 0;
+	// 	ctrl_to_mem.remainder[5] <= 0;
+	// 	quot <= 0;
+	// 	remd <= 0;
+	// 	cnt_remd <= 0;
+	// end
+	// else begin
+		if (fsm==3'd0)
+			set_param_0 <= 1'b1;
+		else if (start_calc_param_r[2]) 
+			set_param_0 <= 1'b0;
+		else
+			set_param_0 <= set_param_0;
+
+		if (set_param_0) index <= 3'd0;
 		else if (index==3'd5)  index <= 3'd5;
 		else index <= (flag_index_change)? index+3'd1 : index;
 
-		if (fsm==3'd0 || start_calc_param_r[2]) cnt_quot <= 3'd0;
+		// if (fsm==3'd0 || set_param_0) cnt_quot <= 3'd0;
+		if (set_param_0) cnt_quot <= 3'd0;
 		else if ((index==3'd4 && flag_index_change) || index==3'd5 ) cnt_quot <= 3'd6;
 		else cnt_quot <= (flag_index_change)? 3'd0 : cnt_quot+3'd1;
 
-		if (start_calc_param_r[2])   ctrl_to_mem.quotient[1:5] <= { {4{20'd0}}, ctrl_to_mem.quotient[0] };
+		if (set_param_0)   ctrl_to_mem.quotient[1:5] <= { {4{20'd0}}, ctrl_to_mem.quotient[0] };
 		else begin
 			ctrl_to_mem.quotient[1:4] <= (flag_index_change)? ctrl_to_mem.quotient[2:5] : ctrl_to_mem.quotient[1:4];
 			ctrl_to_mem.quotient[5] <= (flag_index_change)? quot+cnt_remd : ctrl_to_mem.quotient[5];
 		end
 
-		if (start_calc_param_r[2])  quot <= ctrl_to_mem.quotient[0];
+		if (set_param_0)  quot <= ctrl_to_mem.quotient[0];
 		else quot <= (flag_index_change)? quot+cnt_remd : quot+ctrl_to_mem.quotient[5];
 
-		if (fsm==3'd0 || start_calc_param_r[2])  cnt_remd <= 0;
-		else if (index==3'd4) cnt_remd <= 0;
-		else if (flag_index_change) cnt_remd <= 0;
-		// if (start_calc_param_r[2]==1'b1 || index==3'd4 || flag_index_change==1'b1)  cnt_remd <= 0;
-		else cnt_remd <= (remd < ctrl_to_mem.twdl_demontr[index+3'd1] )? cnt_remd : cnt_remd+3'd1;
+		if (set_param_0) 
+			twdl_demontr_next <= ctrl_to_mem.twdl_demontr[1];
+		else if (flag_index_change && index[2] == 1'b0) //index=1,2,3
+			twdl_demontr_next <= ctrl_to_mem.twdl_demontr[index+3'd2];
+		else
+			twdl_demontr_next <= twdl_demontr_next;
 
-		if (start_calc_param_r[2])  remd <= ctrl_to_mem.remainder[0];
-		else remd <= (remd < ctrl_to_mem.twdl_demontr[index+3'd1] )? remd : remd-ctrl_to_mem.twdl_demontr[index+3'd1];
+		// if (fsm==3'd0 || set_param_0)  cnt_remd <= 0;
+		// if (set_param_0)  cnt_remd <= 0;
+		// else if (index==3'd4) cnt_remd <= 0;
+		// else if (flag_index_change) cnt_remd <= 0;
+		if (set_param_0==1'b1 || index==3'd4 || flag_index_change==1'b1)  cnt_remd <= 0;
+		else cnt_remd <= (remd < twdl_demontr_next )? cnt_remd : cnt_remd+3'd1;
 
-		if (start_calc_param_r[2])   ctrl_to_mem.remainder[1:5] <= { {4{12'd0}}, ctrl_to_mem.remainder[0] };
+		if (set_param_0)  remd <= ctrl_to_mem.remainder[0];
+		else remd <= (remd < twdl_demontr_next )? remd : remd-twdl_demontr_next;
+
+		if (set_param_0)   ctrl_to_mem.remainder[1:5] <= { {4{12'd0}}, ctrl_to_mem.remainder[0] };
 		else begin
 			ctrl_to_mem.remainder[1:4] <= (flag_index_change)? ctrl_to_mem.remainder[2:5] : ctrl_to_mem.remainder[1:4];
 			ctrl_to_mem.remainder[5] <= (flag_index_change)? remd : ctrl_to_mem.remainder[5];
 		end
-	end
+	// end
 end
 
 
