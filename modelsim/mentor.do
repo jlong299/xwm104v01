@@ -138,4 +138,4 @@ add wave -radix unsigned {sim:/top_tb_p4/top_inst/rdx2345_twdl/rdx5_3_4_2_v2/*}
 view structure
 view signals
 
-run 1000us
+run 20us

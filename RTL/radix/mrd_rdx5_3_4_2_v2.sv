@@ -22,7 +22,7 @@ module mrd_rdx5_3_4_2_v2
 
 logic unsigned [1:0] worst_case_growth;
 logic unsigned [1:0] word_growth;
-logic [5:0] val_r;
+logic [6:0] val_r;
 logic signed [18-1:0] p1_x0_r, p1_x0_i; //1.17
 logic signed [20-1:0] p1_x1_r, p1_x1_i; //3.17
 logic signed [19-1:0] wir1_p1_x1_r, wir1_p1_x1_i, wir1_p1_x2_r, wir1_p1_x2_i, wir1_p1_x3_r, wir1_p1_x3_i, wir1_p1_x4_r, wir1_p1_x4_i;
@@ -255,7 +255,7 @@ logic signed [20-1:0] p1r_x1_r, p1r_x1_i; //3.17
 
 
 //-----------------------------------------------------------------
-//----------  pipeline 3,4 ---------------------------------------------
+//----------  pipeline 3,4,5 ---------------------------------------------
 //----------------------------------------------------------------
 always@(posedge clk) begin
 	p1r_x0_r <= p1_x0_r;
@@ -266,7 +266,7 @@ end
 
 logic signed [21-1:0] p2_x0_r, p2_x0_i; //4.17
 logic signed [23-1:0] p2_x1_r, p2_x1_i; //4.19
-wire signed [20-1:0] wir1_p2_x0_r, wir1_p2_x0_i;
+logic signed [20-1:0] wir1_p2_x0_r, wir1_p2_x0_i;
 logic signed [22-1:0] wir1_p2_x1_r, wir1_p2_x1_i;
 // wire signed [36-1:0] wir1_p2_x2_r, wir1_p2_x2_i;
 // wire signed [36-1:0] wir1_p2_x3_r, wir1_p2_x3_i;
@@ -274,6 +274,7 @@ logic signed [22-1:0] wir1_p2_x1_r, wir1_p2_x1_i;
 // wire signed [36-1:0] wir1_p2_x5_r, wir1_p2_x5_i;
 
 logic signed [36-1:0] p2_x2_r, p2_x2_i, p2_x3_r, p2_x3_i, p2_x4_r, p2_x4_i, p2_x5_r, p2_x5_i; //4.20
+logic signed [36-1:0] p2_x2_r_t, p2_x2_i_t, p2_x3_r_t, p2_x3_i_t, p2_x4_r_t, p2_x4_i_t, p2_x5_r_t, p2_x5_i_t; //4.20
 
 assign wir1_p2_x0_r = {p1r_x0_r, 2'b00};
 assign wir1_p2_x0_i = {p1r_x0_i, 2'b00};
@@ -354,51 +355,54 @@ lpm_mult_18_mrd u0 (
 	.dataa  (p1_x2_r),  //  mult_input.dataa
 	.datab  (coeff[2]),  //            .datab
 	.clock  (clk),  //            .clock
-	.result (p2_x2_r)  // mult_output.result
+	.result (p2_x2_r_t)  // mult_output.result
 );
 lpm_mult_18_mrd u1 (
 	.dataa  (p1_x2_i),  //  mult_input.dataa
 	.datab  (coeff2_n),  //            .datab
 	.clock  (clk),  //            .clock
-	.result (p2_x2_i)  // mult_output.result
+	.result (p2_x2_i_t)  // mult_output.result
 );
 lpm_mult_18_mrd u2 (
 	.dataa  (p1_x3_i),  //  mult_input.dataa
 	.datab  (coeff3_n),  //            .datab
 	.clock  (clk),  //            .clock
-	.result (p2_x3_r)  // mult_output.result
+	.result (p2_x3_r_t)  // mult_output.result
 );
 lpm_mult_18_mrd u3 (
 	.dataa  (p1_x3_r),  //  mult_input.dataa
 	.datab  (coeff[3]),  //            .datab
 	.clock  (clk),  //            .clock
-	.result (p2_x3_i)  // mult_output.result
+	.result (p2_x3_i_t)  // mult_output.result
 );
 lpm_mult_18_mrd u4 (
 	.dataa  (p1_x4_i),  //  mult_input.dataa
 	.datab  (coeff4_n),  //            .datab
 	.clock  (clk),  //            .clock
-	.result (p2_x4_r)  // mult_output.result
+	.result (p2_x4_r_t)  // mult_output.result
 );
 lpm_mult_18_mrd u5 (
 	.dataa  (p1_x4_r),  //  mult_input.dataa
 	.datab  (coeff[4]),  //            .datab
 	.clock  (clk),  //            .clock
-	.result (p2_x4_i)  // mult_output.result
+	.result (p2_x4_i_t)  // mult_output.result
 );
 lpm_mult_18_mrd u6 (
 	.dataa  (p1_x5_i),  //  mult_input.dataa
 	.datab  (coeff5_n),  //            .datab
 	.clock  (clk),  //            .clock
-	.result (p2_x5_r)  // mult_output.result
+	.result (p2_x5_r_t)  // mult_output.result
 );
 lpm_mult_18_mrd u7 (
 	.dataa  (p1_x5_r),  //  mult_input.dataa
 	.datab  (coeff[5]),  //            .datab
 	.clock  (clk),  //            .clock
-	.result (p2_x5_i)  // mult_output.result
+	.result (p2_x5_i_t)  // mult_output.result
 );
 
+logic signed [21-1:0] p2_x0_r_t, p2_x0_i_t; //4.17
+logic signed [20-1:0] wir1_p2_x0_r_t, wir1_p2_x0_i_t;
+logic signed [22-1:0] wir1_p2_x1_r_t, wir1_p2_x1_i_t;
 always@(posedge clk)
 begin
 	// if (!rst_n) begin
@@ -409,17 +413,33 @@ begin
 
 	// end
 	// else begin
-		p2_x0_r <= p1r_x0_r + p1r_x1_r;
-		p2_x0_i <= p1r_x0_i + p1r_x1_i;
-		p2_x1_r <= wir1_p2_x0_r - wir1_p2_x1_r;
-		p2_x1_i <= wir1_p2_x0_i - wir1_p2_x1_i;
+		p2_x0_r_t <= p1r_x0_r + p1r_x1_r;
+		p2_x0_i_t <= p1r_x0_i + p1r_x1_i;
+		p2_x0_r <= p2_x0_r_t;
+		p2_x0_i <= p2_x0_i_t;
+
+		wir1_p2_x0_r_t <= wir1_p2_x0_r;
+		wir1_p2_x0_i_t <= wir1_p2_x0_i;
+		wir1_p2_x1_r_t <= wir1_p2_x1_r;
+		wir1_p2_x1_i_t <= wir1_p2_x1_i;
+		p2_x1_r <= wir1_p2_x0_r_t - wir1_p2_x1_r_t;
+		p2_x1_i <= wir1_p2_x0_i_t - wir1_p2_x1_i_t;
+
+		p2_x2_r <= p2_x2_r_t;
+		p2_x2_i <= p2_x2_i_t;
+		p2_x3_r <= p2_x3_r_t;
+		p2_x3_i <= p2_x3_i_t;
+		p2_x4_r <= p2_x4_r_t;
+		p2_x4_i <= p2_x4_i_t;
+		p2_x5_r <= p2_x5_r_t;
+		p2_x5_i <= p2_x5_i_t;
 
 	// end
 end
 
 
 //-----------------------------------------------------------------
-//----------  pipeline 5 ---------------------------------------------
+//----------  pipeline 5+1 ---------------------------------------------
 //----------------------------------------------------------------
 logic signed [24-1:0] wir_p2_x2_r, wir_p2_x2_i, wir_p2_x3_r, wir_p2_x3_i, 
        wir_p2_x4_r, wir_p2_x4_i, wir_p2_x5_r, wir_p2_x5_i; //4.20
@@ -562,7 +582,7 @@ always@(posedge clk) begin
 end
 
 //-----------------------------------------------------------------
-//----------  pipeline 6 ---------------------------------------------
+//----------  pipeline 6+1 ---------------------------------------------
 //----------------------------------------------------------------
 always@(*) begin
 	if (factor[1:0]==2'b10) begin
@@ -635,7 +655,7 @@ always@(posedge clk)
 	               worst_case_growth - margin_in : 2'd0;
 
 //-----------------------------------------------------------------
-//----------  pipeline 7 ---------------------------------------------
+//----------  pipeline 7+1 ---------------------------------------------
 //----------------------------------------------------------------
 //-------- scaling & margin ------------
 logic signed [27-1:0] wir1_p4_x0_r, wir1_p4_x0_i;
@@ -729,9 +749,9 @@ begin
 	end
 	else begin
 		// {out_val, val_r} <= {val_r, in_val};
-		val_r <= {val_r[4:0], in_val};
+		val_r <= {val_r[5:0], in_val};
 		if (factor==3'd3 || factor==3'd5)
-			out_val <= val_r[5];
+			out_val <= val_r[6];
 		else
 			out_val <= val_r[2];
 

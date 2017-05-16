@@ -1,5 +1,5 @@
 clear;
-outf = fopen('../../modelsim/top_result.dat','r');
+outf = fopen('../../modelsim/top_result_p4.dat','r');
 
 outf_m = fopen('../../modelsim/matlab_result.dat','r');
 
