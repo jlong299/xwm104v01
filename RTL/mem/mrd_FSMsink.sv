@@ -24,6 +24,8 @@ logic [11:0]  addr_sink_CTA;
 
 logic [11:0]  cnt_sink;
 
+localparam [11:0] twdl_sop_time = 12'd2;
+
 always@(posedge clk) begin
 	wrRAM_FSMsink.wraddr[0] <= bank_addr_sink_pre;
 	wrRAM_FSMsink.wraddr[1] <= bank_addr_sink_pre;
@@ -90,7 +92,7 @@ begin
 		cnt_overTime <= (fsm==Sink)? cnt_overTime + 12'd1 : 12'd0;
 		overTime <= (cnt_overTime==12'd2047)? 1'b1 : 1'b0;
 
-		twdl_sop_sink <= (cnt_sink==ctrl.twdl_demontr[0][11:2] + ctrl.twdl_demontr[0][11:1] - 12'd3);
+		twdl_sop_sink <= (cnt_sink==ctrl.twdl_demontr[0][11:2] + ctrl.twdl_demontr[0][11:1] - twdl_sop_time);
 	end
 end
 

@@ -39,6 +39,8 @@ logic [11:0] cnt_FSMrd, cnt_FSMrd_2;
 logic [in_dly-1:1] rden_r; //////
 logic rden_r0;
 
+localparam [11:0] twdl_sop_time = 12'd23;
+
 //-------------------------------------------
 always@(posedge clk) begin
 	if (cnt_stage == stage_of_rdx2)
@@ -71,12 +73,12 @@ begin
 		if (fsm == Rd && fsm_r != Rd)
 			cnt_FSMrd_2 <= 12'd1;
 		else if (cnt_FSMrd_2 != 12'd0)
-			cnt_FSMrd_2 <= (cnt_FSMrd_2==cnt_rd_stop+12'd21) ? 
+			cnt_FSMrd_2 <= (cnt_FSMrd_2==cnt_rd_stop+ twdl_sop_time) ? 
 		                       12'd0 : cnt_FSMrd_2 + 12'd1;
 		else
 			cnt_FSMrd_2 <= 0;
 			
-		twdl_sop_rd <= (cnt_FSMrd_2==cnt_rd_stop+12'd21);
+		twdl_sop_rd <= (cnt_FSMrd_2==cnt_rd_stop+ twdl_sop_time);
 	end
 end
 

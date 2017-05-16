@@ -40,7 +40,7 @@ genvar i;
 
 //--------Part 1 : RAMs read address which feeds to mrd_FSMrd_rd.sv ------ 
 //--------Note :  Addresses are inverse bit order ----
-localparam	wait_before_start = 4'd4;
+localparam	wait_before_start = 4'd3;
 logic [3:0]  cnt_wait;
 
 always@(posedge clk)
@@ -86,7 +86,7 @@ assign  addrs_butterfly_src[4] = 0;
 
 //------Part 2 : Gen output sop,eop,valid according to in_rdx2345_data.valid--
 //------Note : in_rdx2345_data.valid represents first 1/3 output data ----
-localparam [11:0] sop_time = 12'd12;
+localparam [11:0] sop_time = wait_before_start + 12'd8;
 logic in_rdx2345_valid_r;
 logic [11:0]  cnt_source;
 always@(posedge clk)
