@@ -153,8 +153,9 @@ end
 
 logic inverse_r;
 always@(posedge clk) begin
-	if (!rst_n) inverse_r <= 0;
-	else inverse_r <= (sink_sop)? inverse : inverse_r;
+	// if (!rst_n) inverse_r <= 0;
+	// else 
+		inverse_r <= (sink_sop)? inverse : inverse_r;
 end
 
 mrd_rdx5_3_4_2_v2
@@ -278,10 +279,10 @@ always@(posedge clk) begin
 		margin_in <= 0;
 		margin_out <= 0;
 		valid_r <= 0;
-		for (j=0; j<=4; j++) begin
-			margin_real[j] <= 0;
-			margin_imag[j] <= 0;
-		end
+		// for (j=0; j<=4; j++) begin
+		// 	margin_real[j] <= 0;
+		// 	margin_imag[j] <= 0;
+		// end
 	end
 	else begin
 		for (j=0; j<=4; j++) begin

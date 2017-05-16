@@ -99,8 +99,9 @@ always@(posedge clk) begin
 end
 always@(posedge clk)
 begin
-	if (!rst_n)  valid_r <= 0;
-	else	valid_r <= {valid_r[delay_twdl_42-2:0], in_val};
+	// if (!rst_n)  valid_r <= 0;
+	// else	
+		valid_r <= {valid_r[delay_twdl_42-2:0], in_val};
 end
 
 logic signed [15:0] tw_real_1, tw_imag_1, tw_real_3, tw_imag_3;
@@ -201,13 +202,13 @@ assign tw_imag[4] = t_i_4[29:14];
 
 
 always@(posedge clk) begin
-	if (!rst_n) begin
-		for (j=1; j<=4; j++) begin
-			tw_real_t[j] <= 0;
-			tw_imag_t[j] <= 0;
-		end
-	end
-	else begin
+	// if (!rst_n) begin
+	// 	for (j=1; j<=4; j++) begin
+	// 		tw_real_t[j] <= 0;
+	// 		tw_imag_t[j] <= 0;
+	// 	end
+	// end
+	// else begin
 		tw_real_t[1] <= tw_real[1];
 		tw_real_t[2] <= (factor==3'd2)? 16'sd16384 : tw_real[2];
 		tw_real_t[3] <= (factor==3'd2)? tw_real[1] : tw_real[3];
@@ -225,7 +226,7 @@ always@(posedge clk) begin
 			tw_imag_t[3] <= (factor==3'd2)? -tw_imag[1] : -tw_imag[3];
 			tw_imag_t[4] <= -tw_imag[4];
 		end
-	end
+	// end
 end
 
 //------------ Temp -----------------------------
@@ -487,21 +488,21 @@ logic signed [wDataInOut-1:0]  d_real_r4, d_imag_r4;
 logic signed [wDataInOut-1:0]  d_real_r5, d_imag_r5;
 always@(posedge clk)
 begin
-	if (!rst_n)  
-	begin
-		dout_real[0] <= 0;
-		dout_imag[0] <= 0;
-		d_real_r2 <= 0;
-		d_imag_r2 <= 0;
-		d_real_r3 <= 0;
-		d_imag_r3 <= 0;		
-		d_real_r4 <= 0;
-		d_imag_r4 <= 0;
-		d_real_r5 <= 0;
-		d_imag_r5 <= 0;
-	end
-	else
-	begin
+	// if (!rst_n)  
+	// begin
+	// 	dout_real[0] <= 0;
+	// 	dout_imag[0] <= 0;
+	// 	d_real_r2 <= 0;
+	// 	d_imag_r2 <= 0;
+	// 	d_real_r3 <= 0;
+	// 	d_imag_r3 <= 0;		
+	// 	d_real_r4 <= 0;
+	// 	d_imag_r4 <= 0;
+	// 	d_real_r5 <= 0;
+	// 	d_imag_r5 <= 0;
+	// end
+	// else
+	// begin
 		if  (  ((factor==3'd3 || factor==3'd5) && valid_r[delay_twdl-2] ) 
 			|| ((factor==3'd4 || factor==3'd2) && valid_r[delay_twdl_42-2])  )
 		begin
@@ -520,7 +521,7 @@ begin
 		d_imag_r4 <= d_imag_r3;
 		d_real_r5 <= d_real_r4;
 		d_imag_r5 <= d_imag_r4;
-	end
+	// end
 end
 
 always@(*) begin

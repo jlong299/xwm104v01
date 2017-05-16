@@ -196,21 +196,21 @@ assign wir2_p1_x5_i = wir1_p1_x3_i + wir1_p1_x4_i;
 integer j;
 always@(posedge clk)
 begin
-	if (!rst_n) begin
-		p1_x0_r <= 0;
-		p1_x0_i <= 0;
-		p1_x1_r <= 0;
-		p1_x1_i <= 0;
-		p1_x2_r <= 0;
-		p1_x2_i <= 0;
-		p1_x5_r <= 0;
-		p1_x5_i <= 0;
-		p1_x3_r <= 0;
-		p1_x3_i <= 0;
-		p1_x4_r <= 0;
-		p1_x4_i <= 0;
-	end
-	else begin
+	// if (!rst_n) begin
+	// 	p1_x0_r <= 0;
+	// 	p1_x0_i <= 0;
+	// 	p1_x1_r <= 0;
+	// 	p1_x1_i <= 0;
+	// 	p1_x2_r <= 0;
+	// 	p1_x2_i <= 0;
+	// 	p1_x5_r <= 0;
+	// 	p1_x5_i <= 0;
+	// 	p1_x3_r <= 0;
+	// 	p1_x3_i <= 0;
+	// 	p1_x4_r <= 0;
+	// 	p1_x4_i <= 0;
+	// end
+	// else begin
 		p1_x0_r <= din_real_0_r;
 		p1_x0_i <= din_imag_0_r;
 		p1_x1_r <= wir2_p1_x1_r;
@@ -247,7 +247,7 @@ begin
 		p1_x3_i <= wir1_p1_x3_i[18:1];
 		p1_x4_r <= wir1_p1_x4_r[18:1];
 		p1_x4_i <= wir1_p1_x4_i[18:1];
-	end
+	// end
 end
 
 logic signed [18-1:0] p1r_x0_r, p1r_x0_i; //1.17
@@ -401,20 +401,20 @@ lpm_mult_18_mrd u7 (
 
 always@(posedge clk)
 begin
-	if (!rst_n) begin
-		p2_x0_r <= 0;
-		p2_x0_i <= 0;
-		p2_x1_r <= 0;
-		p2_x1_i <= 0;
+	// if (!rst_n) begin
+	// 	p2_x0_r <= 0;
+	// 	p2_x0_i <= 0;
+	// 	p2_x1_r <= 0;
+	// 	p2_x1_i <= 0;
 
-	end
-	else begin
+	// end
+	// else begin
 		p2_x0_r <= p1r_x0_r + p1r_x1_r;
 		p2_x0_i <= p1r_x0_i + p1r_x1_i;
 		p2_x1_r <= wir1_p2_x0_r - wir1_p2_x1_r;
 		p2_x1_i <= wir1_p2_x0_i - wir1_p2_x1_i;
 
-	end
+	// end
 end
 
 
@@ -467,19 +467,20 @@ assign wir0_p3_x1_i = {p2_x1_i,1'b0};
 
 logic signed [21-1:0] p2_x0_r_dly, p2_x0_i_dly; //4.17
 always@(posedge clk) begin
-	if (!rst_n) begin
-		p2_x0_r_dly <= 0;
-		p2_x0_i_dly <= 0;
-		wir1_p3_x1_r <= 0;
-		wir1_p3_x1_i <= 0;
-		wir1_p3_x2_r <= 0;
-		wir1_p3_x2_i <= 0;
-		wir1_p3_x3_r <= 0;
-		wir1_p3_x3_i <= 0;
-		wir1_p3_x4_r <= 0;
-		wir1_p3_x4_i <= 0;
-	end
-	else begin
+	// if (!rst_n) begin
+	// 	p2_x0_r_dly <= 0;
+	// 	p2_x0_i_dly <= 0;
+	// 	wir1_p3_x1_r <= 0;
+	// 	wir1_p3_x1_i <= 0;
+	// 	wir1_p3_x2_r <= 0;
+	// 	wir1_p3_x2_i <= 0;
+	// 	wir1_p3_x3_r <= 0;
+	// 	wir1_p3_x3_i <= 0;
+	// 	wir1_p3_x4_r <= 0;
+	// 	wir1_p3_x4_i <= 0;
+	// end
+	// else begin
+		
 	// case (factor) 
 	// 	3'd5 : begin
 	// 		wir1_p3_x1_r <= wir0_p3_x1_r + wir_p2_x2_r;
@@ -557,7 +558,7 @@ always@(posedge clk) begin
 
 	p2_x0_r_dly <= p2_x0_r;
 	p2_x0_i_dly <= p2_x0_i;
-	end
+	// end
 end
 
 //-----------------------------------------------------------------
@@ -604,19 +605,19 @@ end
 
 always@(posedge clk)
 begin
-	if (!rst_n) begin
-		p3_x0_r <= 0;
-		p3_x0_i <= 0;
-		p3_x1_r <= 0;
-		p3_x1_i <= 0;
-		p3_x2_r <= 0;
-		p3_x2_i <= 0;
-		p3_x3_r <= 0;
-		p3_x3_i <= 0;
-		p3_x4_r <= 0;
-		p3_x4_i <= 0;
-	end
-	else begin
+	// if (!rst_n) begin
+	// 	p3_x0_r <= 0;
+	// 	p3_x0_i <= 0;
+	// 	p3_x1_r <= 0;
+	// 	p3_x1_i <= 0;
+	// 	p3_x2_r <= 0;
+	// 	p3_x2_i <= 0;
+	// 	p3_x3_r <= 0;
+	// 	p3_x3_i <= 0;
+	// 	p3_x4_r <= 0;
+	// 	p3_x4_i <= 0;
+	// end
+	// else begin
 		p3_x0_r <= {p2_x0_r_dly, 3'b000};
 		p3_x0_i <= {p2_x0_i_dly, 3'b000};
 		p3_x1_r <= wir2_p3_x1_r;
@@ -627,7 +628,7 @@ begin
 		p3_x3_i <= wir2_p3_x3_i;
 		p3_x4_r <= wir2_p3_x4_r;
 		p3_x4_i <= wir2_p3_x4_i;
-	end
+	// end
 end
 always@(posedge clk) 
 	word_growth <= (worst_case_growth >= margin_in)?  

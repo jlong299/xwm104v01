@@ -59,38 +59,46 @@ logic [12-1:0]  remainder_temp, remainder_remain;
 logic remainder_carry_in;
 logic [12-1:0] cnt_numerator;
 always@(posedge clk) begin
-	if (!rst_n) begin
-		cnt_numerator <= 0;
-	end
-	else begin
-		if (twdl_sop)
-			cnt_numerator <= 12'd1;
+	// if (!rst_n) begin
+	// 	cnt_numerator <= 0;
+	// end
+	// else begin
+		if (twdl_sop==1'b1)	cnt_numerator <= 12'd1;
 		else 
 			cnt_numerator <= (cnt_numerator == numerator-12'd1)? 12'd0 : cnt_numerator+12'd1;
-	end
+	// end
 end
+
+logic [11:0]  carry_margin;
+always@(posedge clk) carry_margin <= demoninator - twdl_remainder;
+
 always@(posedge clk) begin
-	if (!rst_n) begin
-		quotient <= 0;
-		remainder <= 0;
-	end
-	else begin
+	// if (!rst_n) begin
+	// 	quotient <= 0;
+	// 	remainder <= 0;
+	// end
+	// else begin
 		// if (twdl_sop==1'b1 || cnt_numerator==12'd0) begin
-		if (twdl_sop==1'b1 || cnt_numerator==12'd0 || demoninator==12'd3 || demoninator==12'd1 ) begin
+		// if (twdl_sop==1'b1 || cnt_numerator==12'd0 || demoninator==12'd3 || demoninator==12'd1 ) begin
+		if (twdl_sop==1'b1 || cnt_numerator==12'd0) begin
 			quotient <= 0;
 			remainder <= 0;
 		end
 		else begin
 			quotient <= quotient_temp + remainder_carry_in;
-			remainder <= remainder_remain;
+			// remainder <= remainder_remain;
+			remainder <= (remainder >= carry_margin)? 
+			             remainder-carry_margin : remainder+twdl_remainder;
 		end
-	end
+	// end
 end
 
+
 assign quotient_temp = quotient + twdl_quotient;
-assign remainder_temp = remainder + twdl_remainder;
-assign remainder_carry_in = (remainder_temp < demoninator)? 1'd0 : 1'd1;
-assign remainder_remain = (remainder_temp < demoninator)? remainder_temp : remainder_temp-demoninator;
+// assign remainder_temp = remainder + twdl_remainder;
+// assign remainder_carry_in = (remainder_temp < demoninator)? 1'd0 : 1'd1;
+assign remainder_carry_in = (remainder >= carry_margin)? 1'd1 : 1'd0;
+// assign remainder_remain = (remainder_temp < demoninator)? remainder_temp : remainder_temp-demoninator;
 
 // assign quotient_round = (remainder > (demoninator >>1)) ?
 //                         quotient + 1'd1 : quotient;
@@ -102,18 +110,24 @@ logic [wDataOut-1:0]  xin = An;
 
 logic [20-1:0] quotient_r [0:3];
 always@(posedge clk) begin
-	if (!rst_n) begin
-		quotient_r[0] <= 0;
-		//quotient_r[1] <= 0;
-		quotient_r[2] <= 0;
-		//quotient_r[3] <= 0;
-	end
-	else begin
-		quotient_r[0] <= quotient;
-		//quotient_r[1] <= quotient + quotient;
-		quotient_r[2] <= quotient + {quotient,1'b0};
-		//quotient_r[3] <= {quotient,1'b0} + {quotient,1'b0};
-	end
+	// if (!rst_n) begin
+	// 	quotient_r[0] <= 0;
+	// 	//quotient_r[1] <= 0;
+	// 	quotient_r[2] <= 0;
+	// 	//quotient_r[3] <= 0;
+	// end
+	// else begin
+		if (demoninator==12'd3 || demoninator==12'd1 ) begin
+			quotient_r[0] <= 0;
+			quotient_r[2] <= 0;
+		end
+		else begin
+			quotient_r[0] <= quotient;
+			//quotient_r[1] <= quotient + quotient;
+			quotient_r[2] <= quotient + {quotient,1'b0};
+			//quotient_r[3] <= {quotient,1'b0} + {quotient,1'b0};
+		end
+	// end
 end
 
 

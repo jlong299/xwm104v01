@@ -133,6 +133,8 @@ add wave -radix signed {sim:/top_tb_p4/top_p4/mem0_p4/mrd_FSMrd_rd_inst/rdRAM_FS
 add wave -radix signed {sim:/top_tb_p4/top_p4/ctrl_fsm/*}
 add wave -radix signed {sim:/top_tb_p4/top_p4/ctrl_fsm/ctrl_to_mem/*}
 
+add wave -radix unsigned {sim:/top_tb_p4/top_inst/rdx2345_twdl/rdx5_3_4_2_v2/*}
+
 view structure
 view signals
 
