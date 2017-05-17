@@ -24,7 +24,7 @@ logic [11:0]  addr_sink_CTA;
 
 logic [11:0]  cnt_sink;
 
-localparam [11:0] twdl_sop_time = 12'd2;
+localparam [11:0] twdl_sop_time = 12'd3;
 
 always@(posedge clk) begin
 	wrRAM_FSMsink.wraddr[0] <= bank_addr_sink_pre;

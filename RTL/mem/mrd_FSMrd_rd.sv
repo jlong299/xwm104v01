@@ -39,7 +39,7 @@ logic [11:0] cnt_FSMrd, cnt_FSMrd_2;
 logic [in_dly-1:1] rden_r; //////
 logic rden_r0;
 
-localparam [11:0] twdl_sop_time = 12'd23;
+localparam [11:0] twdl_sop_time = 12'd21;
 
 //-------------------------------------------
 always@(posedge clk) begin

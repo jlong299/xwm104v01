@@ -40,7 +40,7 @@ genvar i;
 
 //--------Part 1 : RAMs read address which feeds to mrd_FSMrd_rd.sv ------ 
 //--------Note :  Addresses are inverse bit order ----
-localparam	wait_before_start = 4'd3;
+localparam	wait_before_start = 4'd4;
 logic [3:0]  cnt_wait;
 
 always@(posedge clk)

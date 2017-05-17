@@ -72,28 +72,24 @@ assign sclr = valid_r[delay_twdl_42-1] & (!valid_r[delay_twdl_42-2]);
 logic signed [wDataInOut-1:0] din_real_d1 [0:4];
 logic signed [wDataInOut-1:0] din_real_d2 [0:4];
 logic signed [wDataInOut-1:0] din_real_d3 [0:4];
-logic signed [wDataInOut-1:0] din_real_d4 [0:4];
 logic signed [wDataInOut-1:0] din_imag_d1 [0:4];
 logic signed [wDataInOut-1:0] din_imag_d2 [0:4];
 logic signed [wDataInOut-1:0] din_imag_d3 [0:4];
-logic signed [wDataInOut-1:0] din_imag_d4 [0:4];
 generate
 for (i=0; i<5; i++) begin : gen0
 	always@(posedge clk) din_real_d1[i] <= din_real[i];
 	always@(posedge clk) din_real_d2[i] <= din_real_d1[i];
 	always@(posedge clk) din_real_d3[i] <= din_real_d2[i];
-	always@(posedge clk) din_real_d4[i] <= din_real_d3[i];
 	always@(posedge clk) din_imag_d1[i] <= din_imag[i];
 	always@(posedge clk) din_imag_d2[i] <= din_imag_d1[i];
 	always@(posedge clk) din_imag_d3[i] <= din_imag_d2[i];
-	always@(posedge clk) din_imag_d4[i] <= din_imag_d3[i];
 end
 endgenerate
 
 always@(posedge clk) begin
 for (j=0; j<5; j++) begin
-	d_real_r[j] <= (factor==3'd3 || factor==3'd5)? din_real[j] : din_real_d4[j];
-	d_imag_r[j] <= (factor==3'd3 || factor==3'd5)? din_imag[j] : din_imag_d4[j];
+	d_real_r[j] <= (factor==3'd3 || factor==3'd5)? din_real[j] : din_real_d3[j];
+	d_imag_r[j] <= (factor==3'd3 || factor==3'd5)? din_imag[j] : din_imag_d3[j];
 end
 end
 

@@ -41,7 +41,7 @@ logic [11:0] cnt_FSMrd, cnt_FSMrd_2;
 logic [in_dly-1:1] rden_r; //////
 logic rden_r0;
 
-localparam	wait_before_start = 4'd2;
+localparam	wait_before_start = 4'd3;
 logic [3:0]  cnt_wait;
 
 //-------------------------------------------
